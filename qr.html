@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MÀN HÌNH ĐIỂM DANH CỐ ĐỊNH VP | ĐOÀN - HỘI UMP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Thư viện mã hóa MD5 và sinh QR code chạy offline siêu nhanh -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif !important;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 min-h-screen flex items-center justify-center p-4 selection:bg-sky-500 selection:text-white">
+
+  <div class="bg-white rounded-[36px] shadow-2xl p-8 max-w-md w-full text-center space-y-6 border border-slate-100">
+    <div class="space-y-1">
+      <span class="inline-block px-3 py-1 bg-sky-50 text-sky-700 border border-sky-100 rounded-full text-[10px] font-black uppercase tracking-wider">
+        <i class="fa-solid fa-qrcode mr-1"></i> Màn hình điểm danh cố định VP
+      </span>
+      <h2 class="text-xl font-extrabold text-slate-900 uppercase tracking-tight">Điểm Danh Ca Trực CTV</h2>
+      <p class="text-xs text-slate-500 font-medium">Dùng điện thoại kết nối WiFi Văn phòng để quét mã</p>
+    </div>
+
+    <!-- KHUNG HIỂN THỊ MÃ QR (HIỆN NGAY LẬP TỨC KHÔNG ĐỢI MẠNG) -->
+    <div class="flex justify-center">
+      <div class="p-4 bg-slate-50 border border-slate-200 rounded-3xl shadow-inner inline-flex items-center justify-center min-h-[250px] min-w-[250px]">
+        <div id="qr-canvas-box" class="flex items-center justify-center"></div>
+      </div>
+    </div>
+
+    <!-- THANH ĐẾM NGƯỢC 15 GIÂY -->
+    <div class="space-y-2">
+      <div class="flex justify-between items-center text-xs font-bold text-slate-600 px-1">
+        <span>Tự đổi mã sau:</span>
+        <span id="time-countdown" class="font-black text-sky-600 text-sm">15s</span>
+      </div>
+      <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200/60">
+        <div id="progress-bar" class="bg-gradient-to-r from-sky-500 to-indigo-600 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+      </div>
+    </div>
+
+    <div class="pt-2 border-t border-slate-100 text-[11px] text-slate-400 font-semibold flex items-center justify-center gap-1.5">
+      <i class="fa-solid fa-shield-halved text-sky-500"></i> Chống gian lận: Kiểm tra WiFi + Mã thiết bị
+    </div>
+  </div>
+
+  <script>
+    const QR_SECRET_KEY = "UMP_DOAN_HOI_SECRET_KEY_2026"; // Khớp tuyệt đối với Mã.gs
+    let qrInstance = null;
+
+    function getLocalDynamicToken() {
+      const currentBlock = Math.floor(Date.now() / 15000);
+      const rawString = QR_SECRET_KEY + "_" + currentBlock;
+      return md5(rawString);
+    }
+
+    function renderQRCodeImmediately() {
+      const box = document.getElementById("qr-canvas-box");
+      if (!box) return;
+      box.innerHTML = "";
+      
+      const token = getLocalDynamicToken();
+      qrInstance = new QRCode(box, {
+        text: token,
+        width: 220,
+        height: 220,
+        colorDark: "#0f172a",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+
+    function startCountdown() {
+      function tick() {
+        const now = Date.now();
+        const secondsLeft = 15 - (Math.floor(now / 1000) % 15);
+        
+        const countEl = document.getElementById("time-countdown");
+        if (countEl) countEl.innerText = `${secondsLeft}s`;
+
+        const barEl = document.getElementById("progress-bar");
+        if (barEl) {
+          const pct = (secondsLeft / 15) * 100;
+          barEl.style.width = `${pct}%`;
+        }
+
+        if (secondsLeft === 15) {
+          renderQRCodeImmediately();
+        }
+      }
+      setInterval(tick, 500);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      renderQRCodeImmediately();
+      startCountdown();
+    });
+  </script>
+</body>
+</html>
