@@ -93,34 +93,40 @@
 
       <nav class="space-y-1 text-xs font-bold">
         <!-- 1. Duyệt CSVC -->
-        <button onclick="switchAdminTab('tab-csvc')" id="nav-tab-csvc" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl bg-sky-500 text-white shadow-md transition font-bold [&>span>i]:text-white">
-          <span class="flex items-center gap-2.5"><i class="fa-solid fa-building-circle-check text-sm w-4"></i> Duyệt CSVC</span>
+        <button onclick="switchAdminTab('tab-csvc')" id="nav-tab-csvc" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl bg-sky-600 text-white shadow-md shadow-sky-600/20 transition font-bold text-xs [&>span>i]:text-white">
+          <span class="flex items-center gap-3"><i class="fa-solid fa-building-circle-check text-sm w-4"></i> Duyệt CSVC</span>
           <span id="badge-nav-csvc" class="bg-white/20 text-white text-[10px] px-2 py-0.5 rounded-full">0</span>
         </button>
+
         <!-- 2. Báo cáo tháng -->
-        <button onclick="switchAdminTab('tab-baocao')" id="nav-tab-baocao" class="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold">
+        <button onclick="switchAdminTab('tab-baocao')" id="nav-tab-baocao" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold text-xs">
           <i class="fa-solid fa-chart-pie text-sm w-4 text-purple-600"></i> Báo Cáo Tháng
         </button>
+
         <!-- 3. Bàn giao Vật Phẩm -->
-        <button onclick="switchAdminTab('tab-vat-pham')" id="nav-tab-vat-pham" class="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold">
-          <i class="fa-solid fa-box-open text-sm w-4 text-emerald-600"></i> Quản lý vật phẩm
+        <button onclick="switchAdminTab('tab-vat-pham')" id="nav-tab-vat-pham" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold text-xs">
+          <i class="fa-solid fa-boxes-stacked text-sm w-4 text-emerald-600"></i> Quản lý vật phẩm
         </button>        
+
         <!-- 4. Lịch trực CTV -->
-        <button onclick="switchAdminTab('tab-lich-truc')" id="nav-tab-lich-truc" class="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold">
+        <button onclick="switchAdminTab('tab-lich-truc')" id="nav-tab-lich-truc" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold text-xs">
           <i class="fa-solid fa-calendar-days text-sm w-4 text-amber-500"></i> Quản lý ca trực
         </button>
+
         <!-- 5. Quản lý hoạt động -->
-        <button onclick="switchAdminTab('tab-hoat-dong')" id="nav-tab-hoat-dong" class="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold">
+        <button onclick="switchAdminTab('tab-hoat-dong')" id="nav-tab-hoat-dong" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold text-xs">
           <i class="fa-solid fa-bullhorn text-sm w-4 text-sky-500"></i> Quản lý hoạt động
         </button>
+
         <!-- 6. Dữ liệu Import -->
-        <button onclick="switchAdminTab('tab-import-data')" id="nav-tab-import-data" class="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold">
+        <button onclick="switchAdminTab('tab-import-data')" id="nav-tab-import-data" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold text-xs">
           <i class="fa-solid fa-file-excel text-sm w-4 text-indigo-600"></i> Cơ sở dữ liệu
         </button>
+
         <!-- 7. Xếp loại CTV -->
-        <button onclick="switchAdminTab('tab-xep-loai')" id="nav-tab-xep-loai" class="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold">
+        <button onclick="switchAdminTab('tab-xep-loai')" id="nav-tab-xep-loai" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold text-xs">
           <i class="fa-solid fa-award text-sm w-4 text-rose-500"></i> Xếp loại Đội
-        </button>  
+        </button>
 
         <!-- KHỐI TÍNH NĂNG MỞ RỘNG (ĐÃ KHÓA) -->
         <div class="pt-3 pb-1 px-2 text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">
@@ -803,24 +809,29 @@
     }
 
     function switchAdminTab(tabId) {
-      toggleMobileSidebar(false); // Tự động đóng menu trên điện thoại khi chọn tab
+      toggleMobileSidebar(false);
+
       const allTabs = ['tab-baocao', 'tab-csvc', 'tab-lich-truc', 'tab-import-data', 'tab-vat-pham', 'tab-xep-loai', 'tab-hoat-dong'];
+      
+      // 1. Ẩn tất cả tab và trả style nút về bình thường (icon đứng sát chữ, có khoảng cách gap-3)
       allTabs.forEach(id => {
         const sec = document.getElementById(id);
         const nav = document.getElementById(`nav-${id}`);
         if (sec) sec.classList.add('hidden');
         if (nav) {
-          nav.className = "w-full text-left px-3.5 py-2.5 rounded-2xl font-bold text-xs flex items-center justify-between transition bg-white text-slate-600 hover:bg-slate-50";
+          nav.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold text-xs";
         }
       });
 
+      // 2. Kích hoạt tab được chọn & đổi nút sang màu xanh nổi bật (icon chuyển sang màu trắng)
       const activeSec = document.getElementById(tabId);
       const activeNav = document.getElementById(`nav-${tabId}`);
       if (activeSec) activeSec.classList.remove('hidden');
       if (activeNav) {
-        activeNav.className = "w-full text-left px-3.5 py-2.5 rounded-2xl font-black text-xs flex items-center justify-between transition bg-sky-600 text-white shadow-md shadow-sky-600/20";
+        activeNav.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl bg-sky-600 text-white shadow-md shadow-sky-600/20 transition font-bold text-xs [&>i]:text-white [&>span>i]:text-white";
       }
 
+      // 3. Tự động tải lại dữ liệu của tab tương ứng
       if (tabId === 'tab-csvc') loadCsvcDataAdmin();
       if (tabId === 'tab-vat-pham') loadDonVatPhamAdmin();
       if (tabId === 'tab-xep-loai') loadDanhSachCTVAdmin();
