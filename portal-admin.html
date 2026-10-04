@@ -2025,12 +2025,34 @@
             tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">Chưa có dữ liệu CTV nào trong sheet HoSo_CTV.</td></tr>`;
             return;
           }
+
+          // TỰ ĐỘNG CẬP NHẬT DANH SÁCH BAN THEO DỮ LIỆU THỰC TẾ
+          capNhatBoLocBanTuDong();
           locDanhSachCTVTheoBan();
         } else {
           tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-rose-500 font-bold">${data.message || 'Lỗi tải danh sách CTV!'}</td></tr>`;
         }
       } catch (e) {
         tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-rose-500 font-bold">Lỗi kết nối máy chủ (${e.message})!</td></tr>`;
+      }
+    }
+
+    // Tự động gom các Ban thực tế có trong Sheet vào thẻ select
+    function capNhatBoLocBanTuDong() {
+      const selectEl = document.getElementById("filter-ban-ctv");
+      if (!selectEl) return;
+
+      const currentValue = selectEl.value; // Giữ lại lựa chọn người dùng đang bấm
+      const uniqueBans = [...new Set(loadedCTVList.map(c => String(c.ban || "").trim()).filter(Boolean))];
+
+      let optionsHtml = `<option value="ALL">-- Tất cả các Ban --</option>`;
+      uniqueBans.forEach(banName => {
+        optionsHtml += `<option value="${banName}">${banName}</option>`;
+      });
+
+      selectEl.innerHTML = optionsHtml;
+      if (uniqueBans.includes(currentValue)) {
+        selectEl.value = currentValue;
       }
     }
 
@@ -2162,12 +2184,15 @@
       });
     }
 
+    // Lọc danh sách theo Ban đã chọn
     function locDanhSachCTVTheoBan() {
-      const selectedBan = document.getElementById("filter-ban-ctv").value;
+      const selectEl = document.getElementById("filter-ban-ctv");
+      const selectedBan = selectEl ? selectEl.value : "ALL";
+      
       if (selectedBan === "ALL") {
         renderCTVTable(loadedCTVList);
       } else {
-        renderCTVTable(loadedCTVList.filter(c => c.ban === selectedBan));
+        renderCTVTable(loadedCTVList.filter(c => String(c.ban || "").trim() === selectedBan));
       }
     }
 
