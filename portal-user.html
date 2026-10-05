@@ -189,7 +189,7 @@
       </div>
 
       <!-- 5. Hồ sơ dự toán (Đã khóa) -->
-      <div class="glass-card rounded-[28px] p-6 opacity-60 hover:opacity-70 transition duration-200 cursor-not-allowed flex flex-col justify-between relative bg-slate-50 grayscale-[30%]">
+      <div id="card-menu-5" class="glass-card rounded-[28px] p-6 opacity-60 hover:opacity-70 transition duration-200 cursor-not-allowed flex flex-col justify-between relative bg-slate-50 grayscale-[30%]">
         <div class="absolute top-5 right-5 bg-slate-200 text-slate-500 text-[10px] font-black px-2.5 py-1 rounded-md border border-slate-300">
           <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> SẮP RA MẮT
         </div>
@@ -201,7 +201,7 @@
       </div>
 
       <!-- 6. Quyết toán AI (Đã khóa) -->
-      <div class="glass-card rounded-[28px] p-6 opacity-60 hover:opacity-70 transition duration-200 cursor-not-allowed flex flex-col justify-between relative bg-slate-50 grayscale-[30%]">
+      <div id="card-menu-6" class="glass-card rounded-[28px] p-6 opacity-60 hover:opacity-70 transition duration-200 cursor-not-allowed flex flex-col justify-between relative bg-slate-50 grayscale-[30%]">
         <div class="absolute top-5 right-5 bg-slate-200 text-slate-500 text-[10px] font-black px-2.5 py-1 rounded-md border border-slate-300">
           <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> SẮP RA MẮT
         </div>
@@ -815,6 +815,14 @@
   <script>
     let currentUser = null;
     try { currentUser = JSON.parse(localStorage.getItem("ump_user")); } catch (e) {}
+
+    // Ẩn thẻ 5 và 6 nếu tài khoản được ghi chú là KHOA trên Google Sheet
+    if (currentUser && currentUser.loaiDonVi === "KHOA") {
+      const c5 = document.getElementById("card-menu-5");
+      const c6 = document.getElementById("card-menu-6");
+      if (c5) c5.style.display = "none";
+      if (c6) c6.style.display = "none";
+    }
 
     if (!currentUser) {
       window.location.href = "index.html";
