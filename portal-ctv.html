@@ -705,19 +705,26 @@
     // 2. QUÉT MÃ QR ĐIỂM DANH
     let scannerQrObj = null;
     function getDeviceFingerprint() {
-      // 1. Kiểm tra mã định danh đã từng lưu trong máy chưa
-      let devId = localStorage.getItem("ump_ctv_unique_device");
+      // 1. Lấy ngày hiện tại (YYYY-MM-DD) và tên tài khoản
+      const todayStr = new Date().toISOString().split("T")[0];
+      const u = (typeof currentUser !== "undefined" && currentUser && currentUser.username) 
+                ? currentUser.username 
+                : "user";
       
-      // 2. Nếu chưa có (hoặc vô tình bị lưu dính mã cũ trùng lặp DEV_1292923429)
+      // Khóa lưu riêng cho từng bạn trong ngày hôm đó
+      const storageKey = `ump_device_token_${u}_${todayStr}`;
+      
+      // 2. Kiểm tra xem hôm nay bạn này đã có mã chưa
+      let devId = localStorage.getItem(storageKey);
+      
+      // 3. Nếu chưa có mã (lần đầu vào ca hôm nay), sinh một mã ngẫu nhiên mới
       if (!devId || devId === "DEV_1292923429") {
-        // Sinh chuỗi ngẫu nhiên độc lập 100% kết hợp dấu thời gian và số ngẫu nhiên
-        const randomHex = Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+        const randomHex = Math.random().toString(36).substring(2, 8) + Date.now().toString(36).substring(4);
         devId = "DEV_" + randomHex.toUpperCase();
-        
-        // Ghim chặt mã này vào bộ nhớ riêng của trình duyệt máy đó
-        localStorage.setItem("ump_ctv_unique_device", devId);
+        localStorage.setItem(storageKey, devId);
       }
       
+      // Trả về đúng mã đó cho cả ngày hôm nay
       return devId;
     }
 
