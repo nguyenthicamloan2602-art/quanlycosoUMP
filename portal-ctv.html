@@ -705,10 +705,20 @@
     // 2. QUÉT MÃ QR ĐIỂM DANH
     let scannerQrObj = null;
     function getDeviceFingerprint() {
-      const str = navigator.userAgent + screen.width + "x" + screen.height + (navigator.language || "");
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
-      return "DEV_" + Math.abs(hash);
+      // 1. Kiểm tra mã định danh đã từng lưu trong máy chưa
+      let devId = localStorage.getItem("ump_ctv_unique_device");
+      
+      // 2. Nếu chưa có (hoặc vô tình bị lưu dính mã cũ trùng lặp DEV_1292923429)
+      if (!devId || devId === "DEV_1292923429") {
+        // Sinh chuỗi ngẫu nhiên độc lập 100% kết hợp dấu thời gian và số ngẫu nhiên
+        const randomHex = Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+        devId = "DEV_" + randomHex.toUpperCase();
+        
+        // Ghim chặt mã này vào bộ nhớ riêng của trình duyệt máy đó
+        localStorage.setItem("ump_ctv_unique_device", devId);
+      }
+      
+      return devId;
     }
 
     // Bật/tắt thanh menu trên thiết bị di động
