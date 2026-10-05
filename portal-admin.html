@@ -157,12 +157,6 @@
 
     <!-- PROFILE VÀ TRẠNG THÁI CUỐI SIDEBAR -->
     <div class="pt-3 border-t border-slate-200 space-y-2.5 mt-3">
-      <div class="flex items-center justify-between px-1">
-        <span class="text-[11px] font-bold text-slate-600">Đăng ký tự do:</span>
-        <button onclick="toggleDangKyTuDo()" id="btn-toggle-dktudo" class="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-[10px] font-black transition">
-          BẬT
-        </button>
-      </div>
 
       <div class="px-1 flex items-center justify-between">
         <div>
@@ -2333,19 +2327,6 @@
       document.getElementById("user-footer-name").innerText = u.hoTen;
       toggleModal('modal-profile', false);
       Swal.fire("Đã lưu", "Đã cập nhật thông tin cá nhân quản trị viên!", "success");
-    }
-
-    function toggleDangKyTuDo() {
-      const btn = document.getElementById("btn-toggle-dktudo");
-      if (btn.innerText === "BẬT") {
-        btn.innerText = "TẮT";
-        btn.className = "px-2.5 py-1 bg-slate-400 text-white rounded-lg text-[10px] font-black transition";
-        Swal.fire("Đã khóa", "Đã tắt chức năng CTV đăng ký tự do!", "info");
-      } else {
-        btn.innerText = "BẬT";
-        btn.className = "px-2.5 py-1 bg-emerald-500 text-white rounded-lg text-[10px] font-black transition";
-        Swal.fire("Đã mở", "Đã mở chức năng CTV đăng ký tự do!", "success");
-      }
     }
 
     function toggleAdminPassModal(show) {

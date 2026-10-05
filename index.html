@@ -417,25 +417,6 @@
   <script src="./config.js"></script>
   <script>
     // ==========================================
-    // 1. CÔNG TẮC BẬT/TẮT ĐĂNG KÝ (QTV)
-    // ==========================================
-    let ALLOW_REGISTER = true; 
-
-    window.addEventListener("DOMContentLoaded", () => {
-      applyRegisterState();
-      updateDatesAndFetchBrief();
-    });
-
-    function applyRegisterState() {
-      const regTrigger = document.getElementById("register-trigger-container");
-      if (!ALLOW_REGISTER && regTrigger) {
-        regTrigger.classList.add("hidden");
-      } else if (regTrigger) {
-        regTrigger.classList.remove("hidden");
-      }
-    }
-
-    // ==========================================
     // 2. TỰ ĐỘNG TÍNH NGÀY & GỌI API ĐỒNG BỘ
     // ==========================================
     async function updateDatesAndFetchBrief() {
@@ -527,12 +508,6 @@
               document.getElementById("count-tomorrow").innerHTML = `<i class="fa-solid fa-circle-info text-[10px]"></i> Trống lịch`;
               document.getElementById("content-tomorrow").innerHTML = `<div class="text-slate-500 text-xs italic py-1">Không có dữ liệu đăng ký vào thời gian này</div>`;
             }
-
-            if (resData.allowRegister !== undefined) {
-              ALLOW_REGISTER = resData.allowRegister;
-              applyRegisterState();
-            }
-            return;
           }
         }
       } catch (err) {
@@ -548,15 +523,6 @@
     }
 
     function switchView(view) {
-      if (view === 'register' && !ALLOW_REGISTER) {
-        Swal.fire({
-          icon: 'info',
-          title: 'Cổng đăng ký tạm đóng',
-          text: 'Chức năng đăng ký tài khoản tự do đang tạm khóa. Vui lòng liên hệ Văn phòng Đoàn - Hội UMP để được cấp quyền.',
-          confirmButtonColor: '#0284c7'
-        });
-        return;
-      }
 
       document.getElementById('box-login').classList.add('hidden');
       document.getElementById('box-register').classList.add('hidden');
@@ -668,8 +634,6 @@
     // ĐĂNG KÝ
     async function handleRegister(e) {
       e.preventDefault();
-      if (!ALLOW_REGISTER) return;
-
       const role = document.getElementById("reg_role").value;
       const btn = document.getElementById("btn-reg");
       btn.disabled = true;
