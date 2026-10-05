@@ -492,11 +492,11 @@
                   <div class="grid grid-cols-2 gap-2">
                     <div>
                       <label class="block font-bold text-slate-600 mb-0.5 text-[10.5px]">Bắt đầu mượn GĐ *</label>
-                      <input type="datetime-local" id="gd_start" onchange="tinhTietTuGioThucTe()" class="w-full p-2 border rounded-xl text-xs bg-slate-50 font-semibold outline-none focus:bg-white focus:border-sky-500">
+                      <input type="datetime-local" id="gd_start" onchange="tinhTietTuGioThucTe(); kiemTraThoiHanDangKyGiangDuong(this.value);" class="w-full p-2 border rounded-xl text-xs bg-slate-50 font-semibold outline-none focus:bg-white focus:border-sky-500">
                     </div>
                     <div>
                       <label class="block font-bold text-slate-600 mb-0.5 text-[10.5px]">Kết thúc mượn GĐ *</label>
-                      <input type="datetime-local" id="gd_end" onchange="tinhTietTuGioThucTe()" class="w-full p-2 border rounded-xl text-xs bg-slate-50 font-semibold outline-none focus:bg-white focus:border-sky-500">
+                      <input type="datetime-local" id="gd_end" onchange="tinhTietTuGioThucTe(); kiemTraThoiHanDangKyGiangDuong(this.value);" class="w-full p-2 border rounded-xl text-xs bg-slate-50 font-semibold outline-none focus:bg-white focus:border-sky-500">
                     </div>
                   </div>
 
@@ -1109,6 +1109,40 @@
         reader.onerror = error => reject(error);
         reader.readAsDataURL(file);
       });
+    }
+
+    
+    // KIỂM TRA THỜI HẠN ĐĂNG KÝ GIẢNG ĐƯỜNG DƯỚI 14 NGÀY KỂ TỪ THỨ 6 GẦN NHẤT
+    function kiemTraThoiHanDangKyGiangDuong(ngaySuDungInput) {
+      if (!ngaySuDungInput) return true;
+      const ngaySuDung = new Date(ngaySuDungInput);
+      const homNay = new Date();
+      
+      // 1. Tìm ngày thứ Sáu gần nhất trước đó (hoặc chính hôm nay nếu là thứ Sáu)
+      const dayOfWeek = homNay.getDay(); // 0: CN, 1: T2, ..., 5: T6, 6: T7
+      const khoangCachThuSau = (dayOfWeek >= 5) ? (dayOfWeek - 5) : (dayOfWeek + 2);
+      
+      const thuSauGanNhat = new Date(homNay);
+      thuSauGanNhat.setDate(homNay.getDate() - khoangCachThuSau);
+      thuSauGanNhat.setHours(0, 0, 0, 0);
+
+      // 2. Tính số ngày từ thứ Sáu mốc đó đến ngày tổ chức
+      const diffTime = ngaySuDung.getTime() - thuSauGanNhat.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      // 3. Nếu dưới 14 ngày: Bật cảnh báo nhắc nhở nhẹ nhưng VẪN CHO ĐĂNG KÝ
+      if (diffDays < 14) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Cảnh báo: Đăng ký cận ngày',
+          html: `Thời gian sử dụng cách mốc thứ Sáu xét duyệt gần nhất <b>${diffDays} ngày</b> (quy định chuẩn nộp đơn là trước 14 ngày).<br><br>
+                 <span class="text-slate-600 text-xs"><i>Đơn của bạn vẫn được gửi đi bình thường, nhưng vui lòng liên hệ thêm Văn phòng Đoàn - Hội để đảm bảo tiến độ trình Ban Giám hiệu phê duyệt!</i></span>`,
+          confirmButtonText: 'Tôi đã hiểu và tiếp tục',
+          confirmButtonColor: '#0284c7'
+        });
+        return false; // Đã cảnh báo
+      }
+      return true;
     }
 
     async function submitFormCsvcTungMuc(e) {

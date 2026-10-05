@@ -278,20 +278,18 @@
 
         <!-- CỘT PHẢI: QUÉT QR -->
         <div class="lg:col-span-4 space-y-4">
-          <div class="glass-card p-5 rounded-[28px] space-y-3.5">
-            <h3 class="font-extrabold text-xs uppercase text-slate-800"><i class="fa-solid fa-qrcode text-sky-600 mr-1"></i> Quét QR Điểm Danh</h3>
-            <div class="flex gap-2">
-              <label class="flex-1 text-center p-2 rounded-xl border border-sky-200 cursor-pointer bg-sky-50/60 font-bold text-xs">
-                <input type="radio" name="qr_type" value="IN" checked class="text-sky-600"> Vào ca
-              </label>
-              <label class="flex-1 text-center p-2 rounded-xl border border-amber-200 cursor-pointer bg-amber-50/60 font-bold text-xs">
-                <input type="radio" name="qr_type" value="OUT" class="text-amber-600"> Ra ca
-              </label>
-            </div>
+                    <div class="glass-card p-5 rounded-[28px] space-y-3.5">
+            <h3 class="font-extrabold text-xs uppercase text-slate-800 flex items-center justify-between">
+              <span><i class="fa-solid fa-qrcode text-sky-600 mr-1"></i> Quét QR Điểm Danh</span>
+              <span class="text-[10px] text-sky-600 font-bold bg-sky-50 px-2 py-0.5 rounded-full border border-sky-100">Tự động nhận diện ca</span>
+            </h3>
+            <p class="text-[11px] text-slate-500 leading-relaxed">
+              Bật camera và hướng về mã QR điểm danh tại Văn phòng. Sau khi quét, bạn chỉ cần chọn thao tác <b>Vào ca</b> hoặc <b>Ra ca</b>.
+            </p>
             <div id="qr-camera-box" class="w-full bg-slate-50 border border-slate-200 rounded-xl overflow-hidden min-h-[170px] flex items-center justify-center text-xs text-slate-400">
               Chưa bật camera
             </div>
-            <button onclick="startCameraScanner()" class="w-full py-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
+            <button onclick="startCameraScanner()" class="w-full py-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
               <i class="fa-solid fa-camera"></i> Bật Camera Quét QR
             </button>
           </div>
@@ -762,10 +760,44 @@
         { fps: 15, qrbox: qrboxFn },
         async (decodedText) => {
           try { scannerQrObj.stop(); } catch(e){}
-          
+
+          // 1. Hiển thị hộp thoại nhỏ cho CTV chọn thao tác Vào ca hay Ra ca
+          const { value: selectedAction } = await Swal.fire({
+            title: '<span class="text-sm font-black uppercase text-slate-800">Xác nhận điểm danh</span>',
+            html: `
+              <p class="text-xs text-slate-500 mb-4">Đã quét thành công mã QR trực văn phòng. Vui lòng chọn thao tác của bạn:</p>
+              <div class="grid grid-cols-2 gap-3">
+                <button id="btn-swal-in" type="button" class="py-3 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold text-xs shadow-md transition flex flex-col items-center gap-1.5 cursor-pointer">
+                  <i class="fa-solid fa-right-to-bracket text-base"></i>
+                  <span>VÀO CA (Check-in)</span>
+                </button>
+                <button id="btn-swal-out" type="button" class="py-3 px-3 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-bold text-xs shadow-md transition flex flex-col items-center gap-1.5 cursor-pointer">
+                  <i class="fa-solid fa-right-from-bracket text-base"></i>
+                  <span>RA CA (Check-out)</span>
+                </button>
+              </div>
+            `,
+            showConfirmButton: false,
+            showCancelButton: true,
+            cancelButtonText: 'Hủy bỏ',
+            cancelButtonColor: '#94a3b8',
+            didOpen: () => {
+              const bIn = document.getElementById('btn-swal-in');
+              const bOut = document.getElementById('btn-swal-out');
+              if (bIn) bIn.onclick = () => Swal.close({ value: 'IN' });
+              if (bOut) bOut.onclick = () => Swal.close({ value: 'OUT' });
+            }
+          });
+
+          // Nếu người dùng bấm Hủy
+          if (!selectedAction) {
+            box.innerHTML = `<div class="p-4 text-center text-xs text-slate-500 font-semibold">Đã hủy điểm danh. Bấm nút bên dưới nếu bạn muốn bật lại camera.</div>`;
+            return;
+          }
+
           Swal.fire({ 
-            title: "Đang xác thực mã QR...", 
-            text: "Vui lòng giữ nguyên màn hình...",
+            title: "Đang ghi nhận điểm danh...", 
+            text: "Hệ thống đang kiểm tra ca trực và lưu giờ vào Google Sheets...",
             allowOutsideClick: false, 
             didOpen: () => Swal.showLoading() 
           });
@@ -783,26 +815,36 @@
             userIP = "MobileClient";
           }
 
-          const checkinType = document.querySelector('input[name="qr_type"]:checked') ? document.querySelector('input[name="qr_type"]:checked').value : "IN";
-
           sendPost({
             action: "CHECKIN_CTV_SECURE",
             data: {
               username: currentUser.username,
-              type: checkinType,
+              hoTen: currentUser.hoTen || currentUser.username,
+              lop: currentUser.lop || "",
+              type: selectedAction,
               qrToken: decodedText.trim(),
               ip: userIP,
               deviceId: getDeviceFingerprint()
             }
           }, (res) => {
             loadCtvShiftStats();
-            Swal.fire({
-              icon: "success",
-              title: "Điểm Danh Thành Công!",
-              text: res.message || `Đã ghi nhận ${checkinType === 'IN' ? 'vào ca' : 'ra ca'} của bạn!`,
-              confirmButtonColor: "#0284c7"
-            });
-            box.innerHTML = `<div class="p-4 text-center text-xs text-emerald-600 font-bold"><i class="fa-solid fa-circle-check text-2xl mb-1 block"></i> Điểm danh hoàn tất! Bấm nút dưới để quét tiếp nếu cần.</div>`;
+            if (res.success) {
+              Swal.fire({
+                icon: "success",
+                title: "Điểm Danh Thành Công!",
+                text: res.message || `Đã ghi nhận ${selectedAction === 'IN' ? 'vào ca' : 'ra ca'} của bạn!`,
+                confirmButtonColor: "#0284c7"
+              });
+              box.innerHTML = `<div class="p-4 text-center text-xs text-emerald-600 font-bold"><i class="fa-solid fa-circle-check text-2xl mb-1 block"></i> Điểm danh hoàn tất! Bấm nút dưới để quét tiếp nếu cần.</div>`;
+            } else {
+              Swal.fire({
+                icon: "warning",
+                title: "Thông báo điểm danh",
+                text: res.message || "Không thể hoàn tất điểm danh!",
+                confirmButtonColor: "#e11d48"
+              });
+              box.innerHTML = `<div class="p-4 text-center text-xs text-rose-500 font-bold"><i class="fa-solid fa-triangle-exclamation text-2xl mb-1 block"></i> ${res.message || 'Chưa hoàn tất điểm danh'}</div>`;
+            }
           });
         },
         () => {}
