@@ -956,12 +956,12 @@
       const payload = {
         action: "DANG_KY_VAT_PHAM",
         data: {
-          tenChuongTrinh: document.getElementById("vp_ten_ct").value.trim(),
+          tenChuongTrinh: document.getElementById("vp_chuongtrinh").value.trim(), // Đã sửa đúng ID
           nguoiDaiDien: document.getElementById("vp_nguoi_dai_dien").value.trim(),
-          lop: document.getElementById("vp_lop").value.trim(), // <-- Thêm dòng này
+          lop: document.getElementById("vp_lop").value.trim(),
           sdt: document.getElementById("vp_sdt").value.trim(),
-          thoiGianMuon: document.getElementById("vp_tg_muon").value,
-          thoiGianTra: document.getElementById("vp_tg_tra").value,
+          thoiGianMuon: document.getElementById("vp_time_muon").value,          // Đã sửa đúng ID
+          thoiGianTra: document.getElementById("vp_time_tra").value,            // Đã sửa đúng ID
           danhSachVatPham: selectedItems
         }
       };
