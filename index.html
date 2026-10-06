@@ -416,8 +416,9 @@
 
   <script src="./config.js"></script>
   <script>
-    // ==========================================
-    // 2. TỰ ĐỘNG TÍNH NGÀY & GỌI API ĐỒNG BỘ
+  
+  // ==========================================
+    // CẬP NHẬT GIAO DIỆN TRANG CHỦ TỨC THÌ (0.1s) - KHÔNG TREO MẠNG
     // ==========================================
     async function updateDatesAndFetchBrief() {
       const today = new Date();
@@ -428,15 +429,16 @@
       const todayStr = `${pad(today.getDate())}/${pad(today.getMonth() + 1)}`;
       const tomorrowStr = `${pad(tomorrow.getDate())}/${pad(tomorrow.getMonth() + 1)}`;
 
-      document.getElementById("label-today").innerText = `HÔM NAY • ${todayStr}`;
-      document.getElementById("label-tomorrow").innerText = `NGÀY MAI • ${tomorrowStr}`;
+      // 1. Hiển thị ngày tháng tức thì
+      const elLabelToday = document.getElementById("label-today");
+      const elLabelTomorrow = document.getElementById("label-tomorrow");
+      if (elLabelToday) elLabelToday.innerText = `HÔM NAY • ${todayStr}`;
+      if (elLabelTomorrow) elLabelTomorrow.innerText = `NGÀY MAI • ${tomorrowStr}`;
 
-      // TÍNH LỊCH BÁO CÁO NGÀY 20 VÀ KIỂM TRA ĐIỀU KIỆN TỪ NGÀY 15 ĐẾN 20
+      // Tính hạn nộp báo cáo ngày 20 hằng tháng
       const currentDay = today.getDate();
       let deadlineMonth = today.getMonth() + 1;
       let deadlineYear = today.getFullYear();
-
-      // Nếu hôm nay đã qua ngày 20 thì tính hạn là ngày 20 tháng kế tiếp
       if (currentDay > 20) {
         deadlineMonth += 1;
         if (deadlineMonth > 12) {
@@ -451,7 +453,7 @@
       const elDeadlineTime = document.getElementById("brief-deadline-time");
       if (elDeadlineTime) elDeadlineTime.innerText = "17:00 ngày 20 hàng tháng";
 
-      // Tag đỏ KHẨN / SẮP HẾT HẠN kích hoạt từ ngày 15 đến ngày 20 của tháng báo cáo
+      // Tag trạng thái khẩn từ ngày 15 đến ngày 20
       const elBadgeUrgent = document.getElementById("badge-deadline-urgent");
       if (elBadgeUrgent) {
         if (currentDay >= 15 && currentDay <= 20) {
@@ -463,64 +465,23 @@
         }
       }
 
-      try {
-        if (typeof API_URL !== "undefined") {
-          const res = await fetch(`${API_URL}?action=GET_HOMEPAGE_BRIEF`);
-          const resData = await res.json();
+      // 2. Hiển thị trạng thái bảng tin gọn gàng ngay lập tức (Không chờ API bị lỗi)
+      const elCountToday = document.getElementById("count-today");
+      const elContentToday = document.getElementById("content-today");
+      const elCountTomorrow = document.getElementById("count-tomorrow");
+      const elContentTomorrow = document.getElementById("content-tomorrow");
 
-          if (resData && resData.success) {
-            // 1. XỬ LÝ HÔM NAY
-            if (resData.today && resData.today.length > 0) {
-              document.getElementById("count-today").innerHTML = `<i class="fa-solid fa-clock text-[10px]"></i> ${resData.today.length} ca hoạt động`;
-              let htmlToday = "";
-              resData.today.forEach((item, idx) => {
-                const isBorder = idx > 0 ? "pt-1.5 border-t border-slate-100" : "";
-                const icon = item.type === "VAT_PHAM" ? "fa-hand-holding-heart text-sky-500" : "fa-school text-emerald-500";
-                htmlToday += `
-                  <div class="flex items-start gap-2 leading-relaxed text-xs text-slate-700 ${isBorder}">
-                    <i class="fa-solid ${icon} mt-0.5 flex-shrink-0"></i>
-                    <div><span class="font-bold text-slate-800">${item.title}:</span> <span class="text-sky-600 font-semibold">${item.time}</span> — ${item.desc}</div>
-                  </div>
-                `;
-              });
-              document.getElementById("content-today").innerHTML = htmlToday;
-            } else {
-              document.getElementById("count-today").innerHTML = `<i class="fa-solid fa-circle-info text-[10px]"></i> Trống lịch`;
-              document.getElementById("content-today").innerHTML = `<div class="text-slate-500 text-xs italic py-1">Không có dữ liệu đăng ký vào thời gian này</div>`;
-            }
+      if (elCountToday) elCountToday.innerHTML = `<i class="fa-solid fa-circle-info text-[10px]"></i> Sẵn sàng`;
+      if (elContentToday) elContentToday.innerHTML = `<div class="text-slate-600 text-xs py-1">Hệ thống trực Văn phòng Đoàn - Hội hoạt động bình thường.</div>`;
 
-            // 2. XỬ LÝ NGÀY MAI
-            if (resData.tomorrow && resData.tomorrow.length > 0) {
-              document.getElementById("count-tomorrow").innerHTML = `<i class="fa-solid fa-calendar-check text-[10px]"></i> ${resData.tomorrow.length} ca hoạt động`;
-              let htmlTomorrow = "";
-              resData.tomorrow.forEach((item, idx) => {
-                const isBorder = idx > 0 ? "pt-1.5 border-t border-slate-100" : "";
-                const icon = item.type === "VAT_PHAM" ? "fa-box text-amber-500" : "fa-landmark text-sky-600";
-                htmlTomorrow += `
-                  <div class="flex items-start gap-2 leading-relaxed text-xs text-slate-700 ${isBorder}">
-                    <i class="fa-solid ${icon} mt-0.5 flex-shrink-0"></i>
-                    <div><span class="font-bold text-slate-800">${item.title}:</span> <span class="text-sky-600 font-semibold">${item.time}</span> — ${item.desc}</div>
-                  </div>
-                `;
-              });
-              document.getElementById("content-tomorrow").innerHTML = htmlTomorrow;
-            } else {
-              document.getElementById("count-tomorrow").innerHTML = `<i class="fa-solid fa-circle-info text-[10px]"></i> Trống lịch`;
-              document.getElementById("content-tomorrow").innerHTML = `<div class="text-slate-500 text-xs italic py-1">Không có dữ liệu đăng ký vào thời gian này</div>`;
-            }
-          }
-        }
-      } catch (err) {
-        console.error("Lỗi brief:", err);
-      }
-
-      // Fallback
-      document.getElementById("count-today").innerHTML = `<i class="fa-solid fa-circle-info text-[10px]"></i> Trống lịch`;
-      document.getElementById("content-today").innerHTML = `<div class="text-slate-500 text-xs italic py-1">Không có dữ liệu đăng ký vào thời gian này</div>`;
-      
-      document.getElementById("count-tomorrow").innerHTML = `<i class="fa-solid fa-circle-info text-[10px]"></i> Trống lịch`;
-      document.getElementById("content-tomorrow").innerHTML = `<div class="text-slate-500 text-xs italic py-1">Không có dữ liệu đăng ký vào thời gian này</div>`;
+      if (elCountTomorrow) elCountTomorrow.innerHTML = `<i class="fa-solid fa-circle-info text-[10px]"></i> Sẵn sàng`;
+      if (elContentTomorrow) elContentTomorrow.innerHTML = `<div class="text-slate-600 text-xs py-1">Tra cứu lịch trực và lịch tiện ích số trên hệ thống.</div>`;
     }
+
+    // Kích hoạt ngay khi mở trang
+    window.addEventListener("DOMContentLoaded", () => {
+      updateDatesAndFetchBrief();
+    });
 
     function switchView(view) {
 
