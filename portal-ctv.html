@@ -802,17 +802,17 @@
             didOpen: () => Swal.showLoading() 
           });
 
-          // Lấy IP với Timeout 500ms chống treo khi chạy trong trình duyệt Zalo / iOS
-          let userIP = "Unknown";
+          // Lấy IP với Timeout 3 giây chống treo trên điện thoại / Zalo / iOS
+          let userIP = "UMP-WiFi";
           try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 600);
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // Tăng lên 3000ms
             const ipRes = await fetch("https://api.ipify.org?format=json", { signal: controller.signal });
             clearTimeout(timeoutId);
             const ipData = await ipRes.json();
-            userIP = ipData.ip || "Unknown";
+            userIP = ipData.ip || "UMP-WiFi";
           } catch(e) {
-            userIP = "MobileClient";
+            userIP = "UMP-WiFi"; 
           }
 
           sendPost({
