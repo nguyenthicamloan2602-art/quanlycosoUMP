@@ -1657,9 +1657,8 @@
             <tr class="hover:bg-slate-50 transition">
               <td class="p-3 font-semibold text-slate-900">${it.tenChuongTrinh}</td>
               <td class="p-3">
-                <b class="text-slate-800 block">${it.nguoiDaiDien}</b>
-                <span class="text-slate-500 text-[11px] block">Lớp: ${it.lop || '---'} • SĐT: ${it.sdt}</span>
-                ${it.nguoiBanGiao ? `<span class="text-emerald-700 text-[10.5px] block font-medium">Bàn giao: ${it.nguoiBanGiao}</span>` : ''}
+                <b class="text-sky-800 block text-xs uppercase">${it.tenDonVi || it.emailDonVi || 'Cơ sở Đoàn - Hội'}</b>
+                <span class="text-slate-500 text-[11px] block mt-0.5">Người mượn: <b class="text-slate-700">${it.nguoiDaiDien}</b> (Lớp: ${it.lop || '---'} • SĐT: ${it.sdt})</span>${it.nguoiBanGiao ? `<span class="text-emerald-700 text-[10.5px] block font-medium">Bàn giao: ${it.nguoiBanGiao}</span>` : ''}
               </td>
               <td class="p-3 text-[11px] leading-relaxed">
                 <div>Từ: ${it.thoiGianMuon}</div>
@@ -2473,6 +2472,7 @@
     async function fetchSystemNotifications() {
       try {
         const res = await fetch(`${API_URL}?action=GET_APP_NOTIFICATIONS&role=ADMIN&username=admin`);
+        if (!res.ok) return;
         const data = await res.json();
         if (data.success && Array.isArray(data.list)) {
           cachedSysNotis = data.list;

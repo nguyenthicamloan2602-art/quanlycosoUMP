@@ -113,7 +113,7 @@
   <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-2 md:py-6 flex-1 flex items-center justify-center z-10">
     <div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
       
-      <!-- CỘT TRÁI: BẢNG TIN HOẠT ĐỘNG (ĐÃ BỎ BADGE TIÊU ĐỀ) -->
+      <!-- CỘT TRÁI: BẢNG TIN VĂN PHÒNG & HỆ THỐNG CƠ SỞ TRỰC THUỘC -->
       <div class="hidden lg:flex lg:col-span-6 flex-col justify-between hero-glow-card rounded-[32px] p-8 xl:p-9 relative overflow-hidden">
         <div>
           <!-- Tiêu đề lớn -->
@@ -124,21 +124,18 @@
             </span>
           </h2>
 
-          <!-- 3 THẺ HOẠT ĐỘNG ĐIỀU HÀNH -->
           <div class="mt-6 space-y-3.5">
-            
-            <!-- 1. Hạn nộp báo cáo (Cố định ngày 15, tag đỏ chỉ hiện từ ngày 10-15) -->
-            <div class="bg-white/90 p-4 rounded-2xl border border-white shadow-sm transition hover:translate-x-1 cursor-pointer">
+            <!-- 1. Hạn nộp báo cáo tháng -->
+            <div class="bg-white/95 p-4 rounded-2xl border border-white shadow-sm transition hover:translate-x-1">
               <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
-                <!-- Tag trạng thái được gán id để JS tự động đổi màu/nội dung -->
                 <span id="badge-deadline-urgent" class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-600 border border-rose-200">
-                  <i class="fa-solid fa-circle-exclamation mr-1 text-[9px]"></i> KHẨN / SẮP HẾT HẠN
+                  <i class="fa-solid fa-circle-exclamation mr-1 text-[9px]"></i> THÔNG TIN BÁO CÁO
                 </span>
                 <span id="brief-deadline-date" class="text-xs font-semibold text-rose-500 flex items-center gap-1">
                   <i class="fa-regular fa-clock text-rose-400"></i> Đang tải...
                 </span>
               </div>
-              <h3 class="text-xs sm:text-sm font-bold text-slate-800 hover:text-sky-600 transition">
+              <h3 class="text-xs sm:text-sm font-bold text-slate-800">
                 BÁO CÁO HOẠT ĐỘNG THÁNG CƠ SỞ ĐOÀN - HỘI
               </h3>
               <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1.5">
@@ -146,42 +143,56 @@
               </p>
             </div>
 
-            <!-- 2. LỊCH HÔM NAY -->
-            <div class="bg-white/90 p-4 rounded-2xl border border-white shadow-sm transition hover:translate-x-1 cursor-pointer">
-              <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-200">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> <span id="label-today">HÔM NAY</span>
+            <!-- 2. HỆ THỐNG CƠ SỞ ĐOÀN - HỘI TRỰC THUỘC (THAY THẾ HÔM NAY & NGÀY MAI) -->
+            <div class="bg-white/95 p-4 sm:p-5 rounded-2xl border border-white shadow-sm space-y-3">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                <span class="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                  <i class="fa-solid fa-sitemap text-sky-600"></i> HỆ THỐNG ĐƠN VỊ TRỰC THUỘC
                 </span>
-                <span id="count-today" class="text-xs font-semibold text-slate-400 flex items-center gap-1">
-                  <i class="fa-solid fa-spinner fa-spin text-[10px]"></i> Đang đồng bộ...
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
+                  Nhiệm kỳ 2025 – 2028
                 </span>
               </div>
-              <div id="content-today" class="space-y-2 py-1">
-                <div class="animate-pulse space-y-2">
-                  <div class="h-3 bg-slate-200/70 rounded-md w-3/4"></div>
-                  <div class="h-3 bg-slate-200/50 rounded-md w-1/2"></div>
-                </div>
-              </div>
-            </div>
 
-            <!-- 3. LỊCH NGÀY MAI -->
-            <div class="bg-white/90 p-4 rounded-2xl border border-white shadow-sm transition hover:translate-x-1 cursor-pointer">
-              <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-sky-50 text-sky-700 border border-sky-200">
-                  <i class="fa-regular fa-clock mr-1 text-[9px]"></i> <span id="label-tomorrow">NGÀY MAI</span>
-                </span>
-                <span id="count-tomorrow" class="text-xs font-semibold text-slate-400 flex items-center gap-1">
-                  <i class="fa-solid fa-spinner fa-spin text-[10px]"></i> Đang đồng bộ...
-                </span>
-              </div>
-              <div id="content-tomorrow" class="space-y-2 py-1">
-                <div class="animate-pulse space-y-2">
-                  <div class="h-3 bg-slate-200/70 rounded-md w-3/4"></div>
-                  <div class="h-3 bg-slate-200/50 rounded-md w-1/2"></div>
+              <!-- 3 Khối số lượng cơ sở -->
+              <div class="grid grid-cols-3 gap-2.5">
+                <!-- Khối 7 Đoàn cơ sở -->
+                <div class="p-3 rounded-xl bg-gradient-to-br from-blue-50 to-sky-50/50 border border-blue-100/80 flex flex-col justify-between hover:shadow-xs transition">
+                  <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs mb-1.5 shadow-xs">
+                    <i class="fa-solid fa-flag"></i>
+                  </div>
+                  <div>
+                    <div class="text-lg sm:text-xl font-black text-blue-900 leading-none">07</div>
+                    <div class="text-[11px] font-extrabold text-blue-800 mt-0.5">Đoàn cơ sở</div>
+                    <div class="text-[9.5px] text-slate-500 font-medium leading-tight mt-0.5">3 Trường &amp; 3 Khoa &amp; CĐGV</div>
+                  </div>
                 </div>
-              </div>
-            </div>
 
+                <!-- Khối 6 Liên Chi hội -->
+                <div class="p-3 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50/50 border border-emerald-100/80 flex flex-col justify-between hover:shadow-xs transition">
+                  <div class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs mb-1.5 shadow-xs">
+                    <i class="fa-solid fa-award"></i>
+                  </div>
+                  <div>
+                    <div class="text-lg sm:text-xl font-black text-emerald-900 leading-none">06</div>
+                    <div class="text-[11px] font-extrabold text-emerald-800 mt-0.5">Liên Chi hội</div>
+                    <div class="text-[9.5px] text-slate-500 font-medium leading-tight mt-0.5">Khoa &amp; Trường thành viên</div>
+                  </div>
+                </div>
+
+                <!-- Khối 18 CLB Đội Nhóm -->
+                <div class="p-3 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50/50 border border-indigo-100/80 flex flex-col justify-between hover:shadow-xs transition">
+                  <div class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs mb-1.5 shadow-xs">
+                    <i class="fa-solid fa-users"></i>
+                  </div>
+                  <div>
+                    <div class="text-lg sm:text-xl font-black text-indigo-900 leading-none">18</div>
+                    <div class="text-[11px] font-extrabold text-indigo-800 mt-0.5">CLB – Đội – Nhóm</div>
+                    <div class="text-[9.5px] text-slate-500 font-medium leading-tight mt-0.5">Cấp Đại học chính thức</div>
+                  </div>
+                </div>
+              </div>              
+            </div>
           </div>
         </div>
       </div>
@@ -418,24 +429,13 @@
   <script>
   
   // ==========================================
-    // CẬP NHẬT GIAO DIỆN TRANG CHỦ TỨC THÌ (0.1s) - KHÔNG TREO MẠNG
+    // CẬP NHẬT HẠN BÁO CÁO THÁNG TỨC THÌ (0.01s - KHÔNG GỌI API GÂY LỖI 404)
     // ==========================================
-    async function updateDatesAndFetchBrief() {
+    function updateDatesAndFetchBrief() {
       const today = new Date();
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-
       const pad = (n) => String(n).padStart(2, '0');
-      const todayStr = `${pad(today.getDate())}/${pad(today.getMonth() + 1)}`;
-      const tomorrowStr = `${pad(tomorrow.getDate())}/${pad(tomorrow.getMonth() + 1)}`;
 
-      // 1. Hiển thị ngày tháng tức thì
-      const elLabelToday = document.getElementById("label-today");
-      const elLabelTomorrow = document.getElementById("label-tomorrow");
-      if (elLabelToday) elLabelToday.innerText = `HÔM NAY • ${todayStr}`;
-      if (elLabelTomorrow) elLabelTomorrow.innerText = `NGÀY MAI • ${tomorrowStr}`;
-
-      // Tính hạn nộp báo cáo ngày 20 hằng tháng
+      // Tự động tính mốc nộp báo cáo ngày 20 hằng tháng
       const currentDay = today.getDate();
       let deadlineMonth = today.getMonth() + 1;
       let deadlineYear = today.getFullYear();
@@ -453,7 +453,7 @@
       const elDeadlineTime = document.getElementById("brief-deadline-time");
       if (elDeadlineTime) elDeadlineTime.innerText = "17:00 ngày 20 hàng tháng";
 
-      // Tag trạng thái khẩn từ ngày 15 đến ngày 20
+      // Tag trạng thái khẩn từ ngày 15 đến 20
       const elBadgeUrgent = document.getElementById("badge-deadline-urgent");
       if (elBadgeUrgent) {
         if (currentDay >= 15 && currentDay <= 20) {
@@ -464,21 +464,8 @@
           elBadgeUrgent.innerHTML = `<i class="fa-regular fa-calendar-check mr-1 text-[9px]"></i> THÔNG TIN BÁO CÁO`;
         }
       }
-
-      // 2. Hiển thị trạng thái bảng tin gọn gàng ngay lập tức (Không chờ API bị lỗi)
-      const elCountToday = document.getElementById("count-today");
-      const elContentToday = document.getElementById("content-today");
-      const elCountTomorrow = document.getElementById("count-tomorrow");
-      const elContentTomorrow = document.getElementById("content-tomorrow");
-
-      if (elCountToday) elCountToday.innerHTML = `<i class="fa-solid fa-circle-info text-[10px]"></i> Sẵn sàng`;
-      if (elContentToday) elContentToday.innerHTML = `<div class="text-slate-600 text-xs py-1">Hệ thống trực Văn phòng Đoàn - Hội hoạt động bình thường.</div>`;
-
-      if (elCountTomorrow) elCountTomorrow.innerHTML = `<i class="fa-solid fa-circle-info text-[10px]"></i> Sẵn sàng`;
-      if (elContentTomorrow) elContentTomorrow.innerHTML = `<div class="text-slate-600 text-xs py-1">Tra cứu lịch trực và lịch tiện ích số trên hệ thống.</div>`;
     }
 
-    // Kích hoạt ngay khi mở trang
     window.addEventListener("DOMContentLoaded", () => {
       updateDatesAndFetchBrief();
     });
@@ -533,7 +520,6 @@
       }
     }
 
-    // ĐĂNG NHẬP
     // ĐĂNG NHẬP
     async function handleLogin(e) {
       if (e) e.preventDefault();
