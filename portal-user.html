@@ -814,15 +814,29 @@
   <script src="./config.js"></script>
   <script>
     let currentUser = null;
-    try { currentUser = JSON.parse(localStorage.getItem("ump_user")); } catch (e) {}
+  try { currentUser = JSON.parse(localStorage.getItem("ump_user")); } catch (e) {}
 
-    // Ẩn thẻ 5 và 6 nếu tài khoản được ghi chú là KHOA trên Google Sheet
-    if (currentUser && currentUser.loaiDonVi === "KHOA") {
+  if (!currentUser) {
+    window.location.href = "index.html";
+  }
+
+  // ĐẶT VÀO SỰ KIỆN DOMContentLoaded ĐỂ ĐẢM BẢO THẺ ĐÃ VẼ XONG MỚI ẨN
+  document.addEventListener("DOMContentLoaded", () => {
+    // 1. Hiển thị thông tin người dùng
+    const nameEl = document.getElementById("user-display-name");
+    if (nameEl && currentUser) {
+      nameEl.innerText = currentUser.hoTen || currentUser.tenDonVi || currentUser.username;
+    }
+
+    // 2. Ẩn tính năng 5 và 6 nếu đơn vị thuộc khối KHOA
+    const loai = String(currentUser?.loaiDonVi || "").toUpperCase();
+    if (loai === "KHOA") {
       const c5 = document.getElementById("card-menu-5");
       const c6 = document.getElementById("card-menu-6");
       if (c5) c5.style.display = "none";
       if (c6) c6.style.display = "none";
     }
+  });
 
     if (!currentUser) {
       window.location.href = "index.html";
