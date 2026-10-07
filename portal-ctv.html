@@ -1512,7 +1512,6 @@
       const user = (typeof currentUser !== 'undefined') ? currentUser : {};
       const username = user.username || user.tenDonVi || "";
       
-      // Nhận diện chuẩn vai trò: Ưu tiên thuộc tính role, nếu không dựa theo đường dẫn URL
       let role = "USER";
       if (window.location.href.includes("admin")) {
         role = "ADMIN";
@@ -1522,14 +1521,16 @@
 
       try {
         const res = await fetch(`${API_URL}?action=GET_APP_NOTIFICATIONS&role=${encodeURIComponent(role)}&username=${encodeURIComponent(username)}`);
+        // Bỏ qua êm đẹp nếu phản hồi không thành công, chống báo đỏ và sập JSON
+        if (!res.ok) return;
+        
         const data = await res.json();
-
-        if (data.success && Array.isArray(data.list)) {
+        if (data && data.success && Array.isArray(data.list)) {
           cachedSysNotis = data.list;
           renderSystemNotificationUI();
         }
       } catch (err) {
-        console.warn("Chưa tải được thông báo:", err);
+        // Bắt lỗi an toàn
       }
     }
 
@@ -1633,9 +1634,10 @@
       }
     });
 
-    // Thêm gọi hàm tự động cập nhật:
-    fetchSystemNotifications();
-    setInterval(fetchSystemNotifications, 30000);
+    // MỚI: Chờ giao diện tải xong 3 giây mới gọi và giãn cách 2 phút kiểm tra 1 lần
+    setTimeout(fetchSystemNotifications, 3000);
+    setInterval(fetchSystemNotifications, 120000);
+
   let cachedDanhBaList = [];
 
     async function loadDanhBaVanPhongCTV() {
