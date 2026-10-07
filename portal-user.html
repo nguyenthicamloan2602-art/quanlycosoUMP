@@ -823,16 +823,16 @@
     }
 
     // ==============================================================
-    // HÀM ẨN THẺ 5 VÀ 6 CHO ĐƠN VỊ THUỘC KHỐI KHOA (CHẠY TỨC THÌ)
+    // TỰ ĐỘNG ẨN THẺ 5 VÀ 6 CHO KHỐI KHOA (CHẠY TRỰC TIẾP NGAY KHI NẠP TRANG)
     // ==============================================================
-    function kiemTraVaAnTheKhoa() {
+    function apDungPhanQuyenKhoa() {
       if (!currentUser) return;
 
       const loai = String(currentUser.loaiDonVi || "").trim().toUpperCase();
       const ten = String(currentUser.tenDonVi || currentUser.hoTen || "").toLowerCase();
       const user = String(currentUser.username || "").toLowerCase();
 
-      // Nhận diện khối KHOA: Theo Cột F "KHOA", hoặc theo tên trường/khoa/liên chi hội
+      // Kiểm tra xem có phải là KHOA (qua Cột F, hoặc qua tên gọi)
       const isKhoa = (
         loai === "KHOA" ||
         ten.includes("khoa") ||
@@ -845,17 +845,22 @@
       if (isKhoa) {
         const c5 = document.getElementById("card-menu-5");
         const c6 = document.getElementById("card-menu-6");
-        if (c5) c5.style.setProperty("display", "none", "important");
-        if (c6) c6.style.setProperty("display", "none", "important");
+        if (c5) {
+          c5.style.setProperty("display", "none", "important");
+          c5.classList.add("hidden");
+        }
+        if (c6) {
+          c6.style.setProperty("display", "none", "important");
+          c6.classList.add("hidden");
+        }
       }
     }
 
-    // Thực thi ngay lập tức vì các thẻ HTML bên trên đã tải xong
-    kiemTraVaAnTheKhoa();
-    // Đồng thời lắng nghe DOMContentLoaded dự phòng
-    document.addEventListener("DOMContentLoaded", kiemTraVaAnTheKhoa);
+    // Thực thi ngay lập tức
+    apDungPhanQuyenKhoa();
+    window.addEventListener("DOMContentLoaded", apDungPhanQuyenKhoa);
 
-    // Hiển thị tên đơn vị trên thanh header
+    // Cập nhật tên hiển thị ở Header
     window.addEventListener("DOMContentLoaded", () => {
       const nameEl = document.getElementById("user-display-name");
       if (nameEl && currentUser) {
@@ -863,18 +868,11 @@
       }
     });
 
-    if (!currentUser) {
-      window.location.href = "index.html";
-    } else {
-      const nameEl = document.getElementById("user-display-name");
-      if (nameEl) nameEl.innerText = currentUser.tenDonVi || currentUser.hoTen || currentUser.username;
-    }
-
     function logout() {
       localStorage.removeItem("ump_user");
       window.location.href = "index.html";
     }
-
+    
     function toggleUserChangePassModal(show) {
       document.getElementById('modal-change-pass-user').classList.toggle('hidden', !show);
     }
