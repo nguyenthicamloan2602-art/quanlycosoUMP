@@ -811,27 +811,22 @@
           const footerEl = document.getElementById("user-footer-name");
           const nameEl = document.getElementById("admin-display-name");
 
-          // 1. Dòng trên: Hiển thị Họ và tên
           if (footerEl) footerEl.innerText = u.hoTen || u.username;
-
-          // 2. Dòng dưới: Chỉ hiển thị Chức vụ / Ban (không lặp lại tên)
           if (nameEl) nameEl.innerText = u.lop || "Ban Điều hành";
         }
       } catch(e) {}
 
+      // TỐI ƯU TỐC ĐỘ: CHỈ TẢI TAB ĐẦU TIÊN (CSVC) VÀ BADGE TÀI KHOẢN CHỜ
       loadCsvcDataAdmin();
-      loadMonthsAdmin();
-      loadBaoCaoDataAdmin();
-      loadDanhSachCTVAdmin();
-      loadCtvSubmittedFilesAdmin();
       loadPendingAccountsAdmin();
       
       const todayIso = new Date().toISOString().split("T")[0];
       const shiftDateInput = document.getElementById("admin_select_shift_date");
       if (shiftDateInput) shiftDateInput.value = todayIso;
 
-      fetchSystemNotifications();
-      setInterval(fetchSystemNotifications, 30000);
+      // Giãn thời gian kiểm tra thông báo (chạy sau 3 giây và lặp lại mỗi 2 phút thay vì 30s)
+      setTimeout(fetchSystemNotifications, 3000);
+      setInterval(fetchSystemNotifications, 120000);
     });
 
     function toggleMobileSidebar(show) {
@@ -870,15 +865,15 @@
         activeNav.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl bg-sky-600 text-white shadow-md shadow-sky-600/20 transition font-bold text-xs [&>i]:text-white [&>span>i]:text-white";
       }
 
-      // 3. Tự động tải lại dữ liệu của tab tương ứng
+      // 3. Tự động tải lại dữ liệu của ĐÚNG tab được chọn
       if (tabId === 'tab-csvc') loadCsvcDataAdmin();
-      if (tabId === 'tab-vat-pham') loadDonVatPhamAdmin();
-      if (tabId === 'tab-xep-loai') loadDanhSachCTVAdmin();
-      if (tabId === 'tab-hoat-dong') loadHoatDongCTVAdmin();
-      if (tabId === 'tab-lich-truc') loadLichTrucTheoNgayAdmin();
-      if (tabId === 'tab-import-data') loadCtvSubmittedFilesAdmin();
-      loadPendingAccountsAdmin();
-      if (tabId === 'tab-tai-khoan') loadPendingAccountsAdmin();
+      else if (tabId === 'tab-baocao') { loadMonthsAdmin(); loadBaoCaoDataAdmin(); }
+      else if (tabId === 'tab-vat-pham') loadDonVatPhamAdmin();
+      else if (tabId === 'tab-xep-loai') loadDanhSachCTVAdmin();
+      else if (tabId === 'tab-hoat-dong') loadHoatDongCTVAdmin();
+      else if (tabId === 'tab-lich-truc') loadLichTrucTheoNgayAdmin();
+      else if (tabId === 'tab-import-data') loadCtvSubmittedFilesAdmin();
+      else if (tabId === 'tab-tai-khoan') loadPendingAccountsAdmin();
     }
 
     function toggleModal(modalId, show) {
@@ -2472,14 +2467,14 @@
     async function fetchSystemNotifications() {
       try {
         const res = await fetch(`${API_URL}?action=GET_APP_NOTIFICATIONS&role=ADMIN&username=admin`);
-        if (!res.ok) return;
+        if (!res.ok) return; // Nếu máy chủ bận thì bỏ qua êm đẹp, không báo đỏ Console
         const data = await res.json();
-        if (data.success && Array.isArray(data.list)) {
+        if (data && data.success && Array.isArray(data.list)) {
           cachedSysNotis = data.list;
           renderSystemNotificationUI();
         }
       } catch (err) {
-        console.warn("Chưa tải được thông báo:", err);
+        // Bắt lỗi an toàn
       }
     }
 
