@@ -520,7 +520,7 @@
       }
     }
 
-    // ĐĂNG NHẬP
+    // ĐĂNG NHẬP AN TOÀN - TỰ ĐỘNG BÁO LỖI NẾU TREO QUÁ 8 GIÂY
     async function handleLogin(e) {
       if (e) e.preventDefault();
       const btn = document.getElementById("btn-login");
@@ -532,6 +532,19 @@
       const username = document.getElementById("log_user").value.trim();
       const password = document.getElementById("log_pass").value.trim();
 
+      if (!username || !password) {
+        Swal.fire("Thiếu thông tin", "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!", "warning");
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<span>Đăng nhập hệ thống</span> <i class="fa-solid fa-arrow-right text-xs"></i>`;
+        }
+        return;
+      }
+
+      // Đặt giới hạn chờ tối đa 8 giây để chống treo nút vĩnh viễn
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+
       try {
         const res = await fetch(API_URL, {
           method: "POST",
@@ -539,12 +552,13 @@
           body: JSON.stringify({
             action: "LOGIN",
             data: { username: username, password: password }
-          })
+          }),
+          signal: controller.signal
         });
+        clearTimeout(timeoutId);
 
         const data = await res.json();
         if (data.success && data.user) {
-          // Lưu đồng thời cả 2 khóa để tương thích cả CTV, User và QTV Admin
           localStorage.setItem("ump_user", JSON.stringify(data.user));
           localStorage.setItem("ump_admin_user", JSON.stringify(data.user));
           
@@ -564,12 +578,16 @@
           } else {
             window.location.replace("portal-user.html");
           }
-
         } else {
           Swal.fire("Đăng nhập thất bại", data.message || "Tài khoản hoặc mật khẩu không chính xác!", "error");
         }
       } catch (err) {
-        Swal.fire("Lỗi kết nối", "Không thể kết nối máy chủ API! Vui lòng kiểm tra lại đường link trong config.js.", "error");
+        clearTimeout(timeoutId);
+        if (err.name === 'AbortError') {
+          Swal.fire("Hết thời gian chờ", "Máy chủ Google Apps Script phản hồi quá lâu (hơn 8s). Vui lòng thử bấm lại hoặc kiểm tra kết nối mạng!", "warning");
+        } else {
+          Swal.fire("Lỗi kết nối", "Không thể gửi dữ liệu xác thực! Vui lòng kiểm tra lại link Web App trong config.js.", "error");
+        }
       } finally {
         if (btn) {
           btn.disabled = false;
