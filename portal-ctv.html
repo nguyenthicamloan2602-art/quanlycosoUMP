@@ -1280,13 +1280,20 @@
 
     async function loadActivities() {
       const box = document.getElementById("activity-list");
-      box.innerHTML = `<p class="text-slate-400 text-center col-span-3 py-8 text-xs"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang tải danh sách hoạt động...</p>`;
+      if (!box) return;
+      box.innerHTML = `<p class="text-slate-400 text-center col-span-3 py-8 text-xs"><i class="fa-solid fa-spinner fa-spin mr-1 text-sky-600"></i> Đang tải danh sách hoạt động...</p>`;
 
       try {
         const res = await fetch(`${API_URL}?action=GET_DANH_SACH_HOAT_DONG_CTV`);
+        if (!res.ok) {
+          box.innerHTML = `<p class="text-slate-400 text-center col-span-3 py-8 text-xs">Máy chủ đang bận, vui lòng bấm chuyển lại tab hoặc tải lại trang!</p>`;
+          return;
+        }
+        
         const data = await res.json();
-        if (!data.success || !data.hoatDongs.length) {
-          return box.innerHTML = `<p class="text-slate-400 text-center col-span-3 py-8 text-xs">Hiện chưa có hoạt động nào mở đăng ký.</p>`;
+        if (!data || !data.success || !Array.isArray(data.hoatDongs) || data.hoatDongs.length === 0) {
+          box.innerHTML = `<p class="text-slate-400 text-center col-span-3 py-8 text-xs font-medium">Hiện chưa có hoạt động nào mở đăng ký.</p>`;
+          return;
         }
 
         const myUser = String(currentUser.username || "").trim().toLowerCase();
@@ -1342,12 +1349,10 @@
                     Đã gửi lý do xin rút (Chờ QTV duyệt)
                   </button>
                 ` : (hasJoined ? `
-                  <!-- NÚT XIN RÚT / BÁO LÝ DO ĐẾN QTV -->
                   <button onclick="ctvBaoLyDoXinHuy('${a.maHD}', '${a.tenHoatDong}')" class="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs">
                     <i class="fa-solid fa-triangle-exclamation"></i> Báo vắng / Xin rút khỏi hoạt động
                   </button>
                 ` : `
-                  <!-- FORM ĐĂNG KÝ -->
                   <label class="block font-bold text-[11px] text-slate-700">Chọn vị trí công việc:</label>
                   <select id="pos-${a.maHD}" class="w-full p-2 border border-slate-200 rounded-xl text-xs font-bold bg-white outline-none focus:border-sky-500" ${isClosed ? 'disabled' : ''}>
                     ${viTriList.map(v => `<option value="${v.ten}">${v.ten} (Chỉ tiêu: ${v.soLuong})</option>`).join('')}
@@ -1368,7 +1373,7 @@
           `;
         }).join('');
       } catch(e) {
-        box.innerHTML = `<p class="text-rose-500 text-center col-span-3 py-8 text-xs">Lỗi tải hoạt động!</p>`;
+        box.innerHTML = `<p class="text-slate-400 text-center col-span-3 py-8 text-xs">Hiện chưa có hoạt động nào mở đăng ký.</p>`;
       }
     }
 
@@ -1634,9 +1639,9 @@
       }
     });
 
-    // MỚI: Chờ giao diện tải xong 3 giây mới gọi và giãn cách 2 phút kiểm tra 1 lần
-    setTimeout(fetchSystemNotifications, 3000);
-    setInterval(fetchSystemNotifications, 120000);
+    // TẮT BỎ CÁC DÒNG NÀY ĐỂ GIẢI PHÓNG TOÀN BỘ BĂNG THÔNG MẠNG:
+// fetchSystemNotifications();
+// setInterval(fetchSystemNotifications, 30000);
 
   let cachedDanhBaList = [];
 
