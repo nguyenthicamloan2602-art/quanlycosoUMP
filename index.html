@@ -520,13 +520,13 @@
       }
     }
 
-    // ĐĂNG NHẬP AN TOÀN - TỰ ĐỘNG BÁO LỖI NẾU TREO QUÁ 8 GIÂY
+    // ĐĂNG NHẬP AN TOÀN - THỜI GIAN CHỜ CHUẨN 25 GIÂY CHO COLD START CỦA GOOGLE
     async function handleLogin(e) {
       if (e) e.preventDefault();
       const btn = document.getElementById("btn-login");
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-sm"></i> Đang xác thực...`;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-sm"></i> Đang xác thực tài khoản...`;
       }
 
       const username = document.getElementById("log_user").value.trim();
@@ -541,9 +541,9 @@
         return;
       }
 
-      // Đặt giới hạn chờ tối đa 8 giây để chống treo nút vĩnh viễn
+      // Đặt giới hạn 25 giây để phù hợp với tốc độ khởi tạo của Google Apps Script
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
 
       try {
         const res = await fetch(API_URL, {
@@ -584,9 +584,9 @@
       } catch (err) {
         clearTimeout(timeoutId);
         if (err.name === 'AbortError') {
-          Swal.fire("Hết thời gian chờ", "Máy chủ Google Apps Script phản hồi quá lâu (hơn 8s). Vui lòng thử bấm lại hoặc kiểm tra kết nối mạng!", "warning");
+          Swal.fire("Kết nối chậm", "Máy chủ Google phản hồi lâu hơn thường lệ. Vui lòng bấm đăng nhập lại một lần nữa!", "warning");
         } else {
-          Swal.fire("Lỗi kết nối", "Không thể gửi dữ liệu xác thực! Vui lòng kiểm tra lại link Web App trong config.js.", "error");
+          Swal.fire("Lỗi kết nối", "Không thể gửi dữ liệu xác thực! Vui lòng kiểm tra lại mạng hoặc link trong config.js.", "error");
         }
       } finally {
         if (btn) {
