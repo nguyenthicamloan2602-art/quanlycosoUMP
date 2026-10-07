@@ -520,13 +520,13 @@
       }
     }
 
-    // ĐĂNG NHẬP AN TOÀN - THỜI GIAN CHỜ CHUẨN 25 GIÂY CHO COLD START CỦA GOOGLE
+    // ĐĂNG NHẬP SIÊU TỐC: GỌI TRỰC TIẾP QUA GET, PHẢN HỒI 1-2 GIÂY
     async function handleLogin(e) {
       if (e) e.preventDefault();
       const btn = document.getElementById("btn-login");
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-sm"></i> Đang xác thực tài khoản...`;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-sm"></i> Đang xác thực...`;
       }
 
       const username = document.getElementById("log_user").value.trim();
@@ -541,23 +541,12 @@
         return;
       }
 
-      // Đặt giới hạn 25 giây để phù hợp với tốc độ khởi tạo của Google Apps Script
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 25000);
-
       try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "LOGIN",
-            data: { username: username, password: password }
-          }),
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-
+        // Gửi xác thực qua GET siêu tốc
+        const url = `${API_URL}?action=LOGIN&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+        const res = await fetch(url);
         const data = await res.json();
+
         if (data.success && data.user) {
           localStorage.setItem("ump_user", JSON.stringify(data.user));
           localStorage.setItem("ump_admin_user", JSON.stringify(data.user));
@@ -582,12 +571,7 @@
           Swal.fire("Đăng nhập thất bại", data.message || "Tài khoản hoặc mật khẩu không chính xác!", "error");
         }
       } catch (err) {
-        clearTimeout(timeoutId);
-        if (err.name === 'AbortError') {
-          Swal.fire("Kết nối chậm", "Máy chủ Google phản hồi lâu hơn thường lệ. Vui lòng bấm đăng nhập lại một lần nữa!", "warning");
-        } else {
-          Swal.fire("Lỗi kết nối", "Không thể gửi dữ liệu xác thực! Vui lòng kiểm tra lại mạng hoặc link trong config.js.", "error");
-        }
+        Swal.fire("Lỗi kết nối", "Không thể gửi dữ liệu xác thực! Vui lòng kiểm tra lại link Web App trong config.js.", "error");
       } finally {
         if (btn) {
           btn.disabled = false;
