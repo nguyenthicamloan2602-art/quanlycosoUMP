@@ -520,13 +520,12 @@
       }
     }
 
-    // ĐĂNG NHẬP SIÊU TỐC: GỌI TRỰC TIẾP QUA GET, PHẢN HỒI 1-2 GIÂY
     async function handleLogin(e) {
       if (e) e.preventDefault();
       const btn = document.getElementById("btn-login");
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-sm"></i> Đang xác thực...`;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-sm"></i> Đang xác thực tài khoản...`;
       }
 
       const username = document.getElementById("log_user").value.trim();
@@ -542,7 +541,7 @@
       }
 
       try {
-        // Gửi xác thực qua GET siêu tốc
+        // GỬI QUA GET SIÊU TỐC - PHẢN HỒI NGAY TRONG 1 GIÂY
         const url = `${API_URL}?action=LOGIN&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
         const res = await fetch(url);
         const data = await res.json();
@@ -571,7 +570,7 @@
           Swal.fire("Đăng nhập thất bại", data.message || "Tài khoản hoặc mật khẩu không chính xác!", "error");
         }
       } catch (err) {
-        Swal.fire("Lỗi kết nối", "Không thể gửi dữ liệu xác thực! Vui lòng kiểm tra lại link Web App trong config.js.", "error");
+        Swal.fire("Lỗi kết nối", "Không thể gửi dữ liệu xác thực! Vui lòng kiểm tra lại mạng hoặc link trong config.js.", "error");
       } finally {
         if (btn) {
           btn.disabled = false;
