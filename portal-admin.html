@@ -1870,7 +1870,16 @@
                 </div>
 
                 <!-- BẢNG DANH SÁCH CTV (MẶC ĐỊNH BỊ ẨN, CHỈ MỞ KHI BẤM NÚT TRÊN) -->
-                <div id="table-wrap-ctv-${hd.maHD}" class="hidden pt-1 space-y-2">
+                <div id="table-wrap-ctv-${hd.maHD}" class="hidden pt-2 space-y-2.5">
+                  <div class="flex justify-between items-center px-1">
+                    <span class="text-xs font-bold text-slate-500 italic">* Tích chọn những bạn có mặt rồi bấm nút "Lưu điểm danh" bên phải</span>
+                    <button onclick="luuDiemDanhHangLoat('${hd.maHD}')" id="btn-save-dd-${hd.maHD}" 
+                            class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-sm transition flex items-center gap-1.5">
+                      <i class="fa-solid fa-floppy-disk text-xs"></i>
+                      <span>Lưu điểm danh</span>
+                    </button>
+                  </div>
+
                   <div class="overflow-x-auto border border-slate-100 rounded-2xl">
                     <table class="w-full text-left text-xs">
                       <thead class="bg-slate-50/80 text-slate-600 font-bold border-b">
@@ -1881,7 +1890,7 @@
                           <th class="p-2.5">Lớp</th>
                           <th class="p-2.5">Vị trí</th>
                           <th class="p-2.5 text-center">Trạng thái tham gia</th>
-                          <th class="p-2.5 text-center">Điểm danh</th>
+                          <th class="p-2.5 text-center w-28">Điểm danh</th>
                           <th class="p-2.5 text-center w-28">Thao tác QTV</th>
                         </tr>
                       </thead>
@@ -1893,7 +1902,7 @@
                               <td class="p-2.5 text-center font-bold text-slate-400">${i + 1}</td>
                               <td class="p-2.5 font-mono font-bold text-slate-800">${c.mssv}</td>
                               <td class="p-2.5 font-semibold text-slate-800">${c.hoTen}</td>
-                              <td class="p-2.5">${c.lop || '---'}</td>
+                              <td class="p-2.5 font-medium text-slate-700">${c.lop || '---'}</td>
                               <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-sky-50 text-sky-700 font-bold">${c.viTri || 'Thành viên'}</span></td>
                               
                               <td class="p-2.5 text-center">
@@ -1909,7 +1918,7 @@
                               </td>
 
                               <td class="p-2.5 text-center">
-                                <input type="checkbox" ${c.diemDanh ? 'checked' : ''} onchange="xuLyDiemDanhAdmin('${c.id}', '${hd.maHD}', '${c.mssv}', this.checked)" class="w-4 h-4 rounded text-sky-600 cursor-pointer" ${isChoHuy ? 'disabled' : ''}>
+                                <input type="checkbox" data-mahd="${hd.maHD}" data-mssv="${c.mssv}" class="chk-diemdanh-${hd.maHD} w-4 h-4 rounded text-sky-600 cursor-pointer" ${c.diemDanh ? 'checked' : ''} ${isChoHuy ? 'disabled' : ''}>
                               </td>
 
                               <td class="p-2.5 text-center">
@@ -2612,24 +2621,73 @@
       renderSystemNotificationUI();
     }
   
-    // Gắn trực tiếp vào window để tránh hoàn toàn lỗi "is not defined"
-  window.toggleBangDanhSachCTV = function(maHD) {
-    const box = document.getElementById("table-wrap-ctv-" + maHD);
-    const icon = document.getElementById("icon-chevron-" + maHD);
-    const btn = document.getElementById("btn-toggle-ctv-" + maHD);
-    if (!box) return;
+    // HÀM ĐÓNG / MỞ BẢNG DANH SÁCH CTV
+    window.toggleBangDanhSachCTV = function(maHD) {
+      const box = document.getElementById("table-wrap-ctv-" + maHD);
+      const icon = document.getElementById("icon-chevron-" + maHD);
+      const btn = document.getElementById("btn-toggle-ctv-" + maHD);
+      if (!box) return;
 
-    const isHidden = box.classList.contains("hidden");
-    if (isHidden) {
-      box.classList.remove("hidden");
-      if (icon) icon.style.transform = "rotate(180deg)";
-      if (btn) btn.classList.add("bg-sky-100", "border-sky-300");
-    } else {
-      box.classList.add("hidden");
-      if (icon) icon.style.transform = "rotate(0deg)";
-      if (btn) btn.classList.remove("bg-sky-100", "border-sky-300");
-    }
-  };
+      const isHidden = box.classList.contains("hidden");
+      if (isHidden) {
+        box.classList.remove("hidden");
+        if (icon) icon.style.transform = "rotate(180deg)";
+        if (btn) btn.classList.add("bg-sky-100", "border-sky-300");
+      } else {
+        box.classList.add("hidden");
+        if (icon) icon.style.transform = "rotate(0deg)";
+        if (btn) btn.classList.remove("bg-sky-100", "border-sky-300");
+      }
+    };
+
+    // HÀM GỬI LƯU ĐIỂM DANH 1 LẦN DUY NHẤT CHO CẢ DANH SÁCH
+    window.luuDiemDanhHangLoat = async function(maHD) {
+      const checkboxes = document.querySelectorAll(`.chk-diemdanh-${maHD}`);
+      const items = [];
+      checkboxes.forEach(chk => {
+        items.push({
+          maHD: chk.dataset.mahd,
+          mssv: chk.dataset.mssv,
+          diemDanh: chk.checked
+        });
+      });
+
+      const btn = document.getElementById(`btn-save-dd-${maHD}`);
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> Đang lưu...`;
+      }
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "CAP_NHAT_DIEM_DANH_CTV",
+            data: { items: items }
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          Swal.fire({
+            icon: "success",
+            title: "Đã lưu!",
+            text: "Đã cập nhật kết quả điểm danh vào hệ thống!",
+            timer: 1500,
+            showConfirmButton: false
+          });
+        } else {
+          Swal.fire("Lỗi", data.message || "Không thể lưu điểm danh!", "error");
+        }
+      } catch(e) {
+        Swal.fire("Lỗi kết nối", e.message, "error");
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-floppy-disk text-xs"></i> Lưu điểm danh`;
+        }
+      }
+    };
   </script>
 </body>
 </html>
