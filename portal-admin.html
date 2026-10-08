@@ -2643,11 +2643,16 @@
     // HÀM GỬI LƯU ĐIỂM DANH 1 LẦN DUY NHẤT CHO CẢ DANH SÁCH
     window.luuDiemDanhHangLoat = async function(maHD) {
       const checkboxes = document.querySelectorAll(`.chk-diemdanh-${maHD}`);
+      if (!checkboxes || checkboxes.length === 0) {
+        Swal.fire("Thông báo", "Không có cộng tác viên nào để điểm danh!", "warning");
+        return;
+      }
+
       const items = [];
       checkboxes.forEach(chk => {
         items.push({
-          maHD: chk.dataset.mahd,
-          mssv: chk.dataset.mssv,
+          maHD: String(chk.getAttribute("data-mahd") || maHD).trim(),
+          mssv: String(chk.getAttribute("data-mssv") || "").trim(),
           diemDanh: chk.checked
         });
       });
@@ -2664,22 +2669,29 @@
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({
             action: "CAP_NHAT_DIEM_DANH_CTV",
-            data: { items: items }
+            data: { 
+              maHD: maHD,
+              items: items 
+            }
           })
         });
         const data = await res.json();
         if (data.success) {
           Swal.fire({
             icon: "success",
-            title: "Đã lưu!",
-            text: "Đã cập nhật kết quả điểm danh vào hệ thống!",
-            timer: 1500,
+            title: "Thành công!",
+            text: data.message || "Đã lưu kết quả điểm danh!",
+            timer: 1800,
             showConfirmButton: false
           });
+          // Làm mới nhẹ danh sách để đồng bộ lại
+          setTimeout(() => {
+            if (typeof loadDanhSachTaiKhoanCTVAdmin === "function") loadDanhSachTaiKhoanCTVAdmin();
+          }, 1000);
         } else {
-          Swal.fire("Lỗi", data.message || "Không thể lưu điểm danh!", "error");
+          Swal.fire("Lỗi", data.message || "Không tìm thấy bản ghi đăng ký!", "error");
         }
-      } catch(e) {
+      } catch (e) {
         Swal.fire("Lỗi kết nối", e.message, "error");
       } finally {
         if (btn) {
