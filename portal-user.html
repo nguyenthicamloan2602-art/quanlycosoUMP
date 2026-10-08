@@ -1396,32 +1396,28 @@
       let rYear, rMonth;
       if (val.includes("-")) {
         [rYear, rMonth] = val.split("-").map(Number);
+      } else if (val.includes("/")) {
+        [rMonth, rYear] = val.split("/").map(Number);
       } else {
         const d = new Date(val);
         rYear = d.getFullYear();
         rMonth = d.getMonth() + 1;
       }
       
-      let dMonth = rMonth + 1;
-      let dYear = rYear;
-      if (dMonth > 12) {
-        dMonth = 1;
-        dYear += 1;
-      }
-      
-      // Hạn chót: 17:00 ngày 20 của tháng kế tiếp
-      const deadlineDate = new Date(dYear, dMonth - 1, 20, 17, 0, 0);
+      // LOGIC CHUẨN: Hạn chót là 17:00 ngày 20 của CHÍNH THÁNG ĐÓ
+      const deadlineDate = new Date(rYear, rMonth - 1, 20, 17, 0, 0);
       const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
 
       if (now > deadlineDate) {
         isCurrentReportLate = true;
         warningBanner.classList.remove("hidden");
-        statusPill.innerText = `Đã quá hạn (Hạn: 17:00 ngày 20/${String(dMonth).padStart(2,'0')}/${dYear})`;
+        statusPill.innerText = `Đã quá hạn (Hạn chót: 17:00 ngày 20/${pad(rMonth)}/${rYear})`;
         statusPill.className = "font-bold text-rose-600";
       } else {
         isCurrentReportLate = false;
         warningBanner.classList.add("hidden");
-        statusPill.innerText = `Trong hạn (Hạn chót: 17:00 ngày 20/${String(dMonth).padStart(2,'0')}/${dYear})`;
+        statusPill.innerText = `Trong hạn (Hạn chót: 17:00 ngày 20/${pad(rMonth)}/${rYear})`;
         statusPill.className = "font-bold text-emerald-600";
       }
     }
@@ -1659,11 +1655,12 @@
           title: `<span class="text-sm font-black text-slate-800 uppercase">🏢 CHI TIẾT CƠ SỞ VẬT CHẤT</span>`,
           html: `
             <div class="text-left text-xs space-y-2 p-2 text-slate-700">
+              <p><b>Đơn vị sử dụng:</b> <span class="text-sky-700 font-bold">${props.tenDonVi || 'Đội Cộng tác viên Văn phòng'}</span></p>
               <p><b>Địa điểm:</b> ${props.tenDiaDiem}</p>
               <p><b>Người phụ trách:</b> ${props.nguoiPhuTrach}</p>
               <p><b>Thời gian:</b> Từ ${props.thoiGianBatDau} đến ${props.thoiGianKetThuc}</p>
               <p><b>Nội dung:</b> ${props.noiDung}</p>
-              <p><b>Trạng thái:</b> <span class="text-emerald-600 font-bold">Đăng ký thành công, chờ CV được duyệt</span></p>
+              <p><b>Trạng thái:</b> <span class="text-emerald-600 font-bold">${props.trangThai || 'Đã duyệt chính thức'}</span></p>
             </div>
           `,
           confirmButtonText: "Đóng",
