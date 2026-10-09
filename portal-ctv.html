@@ -177,26 +177,54 @@
 
     <!-- 1. CA TRỰC & QUÉT QR -->
     <div id="view-ctv-catruc" class="space-y-5">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="glass-card p-4 rounded-2xl flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center"><i class="fa-solid fa-clock"></i></div>
+      <!-- CỤM 4 THẺ THỐNG KÊ TRÊN CÙNG -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <!-- Thẻ 1: Giờ -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold">
+            <i class="fa-regular fa-clock"></i>
+          </div>
           <div>
-            <span class="text-[10px] text-slate-400 font-bold uppercase">Tổng giờ thực tế</span>
-            <p id="stat-total-hours" class="text-base font-black text-slate-800">0.0 giờ</p>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Tổng giờ thực tế</p>
+            <p id="stat-total-hours" class="text-lg font-bold text-slate-800">0.0 giờ</p>
           </div>
         </div>
-        <div class="glass-card p-4 rounded-2xl flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-calculator"></i></div>
+
+        <!-- Thẻ 2: Ca quy đổi -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-calculator"></i>
+          </div>
           <div>
-            <span class="text-[10px] text-slate-400 font-bold uppercase">Số ca quy đổi (Giờ/2)</span>
-            <p id="stat-total-shifts" class="text-base font-black text-emerald-600">0.0 ca</p>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Số ca quy đổi (Giờ/2)</p>
+            <p id="stat-total-shifts" class="text-lg font-bold text-emerald-600">0.0 ca</p>
           </div>
         </div>
-        <div class="glass-card p-4 rounded-2xl flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-award"></i></div>
+
+        <!-- Thẻ 3: Hoạt động tham gia (Bấm vào xem chi tiết) -->
+        <div onclick="moModalChiTietHoatDongCTV()" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-3 cursor-pointer hover:border-indigo-300 hover:shadow-md transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-flag"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Hoạt động tham gia</p>
+              <i class="fa-solid fa-circle-info text-indigo-400 text-xs"></i>
+            </div>
+            <p id="stat-total-activities" class="text-lg font-bold text-indigo-600">
+              0 <span class="text-xs font-normal text-slate-500">(0 BB • 0 TC)</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Thẻ 4: Xếp loại QTV -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-award"></i>
+          </div>
           <div>
-            <span class="text-[10px] text-slate-400 font-bold uppercase">Xếp loại QTV</span>
-            <p id="stat-rank" class="text-xs font-black text-purple-700">Chờ duyệt</p>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Xếp loại QTV</p>
+            <p id="stat-xep-loai" class="text-lg font-bold text-purple-600">Cộng tác viên</p>
           </div>
         </div>
       </div>
@@ -601,44 +629,56 @@
     
     async function loadCtvShiftStats() {
       try {
-        const res = await fetch(`${API_URL}?action=GET_CTV_SHIFTS&username=${encodeURIComponent(currentUser.username)}`);
+        const username = (currentUser && (currentUser.username || currentUser.mssv || currentUser.email)) || "";
+        if (!username) return;
+
+        const res = await fetch(`${API_URL}?action=GET_CTV_SHIFTS&username=${encodeURIComponent(username)}`);
         const data = await res.json();
         if (data && data.success && data.data) {
-          document.getElementById("stat-total-hours").innerText = `${data.data.totalHours} giờ`;
-          document.getElementById("stat-total-shifts").innerText = `${data.data.totalShifts} ca`;
+          // 1. Cập nhật Giờ & Ca
+          const elHours = document.getElementById("stat-total-hours");
+          if (elHours) elHours.innerText = `${data.data.totalHours || 0} giờ`;
 
-          const rankEl = document.getElementById("stat-rank");
-          if (rankEl) {
-            const xepLoai = data.data.xepLoai || "Chưa xếp loại";
-            rankEl.innerText = xepLoai;
-            if (xepLoai.includes("xuất sắc")) {
-              rankEl.className = "text-xs font-black text-emerald-600";
-            } else if (xepLoai.includes("hoàn thành")) {
-              rankEl.className = "text-xs font-black text-sky-600";
+          const elShifts = document.getElementById("stat-total-shifts");
+          if (elShifts) elShifts.innerText = `${data.data.totalShifts || 0} ca`;
+
+          // 2. Cập nhật Xếp loại QTV
+          const elXepLoai = document.getElementById("stat-xep-loai");
+          if (elXepLoai) elXepLoai.innerText = data.data.xepLoai || "Cộng tác viên";
+
+          // 3. CẬP NHẬT THẺ HOẠT ĐỘNG THAM GIA & LƯU DANH SÁCH CHO POPUP
+          const hd = data.data.hoatDong || { tongHD: 0, batBuoc: 0, tuChon: 0, danhSach: [] };
+          currentCTVActivities = hd.danhSach || []; // Lưu vào biến toàn cục
+
+          const elHD = document.getElementById("stat-total-activities");
+          if (elHD) {
+            elHD.innerHTML = `${hd.tongHD} <span class="text-xs font-normal text-slate-500">(${hd.batBuoc} BB • ${hd.tuChon} TC)</span>`;
+          }
+
+          // 4. Render danh sách ca trực vào bảng
+          const tbody = document.getElementById("my-shifts-tbody");
+          if (tbody) {
+            if (data.data.shifts && data.data.shifts.length > 0) {
+              tbody.innerHTML = data.data.shifts.map(s => `
+                <tr class="hover:bg-slate-50 transition">
+                  <td class="p-2.5 font-bold">${s.ngayTruc}</td>
+                  <td class="p-2.5 font-semibold text-sky-700">${s.gioBatDauDK} - ${s.gioKetThucDK}</td>
+                  <td class="p-2.5 text-center font-mono text-[11px]">${s.checkIn}</td>
+                  <td class="p-2.5 text-center font-mono text-[11px]">${s.checkOut}</td>
+                  <td class="p-2.5 text-center font-bold text-emerald-600">${Number(s.soCa || 0).toFixed(1)}</td>
+                  <td class="p-2.5 text-center">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${s.trangThai === 'Hợp lệ' ? 'bg-emerald-100 text-emerald-700' : 'bg-sky-100 text-sky-700'}">${s.trangThai}</span>
+                  </td>
+                </tr>
+              `).join('');
             } else {
-              rankEl.className = "text-xs font-black text-purple-700";
+              tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-400">Bạn chưa đăng ký ca trực nào.</td></tr>`;
             }
           }
-
-          const tbody = document.getElementById("my-shifts-tbody");
-          if (data.data.shifts && data.data.shifts.length > 0) {
-            tbody.innerHTML = data.data.shifts.map(s => `
-              <tr class="hover:bg-slate-50 transition">
-                <td class="p-2.5 font-bold">${s.ngayTruc}</td>
-                <td class="p-2.5 font-semibold text-sky-700">${s.gioBatDauDK} - ${s.gioKetThucDK}</td>
-                <td class="p-2.5 text-center font-mono text-[11px]">${s.checkIn}</td>
-                <td class="p-2.5 text-center font-mono text-[11px]">${s.checkOut}</td>
-                <td class="p-2.5 text-center font-bold text-emerald-600">${s.soCa}</td>
-                <td class="p-2.5 text-center">
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold ${s.trangThai === 'Hợp lệ' ? 'bg-emerald-100 text-emerald-700' : 'bg-sky-100 text-sky-700'}">${s.trangThai}</span>
-                </td>
-              </tr>
-            `).join('');
-          } else {
-            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-slate-400">Bạn chưa đăng ký ca trực nào.</td></tr>`;
-          }
         }
-      } catch(e) {}
+      } catch(e) {
+        console.error("Lỗi nạp ca trực và hoạt động CTV:", e);
+      }
     }
 
     async function submitShiftRegister(e) {
@@ -1625,6 +1665,163 @@
       );
       renderBangDanhBaCTV(filtered);
     }
+
+        let currentCTVActivities = [];
+
+    // Hàm nạp dữ liệu thống kê & ca trực chuẩn xác
+    async function loadCTVShiftData() {
+      // Lấy an toàn tài khoản từ mọi nguồn lưu trữ có thể có
+      let uInfo = typeof currentUser !== 'undefined' ? currentUser : null;
+      if (!uInfo) {
+        try {
+          uInfo = JSON.parse(localStorage.getItem("currentUser") || localStorage.getItem("user") || sessionStorage.getItem("currentUser") || "{}");
+        } catch(e) {}
+      }
+
+      const username = (uInfo && (uInfo.username || uInfo.mssv || uInfo.email || uInfo.user)) || "";
+      console.log("Đang tải dữ liệu cho CTV:", username);
+
+      if (!username) {
+        console.warn("Chưa tìm thấy thông tin tài khoản CTV đăng nhập!");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_URL}?action=GET_CTV_SHIFTS&username=${encodeURIComponent(username)}`);
+        const data = await res.json();
+        console.log("Kết quả trả về từ API:", data);
+
+        if (data.success && data.data) {
+          // 1. Cập nhật Giờ, Ca, Xếp loại
+          const elHours = document.getElementById("stat-total-hours");
+          if (elHours) elHours.innerText = `${data.data.totalHours || 0} giờ`;
+
+          const elShifts = document.getElementById("stat-total-shifts");
+          if (elShifts) elShifts.innerText = `${data.data.totalShifts || 0} ca`;
+
+          const elXepLoai = document.getElementById("stat-xep-loai");
+          if (elXepLoai) elXepLoai.innerText = data.data.xepLoai || "Cộng tác viên";
+
+          // 2. Cập nhật Thẻ Hoạt động tham gia
+          const hd = data.data.hoatDong || { tongHD: 0, batBuoc: 0, tuChon: 0, danhSach: [] };
+          currentCTVActivities = hd.danhSach || [];
+
+          const elHD = document.getElementById("stat-total-activities");
+          if (elHD) {
+            elHD.innerHTML = `${hd.tongHD} <span class="text-xs font-normal text-slate-500">(${hd.batBuoc} BB • ${hd.tuChon} TC)</span>`;
+          }
+
+          // 3. Render bảng ca trực nếu có hàm render
+          if (typeof renderBangCaTruc === "function") {
+            renderBangCaTruc(data.data.shifts || []);
+          } else if (typeof renderShiftTable === "function") {
+            renderShiftTable(data.data.shifts || []);
+          }
+        }
+      } catch(e) {
+        console.error("Lỗi nạp ca trực:", e);
+      }
+    }
+    // Hàm render bảng ca trực có bọc làm tròn số ca an toàn
+    function renderBangCaTruc(shifts) {
+      const tbody = document.getElementById("table-user-shifts"); // hoặc ID bảng ca trực của bạn
+      if (!tbody) return;
+
+      if (shifts.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-xs text-slate-400">Chưa có dữ liệu ca trực</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = shifts.map(s => `
+        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition">
+          <td class="px-4 py-3 text-xs font-medium text-slate-700">${s.ngayTruc}</td>
+          <td class="px-4 py-3 text-xs text-slate-500">${s.gioBatDauDK} - ${s.gioKetThucDK}</td>
+          <td class="px-4 py-3 text-xs text-slate-600">${s.checkIn}</td>
+          <td class="px-4 py-3 text-xs text-slate-600">${s.checkOut}</td>
+          <td class="px-4 py-3 text-xs font-bold text-emerald-600">${Number(s.soCa || 0).toFixed(1)}</td>
+          <td class="px-4 py-3 text-xs">
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${s.trangThai === 'Hợp lệ' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}">
+              ${s.trangThai}
+            </span>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    // Hàm mở Modal xem chi tiết từng hoạt động
+    window.moModalChiTietHoatDongCTV = function() {
+      const modal = document.getElementById("modal-ds-hoatdong-ctv");
+      const container = document.getElementById("list-hoatdong-ctv-content");
+      if (!modal || !container) return;
+
+      if (currentCTVActivities.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8">
+            <i class="fa-solid fa-clipboard-list text-3xl text-slate-300 mb-2"></i>
+            <p class="text-xs text-slate-400">Bạn chưa có hoạt động nào được điểm danh xác nhận.</p>
+          </div>
+        `;
+      } else {
+        let html = `<div class="space-y-3">`;
+        currentCTVActivities.forEach(act => {
+          const isBB = act.loai.toLowerCase().includes("bắt buộc");
+          const badgeClass = isBB ? "bg-red-50 text-red-600 border-red-200" : "bg-sky-50 text-sky-600 border-sky-200";
+          
+          html += `
+            <div class="p-3.5 bg-slate-50 border border-slate-100 rounded-2xl flex items-start justify-between space-x-3">
+              <div class="flex-1">
+                <div class="flex items-center space-x-2 mb-1">
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-md border ${badgeClass}">
+                    ${act.loai}
+                  </span>
+                  <span class="text-[11px] text-slate-400 font-medium">Vị trí: ${act.viTri || 'Thành viên'}</span>
+                </div>
+                <p class="text-xs font-bold text-slate-800 leading-snug">${act.tenHoatDong}</p>
+              </div>
+              <span class="inline-flex items-center text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
+                <i class="fa-solid fa-check text-[10px] mr-1"></i> Có mặt
+              </span>
+            </div>
+          `;
+        });
+        html += `</div>`;
+        container.innerHTML = html;
+      }
+
+      modal.classList.remove("hidden");
+    };
+
+    // Hàm đóng Modal
+    window.dongModalChiTietHoatDongCTV = function() {
+      const modal = document.getElementById("modal-ds-hoatdong-ctv");
+      if (modal) modal.classList.add("hidden");
+    };
   </script>
+  <!-- POPUP XEM CHI TIẾT HOẠT ĐỘNG CTV ĐÃ THAM GIA -->
+<div id="modal-ds-hoatdong-ctv" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-xl w-full max-w-lg overflow-hidden border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
+    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
+          <i class="fa-solid fa-list-check"></i>
+        </div>
+        <h3 class="font-bold text-slate-800 text-sm">Chi tiết hoạt động đã hoàn thành</h3>
+      </div>
+      <button onclick="dongModalChiTietHoatDongCTV()" class="w-8 h-8 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center text-xs transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="p-6 max-h-[60vh] overflow-y-auto" id="list-hoatdong-ctv-content">
+      <!-- Dữ liệu các hoạt động sẽ nạp vào đây -->
+    </div>
+
+    <div class="px-6 py-3 bg-slate-50 border-t border-slate-100 flex justify-end">
+      <button onclick="dongModalChiTietHoatDongCTV()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl transition">
+        Đóng
+      </button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
