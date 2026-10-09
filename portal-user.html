@@ -1157,36 +1157,62 @@
     }
 
     
-    // KIỂM TRA THỜI HẠN ĐĂNG KÝ GIẢNG ĐƯỜNG DƯỚI 14 NGÀY KỂ TỪ THỨ 6 GẦN NHẤT
-    function kiemTraThoiHanDangKyGiangDuong(ngaySuDungInput) {
+    // KIỂM TRA THỜI HẠN ĐĂNG KÝ GIẢNG ĐƯỜNG DƯỚI 14 NGÀY KỂ TỪ THỨ 6 XÉT DUYỆT
+    async function kiemTraThoiHanDangKyGiangDuong(ngaySuDungInput) {
       if (!ngaySuDungInput) return true;
       const ngaySuDung = new Date(ngaySuDungInput);
       const homNay = new Date();
-      
-      // 1. Tìm ngày thứ Sáu gần nhất trước đó (hoặc chính hôm nay nếu là thứ Sáu)
-      const dayOfWeek = homNay.getDay(); // 0: CN, 1: T2, ..., 5: T6, 6: T7
-      const khoangCachThuSau = (dayOfWeek >= 5) ? (dayOfWeek - 5) : (dayOfWeek + 2);
-      
-      const thuSauGanNhat = new Date(homNay);
-      thuSauGanNhat.setDate(homNay.getDate() - khoangCachThuSau);
-      thuSauGanNhat.setHours(0, 0, 0, 0);
 
-      // 2. Tính số ngày từ thứ Sáu mốc đó đến ngày tổ chức
-      const diffTime = ngaySuDung.getTime() - thuSauGanNhat.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      // 1. Xác định mốc Thứ Sáu của đợt xét duyệt gần nhất sắp tới
+      // 0: CN, 1: T2, 2: T3, 3: T4, 4: T5, 5: T6, 6: T7
+      const dayOfWeek = homNay.getDay();
+      const thuSauXetDuyet = new Date(homNay);
+
+      if (dayOfWeek > 0 && dayOfWeek <= 5) {
+        // Nộp từ Thứ 2 đến Thứ 6 -> Đợt duyệt là Thứ 6 tuần này
+        thuSauXetDuyet.setDate(homNay.getDate() + (5 - dayOfWeek));
+      } else if (dayOfWeek === 6) {
+        // Nộp Thứ 7 -> Đợt duyệt chuyển sang Thứ 6 tuần sau (+6 ngày)
+        thuSauXetDuyet.setDate(homNay.getDate() + 6);
+      } else {
+        // Nộp Chủ Nhật -> Đợt duyệt chuyển sang Thứ 6 tuần sau (+5 ngày)
+        thuSauXetDuyet.setDate(homNay.getDate() + 5);
+      }
+
+      thuSauXetDuyet.setHours(0, 0, 0, 0);
+      const dSuDungClean = new Date(ngaySuDung.getFullYear(), ngaySuDung.getMonth(), ngaySuDung.getDate(), 0, 0, 0);
+
+      // 2. Tính số ngày từ mốc Thứ Sáu duyệt đến ngày diễn ra hoạt động
+      const diffTime = dSuDungClean.getTime() - thuSauXetDuyet.getTime();
+      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+      
+      const pad = n => String(n).padStart(2, '0');
+      const strThuSau = `${pad(thuSauXetDuyet.getDate())}/${pad(thuSauXetDuyet.getMonth() + 1)}/${thuSauXetDuyet.getFullYear()}`;
 
       // 3. Nếu dưới 14 ngày: Bật cảnh báo nhắc nhở nhẹ nhưng VẪN CHO ĐĂNG KÝ
       if (diffDays < 14) {
-        Swal.fire({
+        const result = await Swal.fire({
           icon: 'warning',
           title: 'Cảnh báo: Đăng ký cận ngày',
-          html: `Thời gian sử dụng cách mốc thứ Sáu xét duyệt gần nhất <b>${diffDays} ngày</b> (quy định chuẩn nộp đơn là trước 14 ngày).<br><br>
-                 <span class="text-slate-600 text-xs"><i>Đơn của bạn vẫn được gửi đi bình thường, nhưng vui lòng theo dõi trạng thái duyệt để cập nhật tình hình.</i></span>`,
+          html: `
+            <div class="text-left text-xs text-slate-600 space-y-2 leading-relaxed">
+              <p>Thời gian sử dụng chỉ cách mốc Thứ Sáu xét duyệt (<b>${strThuSau}</b>) <b>${diffDays} ngày</b> (Quy định chuẩn là trước tối thiểu 14 ngày).</p>
+              <div class="bg-amber-50 border border-amber-200 p-2 rounded-lg text-amber-800 font-semibold">
+                <i>* Đơn của bạn vẫn được gửi đi bình thường, nhưng vui lòng theo dõi sát trạng thái duyệt hoặc liên hệ Văn phòng để được hỗ trợ.</i>
+              </div>
+            </div>
+          `,
           confirmButtonText: 'Tôi đã hiểu và tiếp tục',
-          confirmButtonColor: '#0284c7'
+          confirmButtonColor: '#0284c7',
+          showCancelButton: true,
+          cancelButtonText: 'Kiểm tra lại',
+          cancelButtonColor: '#94a3b8'
         });
-        return false; // Đã cảnh báo
+
+        // Trả về false nếu người dùng chọn "Kiểm tra lại" để hủy gửi đơn
+        if (!result.isConfirmed) return false;
       }
+
       return true;
     }
 
@@ -1478,6 +1504,21 @@
             trangThaiNop: isCurrentReportLate ? "NOP_TRE_HAN" : "DUNG_HAN"
           }
         };
+
+        // --- KIỂM TRA QUY TẮC 14 NGÀY KỂ TỪ THỨ 6 XÉT DUYỆT ---
+        if (selectedItems && selectedItems.length > 0) {
+          // Lấy ngày bắt đầu của hạng mục được chọn (start hoặc ngayBatDau)
+          const ngayDauTien = selectedItems[0].start || selectedItems[0].ngay || selectedItems[0].ngayBatDau || "";
+          if (ngayDauTien) {
+            const hopLe = await kiemTraThoiHanDangKyGiangDuong(ngayDauTien);
+            if (!hopLe) {
+              // Người dùng bấm "Kiểm tra lại" -> Bật lại nút gửi và dừng tiến trình
+              btn.disabled = false;
+              btn.innerText = "XÁC NHẬN GỬI ĐĂNG KÝ CSVC";
+              return;
+            }
+          }
+        }
 
         await sendRequest(payload, () => {
           e.target.reset();
