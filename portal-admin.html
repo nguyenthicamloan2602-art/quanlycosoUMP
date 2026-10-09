@@ -829,6 +829,56 @@
       setInterval(fetchSystemNotifications, 120000);
     });
 
+    // Hàm quy đổi khung giờ sang tiết học chuẩn ĐH Y Dược TP.HCM
+    function quyDoiGioSangTietUMP(batDauStr, ketThucStr) {
+      try {
+        if (!batDauStr || !ketThucStr) return "";
+
+        const matchStart = String(batDauStr).match(/(\d{1,2}):(\d{2})/);
+        const matchEnd = String(ketThucStr).match(/(\d{1,2}):(\d{2})/);
+        if (!matchStart || !matchEnd) return "";
+
+        const hStart = parseInt(matchStart[1], 10);
+        const mStart = parseInt(matchStart[2], 10);
+        const hEnd = parseInt(matchEnd[1], 10);
+        const mEnd = parseInt(matchEnd[2], 10);
+
+        const startMin = hStart * 60 + mStart;
+        const endMin = hEnd * 60 + mEnd;
+
+        // Tiết 1: 07:00, Tiết 2: 07:50, Tiết 3: 08:50, Tiết 4: 09:40, Tiết 5: 10:30 (kết thúc ~11:30)
+        // Tiết 6: 13:00, Tiết 7: 13:50, Tiết 8: 14:50, Tiết 9: 15:40, Tiết 10: 16:30 (kết thúc ~17:20)
+        let tietBD = 1;
+        if (startMin < 450) tietBD = 1;       // Trước 07:30 -> Tiết 1
+        else if (startMin < 510) tietBD = 2;  // ~07:50 -> Tiết 2
+        else if (startMin < 570) tietBD = 3;  // ~08:50 -> Tiết 3
+        else if (startMin < 630) tietBD = 4;  // ~09:40 -> Tiết 4
+        else if (startMin < 750) tietBD = 5;  // ~10:30 -> Tiết 5
+        else if (startMin < 810) tietBD = 6;  // 12:30 - 13:00 -> Tiết 6
+        else if (startMin < 870) tietBD = 7;  // ~13:50 -> Tiết 7
+        else if (startMin < 930) tietBD = 8;  // ~14:50 -> Tiết 8
+        else if (startMin < 990) tietBD = 9;  // ~15:40 -> Tiết 9
+        else tietBD = 10;
+
+        let tietKT = 5;
+        if (endMin <= 480) tietKT = 1;
+        else if (endMin <= 540) tietKT = 2;
+        else if (endMin <= 600) tietKT = 3;
+        else if (endMin <= 660) tietKT = 4;
+        else if (endMin <= 750) tietKT = 5;
+        else if (endMin <= 810) tietKT = 6;
+        else if (endMin <= 870) tietKT = 7;
+        else if (endMin <= 930) tietKT = 8;
+        else if (endMin <= 1000) tietKT = 9;
+        else tietKT = 10;
+
+        const soTiet = Math.max(1, tietKT - tietBD + 1);
+        return `Tiết ${tietBD} - ${tietKT} (${soTiet} tiết)`;
+      } catch (e) {
+        return "";
+      }
+    }
+
     function toggleMobileSidebar(show) {
       const sidebar = document.getElementById("sidebar-admin");
       const overlay = document.getElementById("sidebar-overlay");
@@ -935,21 +985,26 @@
               <i class="fa-regular fa-clock mr-1"></i>Nộp: <b>${it.ngayDangKy || '---'}</b>
             </span>
           </td>
+          <!-- Cột Thời gian sử dụng & Tiết quy đổi -->
           <td class="p-3 text-[11px] leading-relaxed">
             <div>Từ: <b>${it.batDau}</b></div>
             <div>Đến: <b>${it.ketThuc}</b></div>
             
-            <!-- Cảnh báo nguyên tắc thời gian màu vàng cho QTV -->
+            <!-- HIỂN THỊ TIẾT QUY ĐỔI -->
+            <div class="mt-1">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-sky-50 text-sky-700 border border-sky-200 rounded-md font-bold text-[10px]">
+                <i class="fa-solid fa-graduation-cap text-[10px]"></i>
+                ${quyDoiGioSangTietUMP(it.batDau, it.ketThuc) || 'Chưa rõ tiết'}
+              </span>
+            </div>
+
+            <!-- Cảnh báo nếu nộp cận ngày -->
             ${isSsatNgay ? `
               <div class="mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 border border-amber-300 text-amber-800 rounded-md text-[10px] font-bold">
                 <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
                 <span>${it.canhBao.lyDo}</span>
               </div>
-            ` : (it.canhBao ? `
-              <span class="text-[10px] text-emerald-600 font-semibold block mt-0.5">
-                <i class="fa-solid fa-check text-[9px] mr-1"></i>Đúng hạn (${it.canhBao.soNgayBaoTruoc} ngày)
-              </span>
-            ` : '')}
+            ` : ''}
           </td>
           <td class="p-3 font-medium text-slate-800">
             <div>${it.noiDung || it.tenHoatDong || '---'}</div>
@@ -985,29 +1040,29 @@
     }
 
     function handleCsvcRowClick(e, maDon) {
-      const o = loadedCsvcList.find(x => x.maDon === maDon);
-      if (!o) return;
+    const it = loadedCsvcList.find(x => x.maDon === maDon);
+    if (!it) return;
 
-      Swal.fire({
-        title: `<span class="text-sm font-black uppercase text-slate-800">CHI TIẾT ĐƠN: ${o.diaDiem}</span>`,
-        html: `
-          <div class="text-left text-xs space-y-2 p-2">
-            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1.5 text-slate-700">
-              <p><b>Địa điểm:</b> ${o.diaDiem} (${o.loai})</p>
-              <p><b>Người phụ trách:</b> ${o.nguoiPhuTrach} • <b>Đơn vị:</b> ${o.tenDonVi}</p>
-              <p><b>Thời gian:</b> Từ ${o.batDau} đến ${o.ketThuc}</p>
-              <p><b>Nội dung:</b> ${o.noiDung || o.tenHoatDong}</p>
-              <p><b>Trạng thái:</b> <span class="font-bold">${o.trangThai}</span></p>
-              ${o.ghiChu ? `<p class="p-2 bg-sky-50 rounded-xl border border-sky-200 text-sky-800"><b>Trao đổi:</b> ${o.ghiChu}</p>` : ''}
-              ${o.linkVanBan ? `<p><b>File kế hoạch:</b> <a href="${o.linkVanBan}" target="_blank" class="text-sky-600 underline font-bold">Xem file Drive</a></p>` : ''}
-            </div>
-          </div>
-        `,
-        width: '540px',
-        confirmButtonText: 'Đóng',
-        confirmButtonColor: '#0284c7'
-      });
-    }
+    const tietText = quyDoiGioSangTietUMP(it.batDau, it.ketThuc);
+
+    Swal.fire({
+      title: `<span class="text-sm font-black uppercase text-slate-800">CHI TIẾT ĐƠN: ${it.diaDiem}</span>`,
+      html: `
+        <div class="select-text text-left text-xs leading-relaxed space-y-2 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+          <p><b>Địa điểm:</b> ${it.diaDiem} (${it.loai || 'CSVC'})</p>
+          <p><b>Người phụ trách:</b> ${it.nguoiPhuTrach} - <b>SĐT:</b> ${it.sdt}</p>
+          <p><b>Đơn vị:</b> ${it.tenDonVi}</p>
+          <p><b>Thời gian:</b> Từ ${it.batDau} đến ${it.ketThuc}</p>
+          <p><b>Quy đổi số tiết:</b> <span class="text-sky-700 font-bold bg-sky-100/70 px-2 py-0.5 rounded-md">${tietText || 'Không xác định'}</span></p>
+          <p><b>Nội dung:</b> ${it.noiDung || it.tenHoatDong}</p>
+          <p><b>Trạng thái:</b> ${it.trangThai || 'Chờ duyệt'}</p>
+          ${it.linkVanBan ? `<p><b>File kế hoạch:</b> <a href="${it.linkVanBan}" target="_blank" class="text-sky-600 underline font-bold">Xem file Drive</a></p>` : ''}
+        </div>
+      `,
+      confirmButtonText: "Đóng",
+      confirmButtonColor: "#0284c7"
+    });
+  }
 
     async function moTraoDoiCsvc(maDon, diaDiem, ghiChuCu) {
       const { value: noiDung } = await Swal.fire({
