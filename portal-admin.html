@@ -452,9 +452,9 @@
                   <label class="block text-[11px] font-bold text-slate-600 mb-1">Thời gian tổ chức / Ngày tham gia *</label>
                   <input type="text" id="com_thoi_gian" placeholder="VD: 26,27/10/2025 hoặc 15/05/2026" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
                 </div>
-                <div>
+                <div id="wrap_muc_drl">
                   <label class="block text-[11px] font-bold text-slate-600 mb-1">Mục ĐRL *</label>
-                  <input type="text" id="com_muc_drl" value="3.1" oninput="this.value = this.value.replace(',', '.')" placeholder="VD: 3.1 hoặc 4.1" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
+                  <input type="text" id="com_muc_drl" value="3.1" oninput="this.value = this.value.replace(/,/g, '.')" placeholder="VD: 3.1" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
                 </div>
               </div>
 
@@ -1516,22 +1516,32 @@
       const grpHD = document.getElementById("group-hoatdong-fields");
       const grpGCN = document.getElementById("group-gcn-extra");
       const grpCLB = document.getElementById("group-clb-extra");
+      const wrapMucDrl = document.getElementById("wrap_muc_drl");
+      const inpMucDrl = document.getElementById("com_muc_drl");
 
       if (fileKey === "FILE_GIAY_CHUNG_NHAN") {
         label.innerText = "Chế độ: Giấy chứng nhận";
         grpHD.classList.remove("hidden");
         grpGCN.classList.remove("hidden");
         grpCLB.classList.add("hidden");
+        // Ẩn Mục ĐRL và xóa giá trị khi ở chế độ Giấy chứng nhận
+        if (wrapMucDrl) wrapMucDrl.classList.add("hidden");
+        if (inpMucDrl) inpMucDrl.value = "";
       } else if (fileKey === "FILE_CLB" && tabName.includes("thanhvien")) {
         label.innerText = "Chế độ: Danh sách Thành viên CLB";
         grpHD.classList.add("hidden");
         grpGCN.classList.add("hidden");
         grpCLB.classList.remove("hidden");
+        if (wrapMucDrl) wrapMucDrl.classList.remove("hidden");
+        if (inpMucDrl && !inpMucDrl.value) inpMucDrl.value = "3.1";
       } else {
         label.innerText = "Chế độ: Hoạt động / Minh chứng";
         grpHD.classList.remove("hidden");
         grpGCN.classList.add("hidden");
         grpCLB.classList.add("hidden");
+        // Hiện lại Mục ĐRL cho các file khác
+        if (wrapMucDrl) wrapMucDrl.classList.remove("hidden");
+        if (inpMucDrl && !inpMucDrl.value) inpMucDrl.value = "3.1";
       }
     }
 
@@ -1650,10 +1660,15 @@
       const rawDrl = document.getElementById("com_muc_drl").value.trim();
       const cleanMucDrl = rawDrl.replace(/,/g, '.');
 
+      // Nếu không phải là file Giấy Chứng Nhận mà bỏ trống Mục ĐRL thì mới cảnh báo
+      if (fileKey !== "FILE_GIAY_CHUNG_NHAN" && !cleanMucDrl) {
+        return Swal.fire("Thiếu thông tin", "Vui lòng nhập Mục ĐRL cho hoạt động này!", "warning");
+      }
+
       const commonPayload = {
         tenChuongTrinh: document.getElementById("com_ten_ct").value.trim(),
         thoiGian: document.getElementById("com_thoi_gian").value.trim(),
-        mucDrl: cleanMucDrl || "3.1",
+        mucDrl: (fileKey === "FILE_GIAY_CHUNG_NHAN") ? "" : (cleanMucDrl || "3.1"),
         nam: document.getElementById("com_nam") ? document.getElementById("com_nam").value.trim() : new Date().getFullYear(),
         namHocGcn: document.getElementById("com_nam_hoc_gcn") ? document.getElementById("com_nam_hoc_gcn").value.trim() : "2025 - 2026",
         donViToChuc: document.getElementById("com_don_vi_to_chuc") ? document.getElementById("com_don_vi_to_chuc").value.trim() : "Đoàn Thanh niên - Hội Sinh viên Đại học Y Dược TPHCM",
