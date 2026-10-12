@@ -243,6 +243,12 @@
                 <button onclick="xuatCongVanTongHopMulti()" class="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 transition">
                   <i class="fa-solid fa-file-word"></i> Xuất Công Văn (<span id="count-selected-csvc">0</span>)
                 </button>
+
+                <!-- NÚT GỬI MAIL CÔNG VĂN ĐÃ KÝ -->
+                <button onclick="moModalGuiMailCongVan()" class="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 transition">
+                  <i class="fa-solid fa-paper-plane"></i> Gửi Mail CV Đã Ký
+                </button>
+
                 <button onclick="loadCsvcDataAdmin()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
                   Làm mới
                 </button>
@@ -790,6 +796,43 @@
       </form>
     </div>
   </div>
+  <!-- MODAL ĐÍNH KÈM CÔNG VĂN ĐÃ KÝ ĐỂ GỬI MAIL -->
+  <div id="modal-send-cv-mail" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-black text-xs uppercase text-slate-800 flex items-center gap-2">
+          <i class="fa-solid fa-envelope-circle-check text-emerald-600"></i> Gửi Công Văn Đã Ký Đến Các Đơn Vị
+        </h3>
+        <button onclick="toggleModal('modal-send-cv-mail', false)" class="text-slate-400 hover:text-rose-500 font-bold text-lg">&times;</button>
+      </div>
+
+      <div class="text-xs space-y-3">
+        <p class="text-slate-500 leading-relaxed">
+          Đang chọn <b id="send-mail-selected-count" class="text-emerald-700">0</b> đơn vị nhận thông báo.
+        </p>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Ghi chú kèm theo trong email (Tùy chọn):</label>
+          <textarea id="mail_cv_note" rows="2" placeholder="VD: Đề nghị các đơn vị liên hệ phòng QTTB nhận chìa khóa trước 15 phút..." class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none text-xs"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Đính kèm file Công văn đã ký (PDF, Word hoặc Ảnh Scan) *:</label>
+          <div class="border-2 border-dashed border-slate-200 rounded-2xl p-4 text-center cursor-pointer hover:border-emerald-500 transition bg-slate-50" onclick="document.getElementById('input-file-cv-signed').click()">
+            <i class="fa-solid fa-file-circle-check text-2xl text-emerald-600 mb-1"></i>
+            <p class="text-xs font-bold text-slate-700" id="signed-file-name">Bấm để chọn file công văn</p>
+            <p class="text-[10px] text-slate-400 mt-0.5">Hỗ trợ .pdf, .docx, .png, .jpg</p>
+          </div>
+          <input type="file" id="input-file-cv-signed" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" class="hidden" onchange="handleSignedCvFile(event)">
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="toggleModal('modal-send-cv-mail', false)" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-600">Hủy</button>
+        <button onclick="xacNhanGuiMailCongVan()" id="btn-submit-send-mail-cv" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold">Xác Nhận Gửi</button>
+      </div>
+    </div>
+  </div>
   </main>
 
 <script src="./config.js"></script>
@@ -1075,6 +1118,9 @@
                 <button onclick="duyetDonCsvc('${it.danhSachMaDon.join(',')}', 'Từ chối')" class="px-2.5 py-1 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-lg text-xs font-bold transition">
                   Từ chối
                 </button>
+                <button onclick="xoaDonCsvc('${it.danhSachMaDon.join(',')}')" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-bold transition" title="Xóa yêu cầu">
+                  <i class="fa-regular fa-trash-can"></i>
+                </button>
                 <button onclick="moTraoDoiCsvc('${it.maDon}', '${diaDiemHienThi}', '${it.ghiChu || ''}')" class="px-2 py-1 bg-sky-50 hover:bg-sky-100 text-sky-600 rounded-lg text-xs font-bold transition">
                   <i class="fa-regular fa-comment-dots"></i>
                 </button>
@@ -1180,6 +1226,54 @@
         Swal.fire("Lỗi kết nối", "Không thể gửi lệnh duyệt đến máy chủ!", "error");
       }
     }
+
+    async function xoaDonCsvc(maDon) {
+    const confirmResult = await Swal.fire({
+      title: "Xác nhận xóa yêu cầu?",
+      text: "Bạn có chắc chắn muốn xóa đơn cơ sở vật chất này khỏi danh sách? Thao tác này không thể hoàn tác!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Xóa ngay",
+      cancelButtonText: "Hủy"
+    });
+
+    if (!confirmResult.isConfirmed) return;
+
+    Swal.fire({
+      title: "Đang xóa yêu cầu...",
+      text: "Vui lòng chờ trong giây lát...",
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading()
+    });
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "XOA_DON_CSVC",
+          data: { maDon: maDon }
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Đã xóa!",
+          text: data.message || "Đã xóa yêu cầu thành công!",
+          timer: 1500,
+          showConfirmButton: false
+        });
+        loadCsvcDataAdmin(); // Tải lại bảng sau khi xóa thành công
+      } else {
+        Swal.fire("Lỗi", data.message || "Không thể xóa đơn!", "error");
+      }
+    } catch (err) {
+      Swal.fire("Lỗi kết nối", "Không thể gửi lệnh xóa đến máy chủ: " + err.message, "error");
+    }
+  }
 
     async function xuatCongVanTongHopMulti() {
       const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
@@ -2846,6 +2940,100 @@
         }
       }
     };
+  let signedCvBase64 = "";
+  let signedCvFileName = "";
+  let signedCvMimeType = "";
+
+  function moModalGuiMailCongVan() {
+    const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
+    if (checkedBoxes.length === 0) {
+      return Swal.fire("Chưa chọn đơn vị", "Vui lòng tick chọn ít nhất 1 đơn cần gửi email công văn!", "warning");
+    }
+
+    document.getElementById("send-mail-selected-count").innerText = checkedBoxes.length;
+    document.getElementById("mail_cv_note").value = "";
+    document.getElementById("input-file-cv-signed").value = "";
+    document.getElementById("signed-file-name").innerText = "Bấm để chọn file công văn";
+    signedCvBase64 = "";
+    signedCvFileName = "";
+    signedCvMimeType = "";
+
+    toggleModal("modal-send-cv-mail", true);
+  }
+
+  function handleSignedCvFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    signedCvFileName = file.name;
+    signedCvMimeType = file.type || "application/octet-stream";
+    document.getElementById("signed-file-name").innerText = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      // Lấy phần chuỗi Base64
+      signedCvBase64 = evt.target.result.split(',')[1];
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function xacNhanGuiMailCongVan() {
+    const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
+    if (checkedBoxes.length === 0) {
+      return Swal.fire("Lỗi", "Vui lòng chọn ít nhất 1 đơn vị!", "error");
+    }
+
+    if (!signedCvBase64) {
+      return Swal.fire("Thiếu file công văn", "Vui lòng đính kèm file công văn đã ký!", "warning");
+    }
+
+    const selectedItems = [];
+    checkedBoxes.forEach(chk => {
+      const item = loadedCsvcList.find(x => x.maDon === chk.value);
+      if (item) selectedItems.push(item);
+    });
+
+    const note = document.getElementById("mail_cv_note").value.trim();
+    const btn = document.getElementById("btn-submit-send-mail-cv");
+    btn.disabled = true;
+    btn.innerText = "Đang gửi mail...";
+
+    Swal.fire({
+      title: "Đang gửi email công văn...",
+      text: `Đang gửi email đến ${selectedItems.length} đơn vị, vui lòng chờ trong giây lát...`,
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading()
+    });
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "SEND_SIGNED_CONG_VAN_MAIL",
+          data: {
+            items: selectedItems,
+            note: note,
+            fileName: signedCvFileName,
+            mimeType: signedCvMimeType,
+            fileBase64: signedCvBase64
+          }
+        })
+      });
+      const result = await res.json();
+      if (result.success) {
+        toggleModal("modal-send-cv-mail", false);
+        Swal.fire("Thành công!", result.message, "success");
+      } else {
+        Swal.fire("Lỗi", result.message, "error");
+      }
+    } catch (err) {
+      Swal.fire("Lỗi kết nối", err.message, "error");
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "Xác Nhận Gửi";
+    }
+  }
   </script>
 </body>
 </html>
