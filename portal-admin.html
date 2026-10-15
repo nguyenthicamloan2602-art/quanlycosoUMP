@@ -1609,6 +1609,21 @@
                 <p class="text-slate-700 italic leading-relaxed font-medium whitespace-pre-line">${qa.kienNghi || 'Không có'}</p>
               </div>
             </div>
+
+            <!-- NÚT MỞ THƯ MỤC GOOGLE DRIVE MINH CHỨNG -->
+            ${(r.linkDrive && r.linkDrive !== "") ? `
+              <div class="pt-3 border-t border-purple-100">
+                <a href="${r.linkDrive}" target="_blank" class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-2xl text-xs font-black shadow-md transition">
+                  <i class="fa-solid fa-folder-open text-base"></i>
+                  <span>Mở Thư Mục Google Drive Minh Chứng</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
+                </a>
+              </div>
+            ` : `
+              <div class="pt-2 text-center text-slate-400 italic text-[11px]">
+                Đơn vị không đính kèm liên kết Google Drive minh chứng.
+              </div>
+            `}
           </div>
         `,
         width: '620px',
