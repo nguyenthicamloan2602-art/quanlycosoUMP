@@ -1530,6 +1530,8 @@
       }
     }
 
+    let userReportsCache = [];
+
     async function showMyReportsHistory() {
       Swal.fire({ title: "Đang tải lịch sử báo cáo...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
       try {
@@ -1538,105 +1540,151 @@
         const res = await fetch(`${API_URL}?action=GET_USER_REPORTS&donVi=${encodeURIComponent(uName)}&username=${encodeURIComponent(uUser)}`);
         const data = await res.json();
 
-        const reportsList = data.reports || data.list || [];
+        userReportsCache = data.reports || data.list || [];
 
-        if (data.success && reportsList.length > 0) {
-          let html = `
-            <div class="max-h-[70vh] overflow-y-auto text-left text-xs space-y-4 p-1">
-              ${reportsList.map(r => {
-                const isDungHan = (r.tienDo === 'Đúng hạn' || r.trangThai === 'DUNG_HAN' || r.trangThaiNop === 'DUNG_HAN');
-                return `
-                <div class="p-4 bg-white border border-purple-200 rounded-2xl shadow-sm space-y-3">
-                  <div class="flex justify-between items-center bg-purple-50 p-2.5 rounded-xl border border-purple-100">
-                    <div>
-                      <span class="text-[10px] text-purple-600 font-bold uppercase tracking-wider block">BÁO CÁO KỲ</span>
-                      <b class="text-purple-950 text-base font-black">${r.thang || r.kyBaoCao}</b>
-                    </div>
-                    <div class="text-right">
-                      <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isDungHan ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-                        ${isDungHan ? 'Đúng hạn' : 'Trễ hạn'}
-                      </span>
-                      <span class="text-[10.5px] text-slate-400 block font-mono mt-0.5">${r.ngayNop || ''}</span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <b class="text-purple-900 font-extrabold uppercase text-[11px] block mb-1">I. Thống kê 14 chỉ tiêu:</b>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-slate-50 p-2 rounded-xl border text-[11px]">
-                      <div>• Tình nguyện: <b>${r.metrics?.ct1 ?? r.chiTieu?.[0] ?? 0}</b></div>
-                      <div>• Sáng kiến/Ý tưởng: <b>${r.metrics?.ct2 ?? r.chiTieu?.[1] ?? 0}</b></div>
-                      <div>• Tư vấn việc làm: <b>${r.metrics?.ct3 ?? r.chiTieu?.[2] ?? 0}</b></div>
-                      <div>• Giới thiệu việc làm: <b>${r.metrics?.ct4 ?? r.chiTieu?.[3] ?? 0}</b></div>
-                      <div>• Hỗ trợ khởi nghiệp: <b>${r.metrics?.ct5 ?? r.chiTieu?.[4] ?? 0}</b></div>
-                      <div>• Tham gia ngoại ngữ: <b>${r.metrics?.ct6 ?? r.chiTieu?.[5] ?? 0}</b></div>
-                      <div>• Cán bộ đạt B1: <b>${r.metrics?.ct7 ?? r.chiTieu?.[6] ?? 0}</b></div>
-                      <div>• Đào tạo LLCT: <b>${r.metrics?.ct8 ?? r.chiTieu?.[7] ?? 0}</b></div>
-                      <div>• Cảm tình Đảng: <b>${r.metrics?.ct9 ?? r.chiTieu?.[8] ?? 0}</b></div>
-                      <div>• Giới thiệu Đảng: <b>${r.metrics?.ct10 ?? r.chiTieu?.[9] ?? 0}</b></div>
-                      <div>• Kết tải Đảng: <b>${r.metrics?.ct11 ?? r.chiTieu?.[10] ?? 0}</b></div>
-                      <div>• Kết tải Đoàn: <b>${r.metrics?.ct12 ?? r.chiTieu?.[11] ?? 0}</b></div>
-                      <div>• Chi đoàn mới: <b>${r.metrics?.ct13 ?? r.chiTieu?.[12] ?? 0}</b></div>
-                      <div>• Chi hội mới: <b>${r.metrics?.ct14 ?? r.chiTieu?.[13] ?? 0}</b></div>
-                    </div>
-                  </div>
-
-                  <div class="space-y-1.5 pt-1 border-t border-slate-100 text-slate-700">
-                    <b class="text-purple-900 font-extrabold uppercase text-[11px] block">II. Nội dung hoạt động chi tiết:</b>
-                    <div class="p-2 bg-slate-50/70 rounded-lg">
-                      <p class="font-bold text-slate-900">• 1.2 Đạo đức, tác phong:</p>
-                      <p class="pl-2.5 text-slate-600 mt-0.5">${r.qa_1_2 || r.qa?.daoDuc || "Không có"}</p>
-                    </div>
-                    <div class="p-2 bg-slate-50/70 rounded-lg">
-                      <p class="font-bold text-slate-900">• 1.3 Học tập, sáng tạo, NCKH:</p>
-                      <p class="pl-2.5 text-slate-600 mt-0.5">${r.qa_1_3 || r.qa?.hocTap || "Không có"}</p>
-                    </div>
-                    <div class="p-2 bg-slate-50/70 rounded-lg">
-                      <p class="font-bold text-slate-900">• 1.4 Tình nguyện vì cộng đồng:</p>
-                      <p class="pl-2.5 text-slate-600 mt-0.5">${r.qa_1_4 || r.qa?.tinhNguyen || "Không có"}</p>
-                    </div>
-                    <div class="p-2 bg-slate-50/70 rounded-lg">
-                      <p class="font-bold text-slate-900">• 1.5 Rèn luyện thể chất:</p>
-                      <p class="pl-2.5 text-slate-600 mt-0.5">${r.qa_1_5 || r.qa?.theChat || "Không có"}</p>
-                    </div>
-                    <div class="p-2 bg-slate-50/70 rounded-lg">
-                      <p class="font-bold text-slate-900">• 1.6 Hội nhập quốc tế:</p>
-                      <p class="pl-2.5 text-slate-600 mt-0.5">${r.qa_1_6 || r.qa?.hoiNhap || "Không có"}</p>
-                    </div>
-                    <div class="p-2 bg-slate-50/70 rounded-lg">
-                      <p class="font-bold text-slate-900">• 2. Tư vấn, hỗ trợ sinh viên:</p>
-                      <p class="pl-2.5 text-slate-600 mt-0.5">${r.qa_2_0 || r.qa?.hoTroSV || "Không có"}</p>
-                    </div>
-                    <div class="p-2 bg-slate-50/70 rounded-lg">
-                      <p class="font-bold text-slate-900">• 3. Khó khăn & Kiến nghị:</p>
-                      <p class="pl-2.5 text-slate-600 mt-0.5">${r.kienNghi || r.qa?.kienNghi || "Không có"}</p>
-                    </div>
-                  </div>
-
-                  ${(r.linkDrive || r.linkMinhChungDrive) ? `
-                    <div class="pt-2">
-                      <a href="${r.linkDrive || r.linkMinhChungDrive}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 text-purple-700 font-bold rounded-lg border border-purple-200 hover:bg-purple-100 transition text-[11px]">
-                        <i class="fa-solid fa-folder-open"></i> Mở Thư Mục Drive Minh Chứng
-                      </a>
-                    </div>
-                  ` : ''}
-                </div>
-              `;
-              }).join('')}
-            </div>
-          `;
-          Swal.fire({
-            title: `<span class="text-sm font-black uppercase text-purple-950">Lịch Sử Toàn Bộ Báo Cáo Của Đơn Vị</span>`,
-            html: html,
-            width: '680px',
-            confirmButtonText: "Đóng",
-            confirmButtonColor: '#7c3aed'
-          });
+        if (data.success && userReportsCache.length > 0) {
+          openReportsHistoryModal("ALL");
         } else {
           Swal.fire("Chưa có dữ liệu", "Đơn vị chưa có báo cáo nào được ghi nhận trên hệ thống!", "info");
         }
       } catch (e) {
         Swal.fire("Lỗi", "Không thể lấy lịch sử báo cáo: " + e.message, "error");
       }
+    }
+
+    // HÀM HIỂN THỊ MODAL VÀ HỖ TRỢ LỌC CHỌN KỲ THÁNG
+    function openReportsHistoryModal(selectedMonth) {
+      if (!userReportsCache || userReportsCache.length === 0) return;
+
+      // Danh sách các tháng có dữ liệu báo cáo (không trùng lặp)
+      const allMonths = [...new Set(userReportsCache.map(r => r.thang))].filter(Boolean);
+
+      // Nếu lần đầu mở mà chưa chọn tháng cụ thể, mặc định chọn kỳ mới nhất
+      const curFilter = (selectedMonth === "ALL") ? (allMonths[0] || "ALL") : selectedMonth;
+
+      const filteredReports = (curFilter === "ALL") 
+        ? userReportsCache 
+        : userReportsCache.filter(r => r.thang === curFilter);
+
+      const html = `
+        <div class="text-left text-xs space-y-3 p-1">
+          <!-- BỘ LỌC CHỌN KỲ THÁNG -->
+          <div class="p-3 bg-purple-50/80 rounded-2xl border border-purple-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-filter text-purple-700"></i>
+              <label class="font-black text-purple-950 uppercase text-[11px]">Chọn kỳ báo cáo:</label>
+            </div>
+            <select id="select-history-month-filter" onchange="openReportsHistoryModal(this.value)" class="px-3 py-1.5 bg-white border border-purple-200 rounded-xl font-bold text-purple-900 outline-none text-xs cursor-pointer shadow-xs">
+              <option value="ALL" ${curFilter === 'ALL' ? 'selected' : ''}>📋 Xem tất cả các kỳ (${userReportsCache.length})</option>
+              ${allMonths.map(m => `
+                <option value="${m}" ${curFilter === m ? 'selected' : ''}>Kỳ tháng: ${m}</option>
+              `).join('')}
+            </select>
+          </div>
+
+          <!-- DANH SÁCH BÁO CÁO -->
+          <div class="max-h-[65vh] overflow-y-auto space-y-3.5 pr-1">
+            ${filteredReports.map(r => {
+              const isDungHan = (r.tienDo === 'Đúng hạn');
+              const tenHienThi = r.tenDonVi || currentUser.tenDonVi || currentUser.hoTen || currentUser.username;
+
+              return `
+              <div class="p-4 bg-white border border-purple-200/90 rounded-2xl shadow-sm space-y-3">
+                <!-- HEADER BÁO CÁO -->
+                <div class="flex justify-between items-start bg-gradient-to-r from-purple-50 to-indigo-50/40 p-3 rounded-xl border border-purple-100">
+                  <div>
+                    <span class="text-[10px] text-purple-600 font-extrabold uppercase tracking-wider block">
+                      BÁO CÁO KỲ: <span class="text-purple-900 text-sm font-black">${r.thang}</span>
+                    </span>
+                    <b class="text-slate-800 text-xs font-bold block mt-0.5">${tenHienThi}</b>${r.maBaoCao ? `<span class="text-[10px] text-slate-400 font-mono block mt-0.5">${r.maBaoCao}</span>` : ''}
+                  </div>
+                  <div class="text-right">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black ${isDungHan ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                      ${r.tienDo}
+                    </span>
+                    <span class="text-[10.5px] text-slate-500 block font-medium mt-1">${r.ngayNop || ''}</span>
+                  </div>
+                </div>
+
+                <!-- 14 CHỈ TIÊU -->
+                <div>
+                  <b class="text-purple-900 font-extrabold uppercase text-[11px] block mb-1.5 flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-simple text-purple-600"></i> I. Thống kê 14 chỉ tiêu:
+                  </b>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-[11px]">
+                    <div>• Tình nguyện: <b>${r.metrics?.ct1 ?? 0}</b></div>
+                    <div>• Sáng kiến/Ý tưởng: <b>${r.metrics?.ct2 ?? 0}</b></div>
+                    <div>• Tư vấn việc làm: <b>${r.metrics?.ct3 ?? 0}</b></div>
+                    <div>• Giới thiệu việc làm: <b>${r.metrics?.ct4 ?? 0}</b></div>
+                    <div>• Hỗ trợ khởi nghiệp: <b>${r.metrics?.ct5 ?? 0}</b></div>
+                    <div>• Tham gia ngoại ngữ: <b>${r.metrics?.ct6 ?? 0}</b></div>
+                    <div>• Cán bộ đạt B1: <b>${r.metrics?.ct7 ?? 0}</b></div>
+                    <div>• Đào tạo LLCT: <b>${r.metrics?.ct8 ?? 0}</b></div>
+                    <div>• Cảm tình Đảng: <b>${r.metrics?.ct9 ?? 0}</b></div>
+                    <div>• Giới thiệu Đảng: <b>${r.metrics?.ct10 ?? 0}</b></div>
+                    <div>• Kết nạp Đảng: <b>${r.metrics?.ct11 ?? 0}</b></div>
+                    <div>• Kết nạp Đoàn: <b>${r.metrics?.ct12 ?? 0}</b></div>
+                    <div>• Chi đoàn mới: <b>${r.metrics?.ct13 ?? 0}</b></div>
+                    <div>• Chi hội mới: <b>${r.metrics?.ct14 ?? 0}</b></div>
+                  </div>
+                </div>
+
+                <!-- NỘI DUNG CHI TIẾT -->
+                <div class="space-y-1.5 pt-1 border-t border-slate-100 text-slate-700">
+                  <b class="text-purple-900 font-extrabold uppercase text-[11px] block flex items-center gap-1.5">
+                    <i class="fa-solid fa-list-check text-purple-600"></i> II. Nội dung hoạt động chi tiết:
+                  </b>
+                  <div class="p-2 bg-slate-50/70 rounded-lg">
+                    <p class="font-bold text-slate-900">• 1.2 Đạo đức, tác phong:</p>
+                    <p class="pl-2.5 text-slate-600 mt-0.5">${r.qa_1_2 || "Không có"}</p>
+                  </div>
+                  <div class="p-2 bg-slate-50/70 rounded-lg">
+                    <p class="font-bold text-slate-900">• 1.3 Học tập, sáng tạo, NCKH:</p>
+                    <p class="pl-2.5 text-slate-600 mt-0.5">${r.qa_1_3 || "Không có"}</p>
+                  </div>
+                  <div class="p-2 bg-slate-50/70 rounded-lg">
+                    <p class="font-bold text-slate-900">• 1.4 Tình nguyện vì cộng đồng:</p>
+                    <p class="pl-2.5 text-slate-600 mt-0.5">${r.qa_1_4 || "Không có"}</p>
+                  </div>
+                  <div class="p-2 bg-slate-50/70 rounded-lg">
+                    <p class="font-bold text-slate-900">• 1.5 Rèn luyện thể chất:</p>
+                    <p class="pl-2.5 text-slate-600 mt-0.5">${r.qa_1_5 || "Không có"}</p>
+                  </div>
+                  <div class="p-2 bg-slate-50/70 rounded-lg">
+                    <p class="font-bold text-slate-900">• 1.6 Hội nhập quốc tế:</p>
+                    <p class="pl-2.5 text-slate-600 mt-0.5">${r.qa_1_6 || "Không có"}</p>
+                  </div>
+                  <div class="p-2 bg-slate-50/70 rounded-lg">
+                    <p class="font-bold text-slate-900">• 2. Tư vấn, hỗ trợ sinh viên:</p>
+                    <p class="pl-2.5 text-slate-600 mt-0.5">${r.qa_2_0 || "Không có"}</p>
+                  </div>
+                  <div class="p-2 bg-slate-50/70 rounded-lg">
+                    <p class="font-bold text-slate-900">• 3. Khó khăn & Kiến nghị:</p>
+                    <p class="pl-2.5 text-slate-600 mt-0.5">${r.kienNghi || "Không có"}</p>
+                  </div>
+                </div>
+
+                ${r.linkDrive ? `
+                  <div class="pt-2">
+                    <a href="${r.linkDrive}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 text-purple-700 font-bold rounded-xl border border-purple-200 hover:bg-purple-100 transition text-[11px]">
+                      <i class="fa-solid fa-folder-open"></i> Mở Thư Mục Drive Minh Chứng
+                    </a>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+
+      Swal.fire({
+        title: `<span class="text-sm font-black uppercase text-purple-950">Lịch Sử Toàn Bộ Báo Cáo Của Đơn Vị</span>`,
+        html: html,
+        width: '680px',
+        confirmButtonText: "Đóng",
+        confirmButtonColor: '#7c3aed'
+      });
     }
 
     // ==========================================
