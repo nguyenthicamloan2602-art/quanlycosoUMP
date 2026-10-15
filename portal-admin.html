@@ -1341,13 +1341,26 @@
       if (checkedBoxes.length === 0) {
         return Swal.fire("Chưa chọn hoạt động", "Vui lòng tick chọn ít nhất 1 dòng đơn để tạo công văn tổng hợp!", "warning");
       }
+
       let selectedItems = [];
       checkedBoxes.forEach(chk => {
         const item = loadedCsvcList.find(x => x.maDon === chk.value);
         if (item) selectedItems.push(item);
       });
 
-      Swal.fire({ title: "Đang tạo công văn Word...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      // SẮP XẾP LUÔN THEO THỜI GIAN SỬ DỤNG TỪ GẦN NHẤT ĐẾN XA NHẤT TRƯỚC KHI TẠO CV
+      selectedItems.sort((a, b) => {
+        const timeA = parseDateTimeText(a.batDau || a.rawBatDau);
+        const timeB = parseDateTimeText(b.batDau || b.rawBatDau);
+        return timeA - timeB; // Tăng dần: ngày gần nhất sẽ lên đầu tiên
+      });
+
+      Swal.fire({
+        title: "Đang tạo công văn Word tổng hợp...",
+        text: `Hệ thống đang ghép ${selectedItems.length} hoạt động theo thứ tự thời gian...`,
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
 
       try {
         const res = await fetch(API_URL, {
@@ -1361,10 +1374,10 @@
             icon: "success",
             title: "Tạo công văn thành công!",
             html: `
-              <p class="text-xs text-slate-600 mb-3">Đã tổng hợp <b>${selectedItems.length} hoạt động</b> vào file Word.</p>
+              <p class="text-xs text-slate-600 mb-3">Đã tổng hợp <b>${selectedItems.length} hoạt động</b> (theo thứ tự ngày diễn ra từ gần đến xa) vào file Word.</p>
               <div class="flex justify-center gap-2">
                 <a href="${data.downloadUrl}" target="_blank" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md">
-                  <i class="fa-solid fa-download mr-1"></i> Tải .docx
+                  <i class="fa-solid fa-download mr-1"></i> Tải file .docx
                 </a>
                 <a href="${data.docViewUrl}" target="_blank" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border">
                   Mở trên Docs
@@ -2999,6 +3012,13 @@
       checkedBoxes.forEach(chk => {
         const item = loadedCsvcList.find(x => x.maDon === chk.value);
         if (item) selectedItems.push(item);
+      });
+
+      // Thêm đoạn này ngay sau khi lấy mảng selectedItems:
+      selectedItems.sort((a, b) => {
+        const timeA = parseDateTimeText(a.batDau || a.rawBatDau);
+        const timeB = parseDateTimeText(b.batDau || b.rawBatDau);
+        return timeA - timeB;
       });
 
       const note = document.getElementById("mail_cv_note").value.trim();
