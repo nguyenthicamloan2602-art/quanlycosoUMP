@@ -590,7 +590,7 @@
             </div>
             <div class="flex items-center gap-2">
               <button onclick="luuXepLoaiCaBan()" id="btn-save-all-ban" class="px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black flex items-center gap-1.5 shadow-md transition">
-                <i class="fa-solid fa-floppy-disk"></i> <span id="label-save-ban">Lưu Đánh Giá Cả Đội</span>
+                <i class="fa-solid fa-floppy-disk"></i> <span id="label-save-ban">Lưu Đánh Giá</span>
               </button>
               <button onclick="xuatExcelXepLoaiCTV()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition">
                 <i class="fa-solid fa-file-excel"></i> Xuất file minh chứng
@@ -2462,7 +2462,7 @@
 
       const labelBtn = document.getElementById("label-save-ban");
       if (labelBtn) {
-        labelBtn.innerText = (banName === "ALL") ? "Lưu Đánh Giá Cả Đội" : `Lưu Đánh Giá ${banName}`;
+        labelBtn.innerText = (banName === "ALL") ? "Lưu Đánh Giá" : `Lưu Đánh Giá`;
       }
 
       if (banName === "ALL") {
@@ -2589,7 +2589,7 @@
         Swal.fire("Lỗi kết nối", err.message, "error");
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> <span id="label-save-ban">${currentSelectedBan === 'ALL' ? 'Lưu Đánh Giá Cả Đội' : `Lưu Đánh Giá ${currentSelectedBan}`}</span>`;
+        btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> <span id="label-save-ban">${currentSelectedBan === 'ALL' ? 'Lưu Đánh Giá' : `Lưu Đánh Giá`}</span>`;
       }
     }
 
