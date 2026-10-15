@@ -24,7 +24,6 @@
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
-    /* Đảm bảo FontAwesome luôn giữ đúng font biểu tượng, không bị ô chữ nhật */
     .fa, .fas, .far, .fa-solid, .fa-regular, .fa-brands, [class*="fa-"] {
       font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
     }
@@ -56,7 +55,6 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
 
-    /* Hiệu ứng mượt mà khi dữ liệu đang tải */
     .loading-pulse {
       display: inline-flex;
       align-items: center;
@@ -76,14 +74,12 @@
 <body class="bg-mesh min-h-screen flex flex-col lg:flex-row text-slate-800">
   <div class="fixed inset-0 grid-pattern pointer-events-none z-0"></div>
 
-
   <!-- OVERLAY MỜ TRÊN ĐIỆN THOẠI -->
   <div id="sidebar-overlay" onclick="toggleMobileSidebar(false)" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity"></div>
 
-  <!-- SIDEBAR DỌC QUẢN TRỊ VIÊN (ĐỒNG BỘ 100% CẤU TRÚC VỚI CTV) -->
+  <!-- SIDEBAR DỌC QUẢN TRỊ VIÊN -->
   <aside id="sidebar-admin" class="fixed inset-y-0 left-0 z-50 w-64 bg-white/95 border-r border-slate-200/90 flex flex-col justify-between p-4 shadow-2xl lg:shadow-sm transform -translate-x-full lg:translate-x-0 transition-transform duration-200 lg:static lg:h-screen overflow-y-auto shrink-0">
     <div class="space-y-4">
-      <!-- Cụm logo to và nút X đóng menu trên mobile -->
       <div class="px-2 pt-1 flex justify-between items-center">
         <img alt="Logo Đoàn Hội UMP" class="h-12 w-auto object-contain drop-shadow-sm" src="logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/f/f7/Logo_Đại_học_Y_Dược_TP.HCM.png'">
         <button onclick="toggleMobileSidebar(false)" class="lg:hidden p-1.5 text-slate-400 hover:text-slate-700 rounded-lg">
@@ -134,7 +130,6 @@
           <span id="badge-nav-pending-users" class="hidden bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded-full font-black animate-pulse">0</span>
         </button>
 
-        <!-- KHỐI TÍNH NĂNG MỞ RỘNG (ĐÃ KHÓA) -->
         <div class="pt-3 pb-1 px-2 text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">
           Tiện ích mở rộng
         </div>
@@ -155,9 +150,8 @@
       </nav>
     </div>
 
-    <!-- PROFILE VÀ TRẠNG THÁI CUỐI SIDEBAR -->
+    <!-- PROFILE FOOTER -->
     <div class="pt-3 border-t border-slate-200 space-y-2.5 mt-3">
-
       <div class="px-1 flex items-center justify-between">
         <div>
           <b class="text-xs font-bold text-slate-800 block truncate" id="user-footer-name">Ban Quản Trị</b>
@@ -170,14 +164,12 @@
     </div>
   </aside>
 
-
   <!-- MAIN VIEW QUẢN TRỊ VIÊN -->
   <main class="flex-1 p-4 md:p-8 space-y-6 overflow-y-auto z-10">
 
-    <!-- TOPBAR DUY NHẤT CHUẨN GIAO DIỆN (ĐỒNG BỘ 100% VỚI CTV) -->
+    <!-- TOPBAR -->
     <div class="flex justify-between items-center bg-white/90 backdrop-blur-md p-3.5 px-4 sm:px-6 rounded-2xl border border-slate-200/80 shadow-xs mb-2">
       <div class="flex items-center gap-3">
-        <!-- Nút 3 sọc mở Menu trên điện thoại -->
         <button onclick="toggleMobileSidebar(true)" class="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
           <i class="fa-solid fa-bars text-sm"></i>
         </button>
@@ -187,7 +179,6 @@
         </div>
       </div>
 
-      <!-- Cụm nút Đổi MK, Chuông & Đăng xuất -->
       <div class="flex items-center gap-2">
         <button onclick="openModalProfile()" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-xs">
           <i class="fa-solid fa-key text-sky-600 text-[11px]"></i> Đổi MK
@@ -227,505 +218,490 @@
       </div>
     </div>
 
-
     <!-- KHU VỰC CÁC TAB NỘI DUNG -->
     <div class="space-y-6">
-<section id="tab-csvc" class="space-y-4">
-          <div class="glass-card rounded-[28px] p-5 space-y-3">
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-3">
-              <div>
-                <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
-                  <i class="fa-solid fa-building text-sky-600"></i> Phê Duyệt Cơ Sở Vật Chất
-                </h2>
-                <p class="text-[11px] text-slate-400 mt-0.5">Chọn vào mỗi yêu cầu để xem chi tiết hoặc chọn nhiều yêu cầu để xuất công văn tổng hợp</p>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="xuatCongVanTongHopMulti()" class="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 transition">
-                  <i class="fa-solid fa-file-word"></i> Xuất Công Văn (<span id="count-selected-csvc">0</span>)
-                </button>
 
-                <!-- NÚT GỬI MAIL CÔNG VĂN ĐÃ KÝ -->
-                <button onclick="moModalGuiMailCongVan()" class="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 transition">
-                  <i class="fa-solid fa-paper-plane"></i> Gửi Mail CV Đã Ký
-                </button>
-
-                <button onclick="loadCsvcDataAdmin()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
-                  Làm mới
-                </button>
-              </div>
-            </div>
-
-            <!-- BẢNG DANH SÁCH CSVC -->
-            <!-- THANH TÌM KIẾM, BỘ LỌC VÀ SẮP XẾP CSVC -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 p-3 bg-slate-50 border border-slate-200/80 rounded-2xl text-xs">
-              <!-- 1. Ô tìm kiếm từ khóa -->
-              <div class="relative lg:col-span-1">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400"></i>
-                <input type="text" id="filter-csvc-search" oninput="applyCsvcFiltersAndSort()" placeholder="Tìm đơn vị, địa điểm..." class="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-sky-500 font-medium">
-              </div>
-
-              <!-- 2. Lọc theo trạng thái duyệt -->
-              <div>
-                <select id="filter-csvc-status" onchange="applyCsvcFiltersAndSort()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-slate-700 cursor-pointer focus:border-sky-500">
-                  <option value="ALL">📋 Tất cả trạng thái</option>
-                  <option value="Chờ duyệt" selected>⏳ Chờ duyệt</option>
-                  <option value="Đã duyệt">✅ Đã duyệt</option>
-                  <option value="Từ chối">❌ Từ chối</option>
-                </select>
-              </div>
-
-              <!-- 3. Lọc theo loại hình -->
-              <div>
-                <select id="filter-csvc-type" onchange="applyCsvcFiltersAndSort()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-slate-700 cursor-pointer focus:border-sky-500">
-                  <option value="ALL">🏛️ Tất cả loại CSVC</option>
-                  <option value="GiangDuong">🏫 Giảng đường</option>
-                  <option value="KhuonVien">📍 Sân, sảnh</option>
-                  <option value="XeRaVao">🚚 Xe ra vào</option>
-                </select>
-              </div>
-
-              <!-- 4. Lọc đơn cận ngày -->
-              <div>
-                <select id="filter-csvc-urgent" onchange="applyCsvcFiltersAndSort()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-slate-700 cursor-pointer focus:border-sky-500">
-                  <option value="ALL">⚡ Mọi mốc thời gian</option>
-                  <option value="URGENT">⚠️ Chỉ đơn Cận ngày (&lt;14 ngày)</option>
-                </select>
-              </div>
-
-              <!-- 5. Tùy chọn sắp xếp -->
-              <div>
-                <select id="filter-csvc-sort" onchange="applyCsvcFiltersAndSort()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-sky-800 cursor-pointer focus:border-sky-500">
-                  <option value="SUBMIT_DESC">🕒 Nộp: Mới nhất trước</option>
-                  <option value="SUBMIT_ASC">🕒 Nộp: Cũ nhất trước</option>
-                  <option value="USE_ASC">📅 Ngày sử dụng: Gần nhất</option>
-                </select>
-              </div>
-            </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs border border-slate-200 rounded-xl overflow-hidden min-w-[760px]">
-                <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 whitespace-nowrap">
-                  <tr>
-                    <th class="p-3 w-10 text-center"><input type="checkbox" id="chk-master-csvc" onchange="toggleSelectAllCsvc(this)" class="w-4 h-4 rounded text-sky-600"></th>
-                    <th class="p-3 min-w-[140px]">Địa điểm / Xe</th>
-                    <th class="p-3 min-w-[150px]">Người phụ trách & Đơn vị</th>
-                    <th class="p-3 min-w-[130px]">Thời gian sử dụng</th>
-                    <th class="p-3 min-w-[150px]">Nội dung sử dụng</th>
-                    <th class="p-3 text-center min-w-[120px]">Trạng thái</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-csvc-admin" class="divide-y divide-slate-100 bg-white">
-                  <tr><td colspan="7" class="text-center py-6 text-slate-400">Đang tải danh sách CSVC...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- ======================================================== -->
-        <!-- TAB 2: BÁO CÁO THÁNG (MỞ KHÓA THÁNG TÙY Ý & AI TỔNG HỢP) -->
-        <!-- ======================================================== -->
-        <section id="tab-baocao" class="hidden space-y-4">
-          <div class="glass-card rounded-[28px] p-5 space-y-3">
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-purple-100 pb-3">
-              <div>
-                <h2 class="font-extrabold text-sm text-purple-950 uppercase flex items-center gap-2">
-                  <i class="fa-solid fa-calendar-check text-purple-600"></i> CHẾ ĐỘ THÔNG TIN BÁO CÁO
-                </h2>
-                <p class="text-xs text-slate-500 mt-0.5">Mở khóa tháng cần báo cáo, sau thời gian ngày 20 hằng tháng kiểm tra và đóng báo cáo.</p>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="openModalAiBaoCao()" class="px-3.5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 transition">
-                  <i class="fa-solid fa-wand-magic-sparkles"></i> TỔNG HỢP BÁO CÁO
-                </button>
-              </div>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2 bg-purple-50/60 p-3 rounded-2xl border border-purple-100">
-              <span class="text-xs font-bold text-purple-950">Thời gian báo cáo:</span>
-              <input type="month" id="admin_new_month_input" value="2026-11" class="p-1.5 border border-purple-200 rounded-xl text-xs font-bold bg-white outline-none">
-              <button onclick="themVaDoiTrangThaiThang(true)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition">
-                <i class="fa-solid fa-lock-open mr-1"></i> MỞ ĐƠN
-              </button>
-              <button onclick="themVaDoiTrangThaiThang(false)" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition">
-                <i class="fa-solid fa-lock mr-1"></i> KHÓA ĐƠN
-              </button>
-            </div>
-
-            <div id="container-months-admin" class="flex flex-wrap gap-2 pt-2">
-              <span class="text-xs text-slate-400">Đang tải...</span>
-            </div>
-          </div>
-
-          <div class="glass-card rounded-[28px] p-5 space-y-3">
-            <h3 class="font-black text-xs text-purple-900 uppercase">Danh Sách các Đơn vị đã báo cáo</h3>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs border border-purple-100 rounded-xl overflow-hidden min-w-[700px]">
-                <thead class="bg-purple-50 text-purple-950 font-bold border-b border-purple-100 whitespace-nowrap">
-                  <tr>
-                    <th class="p-3">Mã BC</th>
-                    <th class="p-3">Thời gian nộp</th>
-                    <th class="p-3">Kỳ báo cáo</th>
-                    <th class="p-3">Tên Đơn Vị</th>
-                    <th class="p-3 text-center">Tiến độ nộp</th>
-                    <th class="p-3 text-center">Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-baocao-admin" class="divide-y divide-purple-50 bg-white">
-                  <tr><td colspan="6" class="text-center py-6 text-slate-400">Đang tải danh sách báo cáo...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- ======================================================== -->
-        <!-- TAB 3: LỊCH TRỰC CTV (CHỌN NGÀY & ĐIỂM DANH THEO NGÀY) -->
-        <!-- ======================================================== -->
-        <section id="tab-lich-truc" class="hidden space-y-4">
-          <div class="glass-card rounded-[28px] p-5 space-y-4">
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-3">
-              <div>
-                <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
-                  <i class="fa-solid fa-calendar-days text-amber-500"></i> QUẢN LÝ CA TRỰC
-                </h2>
-                <p class="text-xs text-slate-400 mt-0.5">Chọn ngày để xem danh sách CTV đăng ký ca trực và trạng thái điểm danh vào/ra ca</p>
-              </div>
-              <div class="flex items-center gap-2">
-                <label class="text-xs font-bold text-slate-600">Chọn ngày xem:</label>
-                <input type="date" id="admin_select_shift_date" onchange="loadLichTrucTheoNgayAdmin()" class="p-1.5 border border-amber-200 rounded-xl text-xs font-bold bg-white outline-none">
-                <button onclick="loadLichTrucTheoNgayAdmin()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition">
-                  Xem Lịch
-                </button>
-              </div>
-            </div>
-
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs border border-slate-200 rounded-xl overflow-hidden">
-                <thead class="bg-amber-50/70 text-amber-950 font-bold border-b border-amber-200">
-                  <tr>
-                    <th class="p-3 w-12 text-center">STT</th>
-                    <th class="p-3">Họ và Tên</th>
-                    <th class="p-3">Lớp</th>
-                    <th class="p-3 text-center">Khung Giờ Trực</th>
-                    <th class="p-3 text-center">Giờ Vào</th>
-                    <th class="p-3 text-center">Giờ Ra</th>
-                    <th class="p-3 text-center">Trạng Thái Điểm Danh</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-lich-truc-admin" class="divide-y divide-slate-100 bg-white">
-                  <tr><td colspan="7" class="text-center py-6 text-slate-400">Vui lòng chọn ngày để tra cứu ca trực.</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- ======================================================== -->
-        <!-- TAB 4: IMPORT DỮ LIỆU ĐỘNG THEO TAB VÀ 2 CỘT CHUẨN      -->
-        <!-- ======================================================== -->
-        <section id="tab-import-data" class="hidden space-y-6">
-          <!-- BẢNG DANH SÁCH FILE CTV GỬI VỀ ĐỂ QTV TẢI VỀ KIỂM TRA -->
-          <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-              <div>
-                <h3 class="text-base font-black text-slate-800 flex items-center gap-2">
-                  <i class="fa-solid fa-inbox text-sky-600"></i> CƠ SỞ DỮ LIỆU
-                </h3>
-                <p class="text-xs text-slate-400 mt-0.5">Tải file danh sách do CTV đính kèm về kiểm tra trước khi import vào hệ thống</p>
-              </div>
-              <button onclick="loadCtvSubmittedFilesAdmin()" class="px-3.5 py-1.5 bg-sky-50 text-sky-700 hover:bg-sky-100 font-bold rounded-xl text-xs transition flex items-center gap-1.5">
-                <i class="fa-solid fa-arrows-rotate"></i> Làm mới
-              </button>
-            </div>
-
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs border border-slate-200 rounded-2xl overflow-hidden min-w-[700px]">
-                <thead class="bg-slate-50 font-bold text-slate-700 border-b border-slate-200">
-                  <tr>
-                    <th class="p-3">Thời gian</th>
-                    <th class="p-3">CTV gửi</th>
-                    <th class="p-3">Chương trình / Hoạt động</th>
-                    <th class="p-3 text-center">Mục ĐRL</th>
-                    <th class="p-3 text-center">Trạng thái</th>
-                    <th class="p-3 text-center">Thao tác tải về</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-ctv-files-admin" class="divide-y divide-slate-100 bg-white">
-                  <tr><td colspan="6" class="text-center py-5 text-slate-400">Đang tải ...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-5">
+      <!-- ======================================================== -->
+      <!-- TAB 1: PHÊ DUYỆT CƠ SỞ VẬT CHẤT                          -->
+      <!-- ======================================================== -->
+      <section id="tab-csvc" class="space-y-4">
+        <div class="glass-card rounded-[28px] p-5 space-y-3">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-3">
             <div>
-              <h3 class="text-base font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-file-import text-sky-600"></i> IMPORT DỮ LIỆU HOẠT ĐỘNG & MINH CHỨNG
-              </h3>
-              <p class="text-xs text-slate-400 mt-1">File Excel chỉ cần 2 cột <b>MSSV</b> và <b>Vai trò</b> (hoặc Chức vụ). STT và Số công nhận tự động tăng.</p>
+              <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-building text-sky-600"></i> Phê Duyệt Cơ Sở Vật Chất
+              </h2>
+              <p class="text-[11px] text-slate-400 mt-0.5">Chọn vào mỗi yêu cầu để xem chi tiết & phê duyệt hoặc chọn nhiều yêu cầu để xuất công văn</p>
             </div>
+            <div class="flex items-center gap-2">
+              <button onclick="xuatCongVanTongHopMulti()" class="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-file-word"></i> Xuất Công Văn (<span id="count-selected-csvc">0</span>)
+              </button>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- 1. CHỌN FILE ĐÍCH -->
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">1. Chọn File Google Sheets Đích:</label>
-                <select id="sel-target-file" onchange="onSelectTargetFile()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-slate-50 focus:bg-white focus:border-sky-500 outline-none transition">
-                  <option value="">-- Chọn 1 trong 3 file hệ thống --</option>
-                  <option value="FILE_GIAY_CHUNG_NHAN">1. File Giấy Chứng Nhận (Giay_chung_nhan)</option>
-                  <option value="FILE_GIAY_XAC_NHAN">2. File Hoạt Động Đoàn - Hội (Giay_xac_nhan)</option>
-                  <option value="FILE_CLB">3. File CLB / Đội / Nhóm (Bieumaukhac2528)</option>
-                </select>
-              </div>
+              <button onclick="moModalGuiMailCongVan()" class="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-paper-plane"></i> Gửi Mail CV Đã Ký
+              </button>
 
-              <!-- 2. CHỌN TAB SHEET -->
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">2. Chọn Tab (Trang tính) Ghi Dữ Liệu:</label>
-                <select id="sel-target-tab" onchange="capNhatTruongThongTinChung()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-slate-50 focus:bg-white focus:border-sky-500 outline-none transition">
-                  <option value="">-- Vui lòng chọn file ở bước 1 trước --</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- 3. THÔNG TIN CHUNG CỐ ĐỊNH -->
-            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-              <div class="text-xs font-black text-slate-700 uppercase tracking-wider flex items-center justify-between">
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-amber-500"></i> 3. Thông tin chung điền cố định</span>
-                <span class="text-[11px] text-sky-600 font-bold" id="label-loai-form">Chờ chọn file...</span>
-              </div>
-              
-              <div id="group-hoatdong-fields" class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Tên chương trình / Hoạt động *</label>
-                  <input type="text" id="com_ten_ct" placeholder="VD: Hỗ trợ hậu cần khám phát thuốc Vũng Tàu" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
-                </div>
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Thời gian tổ chức / Ngày tham gia *</label>
-                  <input type="text" id="com_thoi_gian" placeholder="VD: 26,27/10/2025 hoặc 15/05/2026" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
-                </div>
-                <div id="wrap_muc_drl">
-                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Mục ĐRL *</label>
-                  <input type="text" id="com_muc_drl" value="3.1" oninput="this.value = this.value.replace(/,/g, '.')" placeholder="VD: 3.1" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
-                </div>
-              </div>
-
-              <div id="group-gcn-extra" class="grid grid-cols-1 md:grid-cols-3 gap-3 hidden pt-2 border-t border-slate-200">
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Năm (Dương lịch)</label>
-                  <input type="number" id="com_nam" value="2026" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
-                </div>
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Năm học</label>
-                  <input type="text" id="com_nam_hoc_gcn" value="2025 - 2026" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
-                </div>
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Đơn vị tổ chức</label>
-                  <input type="text" id="com_don_vi_to_chuc" value="Đoàn Thanh niên - Hội Sinh viên Đại học Y Dược TPHCM" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
-                </div>
-              </div>
-
-              <div id="group-clb-extra" class="grid grid-cols-1 md:grid-cols-3 gap-3 hidden">
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Tên đơn vị (CLB / Đội / Nhóm) *</label>
-                  <input type="text" id="com_ten_don_vi" placeholder="VD: Câu lạc bộ Bé khỏe Bé ngoan" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
-                </div>
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Học kì *</label>
-                  <input type="text" id="com_hoc_ki" value="1" placeholder="VD: 1 hoặc 2" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
-                </div>
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Năm học *</label>
-                  <input type="text" id="com_nam_hoc_clb" value="2025 - 2026" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
-                </div>
-              </div>
-            </div>
-
-            <!-- 4. TẢI FILE EXCEL 2 CỘT -->
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">4. Chọn File Excel / CSV (Chỉ cần 2 cột: MSSV và Vai trò/Chức vụ):</label>
-              <div class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-sky-500 transition cursor-pointer bg-slate-50/50" onclick="document.getElementById('input-file-excel-smart').click()">
-                <i class="fa-solid fa-file-excel text-3xl text-emerald-600 mb-2"></i>
-                <p class="text-xs font-bold text-slate-700" id="smart-file-name">Bấm để tải lên file .xlsx hoặc .csv</p>
-                <p class="text-[11px] text-slate-400 mt-1">Định dạng chuẩn: Cột 1 = MSSV | Cột 2 = Vai trò (hoặc Chức vụ)</p>
-              </div>
-              <input type="file" id="input-file-excel-smart" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleSmartExcelUpload(event)">
-            </div>
-
-            <button onclick="xacNhanImportSmart()" class="w-full py-3 bg-gradient-to-r from-sky-600 to-indigo-600 text-white rounded-xl text-xs font-black shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-cloud-arrow-up text-sm"></i> XÁC NHẬN GHI VÀO TAB ĐÃ CHỌN
-            </button>
-          </div>
-        </section>
-
-        <!-- ======================================================== -->
-        <!-- TAB 5: BÀN GIAO VẬT PHẨM & CHỤP ẢNH HIỆN TRẠNG TỪ CAMERA -->
-        <!-- ======================================================== -->
-        <section id="tab-vat-pham" class="hidden space-y-4">
-          <div class="glass-card rounded-[28px] p-5 space-y-3">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-              <div>
-                <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
-                  <i class="fa-solid fa-boxes-stacked text-emerald-600"></i> Quản lý Vật Phẩm
-                </h2>
-                <p class="text-xs text-slate-400 mt-0.5">Chọn GIAO khi bàn giao vật phẩm và NHẬN khi đơn vị trả vật phẩm, kiểm tra hiện trạng và ghi nhận hình ảnh</p>
-              </div>
-              <button onclick="loadDonVatPhamAdmin()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold transition">
-                <i class="fa-solid fa-arrows-rotate"></i> Làm mới
+              <button onclick="loadCsvcDataAdmin()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
+                Làm mới
               </button>
             </div>
-
-            <!-- BẢNG DANH SÁCH VẬT PHẨM -->
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs border border-slate-200 rounded-xl overflow-hidden min-w-[700px]">
-                <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 whitespace-nowrap">
-                  <tr>
-                    <th class="p-3 min-w-[150px]">Chương trình</th>
-                    <th class="p-3 min-w-[150px]">Thông tin người mượn</th>
-                    <th class="p-3 min-w-[130px]">Thời gian mượn - trả</th>
-                    <th class="p-3 min-w-[160px]">Danh mục đồ</th>
-                    <th class="p-3 text-center min-w-[110px]">Ảnh hiện trạng</th>
-                    <th class="p-3 text-center min-w-[120px]">Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-vatpham-admin" class="divide-y divide-slate-100 bg-white">
-                  <tr><td colspan="6" class="text-center py-6 text-slate-400">Đang tải phiếu mượn vật phẩm...</td></tr>
-                </tbody>
-              </table>
-            </div>
           </div>
-        </section>
 
-        <!-- ======================================================== -->
-        <!-- TAB 6: XẾP LOẠI CTV THEO BAN & XUẤT EXCEL -->
-        <!-- ======================================================== -->
-        <section id="tab-xep-loai" class="hidden space-y-4">
-          <div class="glass-card rounded-[28px] p-5 space-y-4">
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-3">
-              <div>
-                <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
-                  <i class="fa-solid fa-award text-rose-500"></i> Đánh Giá, Xếp Loại & Quản Lý Hồ Sơ CTV
-                </h2>
-                <p class="text-xs text-slate-400 mt-0.5">Dữ liệu đã được xác thực.</p>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="xuatExcelXepLoaiCTV()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition">
-                  <i class="fa-solid fa-file-excel"></i> Xuất file minh chứng
-                </button>
-                <button onclick="loadDanhSachCTVAdmin()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
-                  <i class="fa-solid fa-arrows-rotate"></i>
-                </button>
-              </div>
+          <!-- THANH TÌM KIẾM, BỘ LỌC VÀ SẮP XẾP CSVC -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 p-3 bg-slate-50 border border-slate-200/80 rounded-2xl text-xs">
+            <div class="relative lg:col-span-1">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400"></i>
+              <input type="text" id="filter-csvc-search" oninput="applyCsvcFiltersAndSort()" placeholder="Tìm đơn vị, địa điểm..." class="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-sky-500 font-medium">
             </div>
 
-            <!-- Bộ lọc theo Ban chuyên môn -->
-            <div class="flex items-center gap-3 bg-rose-50/50 p-3 rounded-2xl border border-rose-100">
-              <span class="text-xs font-bold text-rose-950">Lọc theo Ban chuyên môn:</span>
-              <select id="filter-ban-ctv" onchange="locDanhSachCTVTheoBan()" class="p-2 border border-rose-200 rounded-xl text-xs bg-white font-bold outline-none cursor-pointer">
-                <option value="ALL">-- Tất cả các Ban --</option>
-                <option value="Ban Nhân sự">Ban Nhân sự</option>
-                <option value="Ban Truyền thông">Ban Truyền thông</option>
-                <option value="Ban Sự kiện">Ban Sự kiện</option>
-                <option value="Ban Hậu cần">Ban Hậu cần</option>
+            <div>
+              <select id="filter-csvc-status" onchange="applyCsvcFiltersAndSort()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-slate-700 cursor-pointer focus:border-sky-500">
+                <option value="ALL">📋 Tất cả trạng thái</option>
+                <option value="Chờ duyệt" selected>⏳ Chờ duyệt</option>
+                <option value="Đã duyệt">✅ Đã duyệt</option>
+                <option value="Từ chối">❌ Từ chối</option>
               </select>
             </div>
 
-            <!-- BẢNG CTV 7 CỘT CHUẨN -->
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs border border-rose-100 rounded-xl overflow-hidden min-w-[860px]">
-                <thead class="bg-rose-50/70 text-rose-950 font-bold border-b border-rose-100 whitespace-nowrap">
-                  <tr>
-                    <th class="p-3 w-12 text-center">STT</th>
-                    <th class="p-3 w-28">MSSV</th>
-                    <th class="p-3 min-w-[200px]">Họ và Tên</th>
-                    <th class="p-3 w-36">Ban</th>
-                    <th class="p-3 text-center w-36">Trực văn phòng</th>
-                    <th class="p-3 text-center w-40">Hoạt động tham gia</th>
-                    <th class="p-3 text-center w-48">Xếp loại QTV</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-ctv-admin" class="divide-y divide-rose-50 bg-white">
-                  <tr>
-                    <td colspan="7" class="text-center py-6 text-slate-400 whitespace-nowrap">
-                      <i class="fa-solid fa-spinner fa-spin mr-1.5 text-rose-500"></i> Đang tải danh sách CTV từ Google Sheets...
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- ======================================================== -->
-        <!-- TAB 7: QUẢN LÝ HOẠT ĐỘNG (CÓ NÚT TẠO MỚI & XEM DANH SÁCH CTV) -->
-        <!-- ======================================================== -->
-        <section id="tab-hoat-dong" class="hidden space-y-4">
-          <div class="glass-card rounded-[28px] p-5 space-y-4">
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-3">
-              <div>
-                <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
-                  <i class="fa-solid fa-bullhorn text-sky-600"></i> QUẢN LÝ HOẠT ĐỘNG
-                </h2>
-                <p class="text-xs text-slate-400 mt-0.5">Tạo hoạt động mới, hệ thống tự động đóng đơn khi đủ CTV, QTV điểm danh BTC để xác nhận quyền lợi</p>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="openModalTaoHoatDongMoi()" class="px-3.5 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition">
-                  <i class="fa-solid fa-plus"></i> Tạo Hoạt Động Mới
-                </button>
-                <button onclick="loadHoatDongCTVAdmin()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
-                  <i class="fa-solid fa-arrows-rotate"></i>
-                </button>
-              </div>
+            <div>
+              <select id="filter-csvc-type" onchange="applyCsvcFiltersAndSort()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-slate-700 cursor-pointer focus:border-sky-500">
+                <option value="ALL">🏛️ Tất cả loại CSVC</option>
+                <option value="GiangDuong">🏫 Giảng đường</option>
+                <option value="KhuonVien">📍 Sân, sảnh</option>
+                <option value="XeRaVao">🚚 Xe ra vào</option>
+              </select>
             </div>
 
-            <div id="container-hoat-dong-list" class="space-y-4">
-              <p class="text-xs text-slate-400 text-center py-6">Đang tải danh sách hoạt động...</p>
+            <div>
+              <select id="filter-csvc-urgent" onchange="applyCsvcFiltersAndSort()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-slate-700 cursor-pointer focus:border-sky-500">
+                <option value="ALL">⚡ Mọi mốc thời gian</option>
+                <option value="URGENT">⚠️ Chỉ đơn Cận ngày (&lt;14 ngày)</option>
+              </select>
+            </div>
+
+            <div>
+              <select id="filter-csvc-sort" onchange="applyCsvcFiltersAndSort()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-sky-800 cursor-pointer focus:border-sky-500">
+                <option value="SUBMIT_DESC">🕒 Nộp: Mới nhất trước</option>
+                <option value="SUBMIT_ASC">🕒 Nộp: Cũ nhất trước</option>
+                <option value="USE_ASC">📅 Ngày sử dụng: Gần nhất</option>
+              </select>
             </div>
           </div>
-        </section>
-        <!-- ======================================================== -->
-        <!-- TAB 8: DUYỆT TÀI KHOẢN MỚI ĐĂNG KÝ                     -->
-        <!-- ======================================================== -->
-        <section id="tab-tai-khoan" class="hidden space-y-4">
-          <div class="glass-card rounded-[28px] p-5 space-y-3">
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-3">
-              <div>
-                <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
-                  <i class="fa-solid fa-user-check text-emerald-600"></i> Phê Duyệt Hồ Sơ Cấp Tài Khoản
-                </h2>
-                <p class="text-[11px] text-slate-400 mt-0.5">Danh sách các tài khoản người dùng và CTV đăng ký tự do đang chờ BTV xét duyệt kích hoạt</p>
-              </div>
-              <button onclick="loadPendingAccountsAdmin()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
-                <i class="fa-solid fa-arrows-rotate"></i> Làm mới
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border border-slate-200 rounded-xl overflow-hidden min-w-[760px]">
+              <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 whitespace-nowrap">
+                <tr>
+                  <th class="p-3 w-10 text-center"><input type="checkbox" id="chk-master-csvc" onchange="toggleSelectAllCsvc(this)" class="w-4 h-4 rounded text-sky-600"></th>
+                  <th class="p-3 min-w-[140px]">Địa điểm / Xe</th>
+                  <th class="p-3 min-w-[150px]">Người phụ trách & Đơn vị</th>
+                  <th class="p-3 min-w-[130px]">Thời gian sử dụng</th>
+                  <th class="p-3 min-w-[150px]">Nội dung sử dụng</th>
+                  <th class="p-3 text-center min-w-[120px]">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-csvc-admin" class="divide-y divide-slate-100 bg-white">
+                <tr><td colspan="6" class="text-center py-6 text-slate-400">Đang tải danh sách CSVC...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- TAB 2: BÁO CÁO THÁNG                                     -->
+      <!-- ======================================================== -->
+      <section id="tab-baocao" class="hidden space-y-4">
+        <div class="glass-card rounded-[28px] p-5 space-y-3">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-purple-100 pb-3">
+            <div>
+              <h2 class="font-extrabold text-sm text-purple-950 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-calendar-check text-purple-600"></i> CHẾ ĐỘ THÔNG TIN BÁO CÁO
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Mở khóa tháng cần báo cáo, sau thời gian ngày 20 hằng tháng kiểm tra và đóng báo cáo.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="openModalAiBaoCao()" class="px-3.5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> TỔNG HỢP BÁO CÁO
               </button>
             </div>
+          </div>
 
-            <!-- BẢNG DANH SÁCH TÀI KHOẢN CHỜ DUYỆT -->
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs border border-slate-200 rounded-xl overflow-hidden min-w-[760px]">
-                <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 whitespace-nowrap">
-                  <tr>
-                    <th class="p-3 w-12 text-center">STT</th>
-                    <th class="p-3 min-w-[130px]">Tên đăng nhập / MSSV</th>
-                    <th class="p-3 min-w-[170px]">Họ và Tên / Đơn vị</th>
-                    <th class="p-3 text-center min-w-[100px]">Vai trò</th>
-                    <th class="p-3 min-w-[150px]">Lớp / Ban / Email</th>
-                    <th class="p-3 text-center min-w-[110px]">Trạng thái</th>
-                    <th class="p-3 text-center min-w-[170px]">Hành động</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-pending-accounts" class="divide-y divide-slate-100 bg-white">
-                  <tr><td colspan="7" class="text-center py-6 text-slate-400">Đang tải danh sách tài khoản chờ duyệt...</td></tr>
-                </tbody>
-              </table>
+          <div class="flex flex-wrap items-center gap-2 bg-purple-50/60 p-3 rounded-2xl border border-purple-100">
+            <span class="text-xs font-bold text-purple-950">Thời gian báo cáo:</span>
+            <input type="month" id="admin_new_month_input" value="2026-11" class="p-1.5 border border-purple-200 rounded-xl text-xs font-bold bg-white outline-none">
+            <button onclick="themVaDoiTrangThaiThang(true)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition">
+              <i class="fa-solid fa-lock-open mr-1"></i> MỞ ĐƠN
+            </button>
+            <button onclick="themVaDoiTrangThaiThang(false)" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition">
+              <i class="fa-solid fa-lock mr-1"></i> KHÓA ĐƠN
+            </button>
+          </div>
+
+          <div id="container-months-admin" class="flex flex-wrap gap-2 pt-2">
+            <span class="text-xs text-slate-400">Đang tải...</span>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-[28px] p-5 space-y-3">
+          <h3 class="font-black text-xs text-purple-900 uppercase">Danh Sách các Đơn vị đã báo cáo</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border border-purple-100 rounded-xl overflow-hidden min-w-[700px]">
+              <thead class="bg-purple-50 text-purple-950 font-bold border-b border-purple-100 whitespace-nowrap">
+                <tr>
+                  <th class="p-3">Mã BC</th>
+                  <th class="p-3">Thời gian nộp</th>
+                  <th class="p-3">Kỳ báo cáo</th>
+                  <th class="p-3">Tên Đơn Vị</th>
+                  <th class="p-3 text-center">Tiến độ nộp</th>
+                  <th class="p-3 text-center">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-baocao-admin" class="divide-y divide-purple-50 bg-white">
+                <tr><td colspan="6" class="text-center py-6 text-slate-400">Đang tải danh sách báo cáo...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- TAB 3: LỊCH TRỰC CTV                                     -->
+      <!-- ======================================================== -->
+      <section id="tab-lich-truc" class="hidden space-y-4">
+        <div class="glass-card rounded-[28px] p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-calendar-days text-amber-500"></i> QUẢN LÝ CA TRỰC
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Chọn ngày để xem danh sách CTV đăng ký ca trực và trạng thái điểm danh</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-bold text-slate-600">Chọn ngày xem:</label>
+              <input type="date" id="admin_select_shift_date" onchange="loadLichTrucTheoNgayAdmin()" class="p-1.5 border border-amber-200 rounded-xl text-xs font-bold bg-white outline-none">
+              <button onclick="loadLichTrucTheoNgayAdmin()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition">
+                Xem Lịch
+              </button>
             </div>
           </div>
-        </section>
 
-      </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border border-slate-200 rounded-xl overflow-hidden">
+              <thead class="bg-amber-50/70 text-amber-950 font-bold border-b border-amber-200">
+                <tr>
+                  <th class="p-3 w-12 text-center">STT</th>
+                  <th class="p-3">Họ và Tên</th>
+                  <th class="p-3">Lớp</th>
+                  <th class="p-3 text-center">Khung Giờ Trực</th>
+                  <th class="p-3 text-center">Giờ Vào</th>
+                  <th class="p-3 text-center">Giờ Ra</th>
+                  <th class="p-3 text-center">Trạng Thái Điểm Danh</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-lich-truc-admin" class="divide-y divide-slate-100 bg-white">
+                <tr><td colspan="7" class="text-center py-6 text-slate-400">Vui lòng chọn ngày để tra cứu ca trực.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- TAB 4: IMPORT DỮ LIỆU ĐỘNG                               -->
+      <!-- ======================================================== -->
+      <section id="tab-import-data" class="hidden space-y-6">
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-base font-black text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-inbox text-sky-600"></i> CƠ SỞ DỮ LIỆU
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">Tải file danh sách do CTV đính kèm về kiểm tra trước khi import vào hệ thống</p>
+            </div>
+            <button onclick="loadCtvSubmittedFilesAdmin()" class="px-3.5 py-1.5 bg-sky-50 text-sky-700 hover:bg-sky-100 font-bold rounded-xl text-xs transition flex items-center gap-1.5">
+              <i class="fa-solid fa-arrows-rotate"></i> Làm mới
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border border-slate-200 rounded-2xl overflow-hidden min-w-[700px]">
+              <thead class="bg-slate-50 font-bold text-slate-700 border-b border-slate-200">
+                <tr>
+                  <th class="p-3">Thời gian</th>
+                  <th class="p-3">CTV gửi</th>
+                  <th class="p-3">Chương trình / Hoạt động</th>
+                  <th class="p-3 text-center">Mục ĐRL</th>
+                  <th class="p-3 text-center">Trạng thái</th>
+                  <th class="p-3 text-center">Thao tác tải về</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-ctv-files-admin" class="divide-y divide-slate-100 bg-white">
+                <tr><td colspan="6" class="text-center py-5 text-slate-400">Đang tải ...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-5">
+          <div>
+            <h3 class="text-base font-black text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-file-import text-sky-600"></i> IMPORT DỮ LIỆU HOẠT ĐỘNG & MINH CHỨNG
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">File Excel chỉ cần 2 cột <b>MSSV</b> và <b>Vai trò</b> (hoặc Chức vụ). STT và Số công nhận tự động tăng.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">1. Chọn File Google Sheets Đích:</label>
+              <select id="sel-target-file" onchange="onSelectTargetFile()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-slate-50 focus:bg-white focus:border-sky-500 outline-none transition">
+                <option value="">-- Chọn 1 trong 3 file hệ thống --</option>
+                <option value="FILE_GIAY_CHUNG_NHAN">1. File Giấy Chứng Nhận (Giay_chung_nhan)</option>
+                <option value="FILE_GIAY_XAC_NHAN">2. File Hoạt Động Đoàn - Hội (Giay_xac_nhan)</option>
+                <option value="FILE_CLB">3. File CLB / Đội / Nhóm (Bieumaukhac2528)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">2. Chọn Tab (Trang tính) Ghi Dữ Liệu:</label>
+              <select id="sel-target-tab" onchange="capNhatTruongThongTinChung()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-slate-50 focus:bg-white focus:border-sky-500 outline-none transition">
+                <option value="">-- Vui lòng chọn file ở bước 1 trước --</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+            <div class="text-xs font-black text-slate-700 uppercase tracking-wider flex items-center justify-between">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-amber-500"></i> 3. Thông tin chung điền cố định</span>
+              <span class="text-[11px] text-sky-600 font-bold" id="label-loai-form">Chờ chọn file...</span>
+            </div>
+            
+            <div id="group-hoatdong-fields" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Tên chương trình / Hoạt động *</label>
+                <input type="text" id="com_ten_ct" placeholder="VD: Hỗ trợ hậu cần khám phát thuốc Vũng Tàu" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Thời gian tổ chức / Ngày tham gia *</label>
+                <input type="text" id="com_thoi_gian" placeholder="VD: 26,27/10/2025 hoặc 15/05/2026" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
+              </div>
+              <div id="wrap_muc_drl">
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Mục ĐRL *</label>
+                <input type="text" id="com_muc_drl" value="3.1" oninput="this.value = this.value.replace(/,/g, '.')" placeholder="VD: 3.1" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
+              </div>
+            </div>
+
+            <div id="group-gcn-extra" class="grid grid-cols-1 md:grid-cols-3 gap-3 hidden pt-2 border-t border-slate-200">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Năm (Dương lịch)</label>
+                <input type="number" id="com_nam" value="2026" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Năm học</label>
+                <input type="text" id="com_nam_hoc_gcn" value="2025 - 2026" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Đơn vị tổ chức</label>
+                <input type="text" id="com_don_vi_to_chuc" value="Đoàn Thanh niên - Hội Sinh viên Đại học Y Dược TPHCM" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
+              </div>
+            </div>
+
+            <div id="group-clb-extra" class="grid grid-cols-1 md:grid-cols-3 gap-3 hidden">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Tên đơn vị (CLB / Đội / Nhóm) *</label>
+                <input type="text" id="com_ten_don_vi" placeholder="VD: Câu lạc bộ Bé khỏe Bé ngoan" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Học kì *</label>
+                <input type="text" id="com_hoc_ki" value="1" placeholder="VD: 1 hoặc 2" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Năm học *</label>
+                <input type="text" id="com_nam_hoc_clb" value="2025 - 2026" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold bg-white outline-none">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">4. Chọn File Excel / CSV (Chỉ cần 2 cột: MSSV và Vai trò/Chức vụ):</label>
+            <div class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-sky-500 transition cursor-pointer bg-slate-50/50" onclick="document.getElementById('input-file-excel-smart').click()">
+              <i class="fa-solid fa-file-excel text-3xl text-emerald-600 mb-2"></i>
+              <p class="text-xs font-bold text-slate-700" id="smart-file-name">Bấm để tải lên file .xlsx hoặc .csv</p>
+              <p class="text-[11px] text-slate-400 mt-1">Định dạng chuẩn: Cột 1 = MSSV | Cột 2 = Vai trò (hoặc Chức vụ)</p>
+            </div>
+            <input type="file" id="input-file-excel-smart" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleSmartExcelUpload(event)">
+          </div>
+
+          <button onclick="xacNhanImportSmart()" class="w-full py-3 bg-gradient-to-r from-sky-600 to-indigo-600 text-white rounded-xl text-xs font-black shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-cloud-arrow-up text-sm"></i> XÁC NHẬN GHI VÀO TAB ĐÃ CHỌN
+          </button>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- TAB 5: BÀN GIAO VẬT PHẨM                                  -->
+      <!-- ======================================================== -->
+      <section id="tab-vat-pham" class="hidden space-y-4">
+        <div class="glass-card rounded-[28px] p-5 space-y-3">
+          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+            <div>
+              <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-boxes-stacked text-emerald-600"></i> Quản lý Vật Phẩm
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Bàn giao & nhận trả vật phẩm, kiểm tra hiện trạng và lưu hình ảnh minh chứng</p>
+            </div>
+            <button onclick="loadDonVatPhamAdmin()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold transition">
+              <i class="fa-solid fa-arrows-rotate"></i> Làm mới
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border border-slate-200 rounded-xl overflow-hidden min-w-[700px]">
+              <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 whitespace-nowrap">
+                <tr>
+                  <th class="p-3 min-w-[150px]">Chương trình</th>
+                  <th class="p-3 min-w-[150px]">Thông tin người mượn</th>
+                  <th class="p-3 min-w-[130px]">Thời gian mượn - trả</th>
+                  <th class="p-3 min-w-[160px]">Danh mục đồ</th>
+                  <th class="p-3 text-center min-w-[110px]">Ảnh hiện trạng</th>
+                  <th class="p-3 text-center min-w-[120px]">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-vatpham-admin" class="divide-y divide-slate-100 bg-white">
+                <tr><td colspan="6" class="text-center py-6 text-slate-400">Đang tải phiếu mượn vật phẩm...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- TAB 6: XẾP LOẠI CTV THEO TỪNG BAN (LƯU TẬP TRUNG)        -->
+      <!-- ======================================================== -->
+      <section id="tab-xep-loai" class="hidden space-y-4">
+        <div class="glass-card rounded-[28px] p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-award text-rose-500"></i> Đánh Giá, Xếp Loại & Quản Lý Hồ Sơ CTV
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Chọn từng Ban, điều chỉnh xếp loại của các thành viên rồi bấm nút Lưu một lần duy nhất.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="luuXepLoaiCaBan()" id="btn-save-all-ban" class="px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black flex items-center gap-1.5 shadow-md transition">
+                <i class="fa-solid fa-floppy-disk"></i> <span id="label-save-ban">Lưu Đánh Giá Cả Đội</span>
+              </button>
+              <button onclick="xuatExcelXepLoaiCTV()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition">
+                <i class="fa-solid fa-file-excel"></i> Xuất file minh chứng
+              </button>
+              <button onclick="loadDanhSachCTVAdmin()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
+                <i class="fa-solid fa-arrows-rotate"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- TAG CHỌN BAN CHUYÊN MÔN -->
+          <div class="space-y-1.5">
+            <span class="text-[11px] font-bold text-slate-500 block">Chọn Ban chuyên môn:</span>
+            <div id="container-ban-tabs" class="flex flex-wrap items-center gap-2"></div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border border-rose-100 rounded-xl overflow-hidden min-w-[800px]">
+              <thead class="bg-rose-50/70 text-rose-950 font-bold border-b border-rose-100 whitespace-nowrap">
+                <tr>
+                  <th class="p-3 w-12 text-center">STT</th>
+                  <th class="p-3 w-28">MSSV</th>
+                  <th class="p-3 min-w-[200px]">Họ và Tên</th>
+                  <th class="p-3 w-32">Ban</th>
+                  <th class="p-3 text-center w-32">Trực văn phòng</th>
+                  <th class="p-3 text-center w-36">Hoạt động tham gia</th>
+                  <th class="p-3 text-center w-52">Xếp loại QTV</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-ctv-admin" class="divide-y divide-rose-50 bg-white">
+                <tr>
+                  <td colspan="7" class="text-center py-6 text-slate-400 whitespace-nowrap">
+                    <i class="fa-solid fa-spinner fa-spin mr-1.5 text-rose-500"></i> Đang tải danh sách CTV từ Google Sheets...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- TAB 7: QUẢN LÝ HOẠT ĐỘNG                                 -->
+      <!-- ======================================================== -->
+      <section id="tab-hoat-dong" class="hidden space-y-4">
+        <div class="glass-card rounded-[28px] p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-bullhorn text-sky-600"></i> QUẢN LÝ HOẠT ĐỘNG
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Tạo hoạt động mới, hệ thống tự động đóng đơn khi đủ CTV, QTV điểm danh để xác nhận quyền lợi</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="openModalTaoHoatDongMoi()" class="px-3.5 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition">
+                <i class="fa-solid fa-plus"></i> Tạo Hoạt Động Mới
+              </button>
+              <button onclick="loadHoatDongCTVAdmin()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
+                <i class="fa-solid fa-arrows-rotate"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="container-hoat-dong-list" class="space-y-4">
+            <p class="text-xs text-slate-400 text-center py-6">Đang tải danh sách hoạt động...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- TAB 8: DUYỆT TÀI KHOẢN MỚI                               -->
+      <!-- ======================================================== -->
+      <section id="tab-tai-khoan" class="hidden space-y-4">
+        <div class="glass-card rounded-[28px] p-5 space-y-3">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-user-check text-emerald-600"></i> Phê Duyệt Hồ Sơ Cấp Tài Khoản
+              </h2>
+              <p class="text-[11px] text-slate-400 mt-0.5">Danh sách các tài khoản người dùng và CTV đăng ký tự do đang chờ xét duyệt</p>
+            </div>
+            <button onclick="loadPendingAccountsAdmin()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+              <i class="fa-solid fa-arrows-rotate"></i> Làm mới
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border border-slate-200 rounded-xl overflow-hidden min-w-[760px]">
+              <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 whitespace-nowrap">
+                <tr>
+                  <th class="p-3 w-12 text-center">STT</th>
+                  <th class="p-3 min-w-[130px]">Tên đăng nhập / MSSV</th>
+                  <th class="p-3 min-w-[170px]">Họ và Tên / Đơn vị</th>
+                  <th class="p-3 text-center min-w-[100px]">Vai trò</th>
+                  <th class="p-3 min-w-[150px]">Lớp / Ban / Email</th>
+                  <th class="p-3 text-center min-w-[110px]">Trạng thái</th>
+                  <th class="p-3 text-center min-w-[170px]">Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-pending-accounts" class="divide-y divide-slate-100 bg-white">
+                <tr><td colspan="7" class="text-center py-6 text-slate-400">Đang tải danh sách tài khoản chờ duyệt...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
     </div>
   </main>
-    </div>
 
-<!-- MODAL TẠO HOẠT ĐỘNG MỚI ĐẦY ĐỦ TIÊU CHÍ (QTV) -->
+  <!-- MODAL TẠO HOẠT ĐỘNG MỚI (QTV) -->
   <div id="modal-create-activity" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-xl w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-2">
@@ -752,7 +728,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label class="block font-bold text-slate-700 mb-1">Thời gian tổ chức (Từ mấy giờ đến mấy giờ) *</label>
+            <label class="block font-bold text-slate-700 mb-1">Thời gian tổ chức *</label>
             <input type="text" id="act_thoi_gian" required placeholder="VD: 07:00 - 11:30 ngày 25/10/2026" class="w-full p-2.5 border rounded-xl bg-slate-50 font-bold outline-none focus:border-sky-500">
           </div>
           <div>
@@ -767,13 +743,13 @@
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Quyền lợi CTV tham gia (Nhiều quyền lợi) *</label>
-          <textarea id="act_quyen_loi" rows="3" required placeholder="VD: - Cộng 3 ca trực quy đổi&#10;- Giấy chứng nhận hoàn thành nhiệm vụ cấp trường&#10;- Bồi dưỡng ăn trưa & nước uống..." class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500 font-medium leading-relaxed"></textarea>
+          <label class="block font-bold text-slate-700 mb-1">Quyền lợi CTV tham gia *</label>
+          <textarea id="act_quyen_loi" rows="3" required placeholder="VD: - Cộng 3 ca trực quy đổi&#10;- Giấy chứng nhận hoàn thành nhiệm vụ cấp trường..." class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500 font-medium leading-relaxed"></textarea>
         </div>
 
         <div class="p-3.5 bg-sky-50/60 border border-sky-100 rounded-2xl space-y-2">
           <div class="flex justify-between items-center">
-            <span class="font-black text-sky-950 uppercase text-[11px]"><i class="fa-solid fa-users mr-1"></i> Nội dung tuyển dụng & Vị trí phân công:</span>
+            <span class="font-black text-sky-950 uppercase text-[11px]"><i class="fa-solid fa-users mr-1"></i> Vị trí phân công:</span>
             <button type="button" onclick="themDongViTriTuyen()" class="px-2.5 py-1 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-[10.5px] font-bold">
               <i class="fa-solid fa-plus mr-1"></i> Thêm vị trí
             </button>
@@ -796,11 +772,11 @@
     </div>
   </div>
 
-  <!-- MODAL CHỤP ẢNH HIỆN TRẠNG BÀN GIAO VẬT PHẨM (CAMERA) -->
+  <!-- MODAL CHỤP ẢNH BÀN GIAO VẬT PHẨM -->
   <div id="modal-camera-vp" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center">
       <h3 class="font-black text-xs uppercase text-slate-800">Chụp Ảnh Hiện Trạng Vật Phẩm</h3>
-      <p class="text-[11px] text-slate-500 leading-relaxed">Chụp trực tiếp từ camera điện thoại/laptop để lưu làm minh chứng bàn giao hoặc hoàn trả</p>
+      <p class="text-[11px] text-slate-500 leading-relaxed">Chụp ảnh camera hoặc tải ảnh lên làm minh chứng bàn giao hoặc hoàn trả</p>
       
       <div class="space-y-3">
         <input type="file" id="camera_input" accept="image/*" capture="environment" onchange="previewCapturedImage(this)" class="w-full text-xs">
@@ -816,7 +792,7 @@
     </div>
   </div>
 
-  <!-- MODAL CẬP NHẬT THÔNG TIN CÁ NHÂN QUẢN TRỊ VIÊN -->
+  <!-- MODAL PROFILE ADMIN -->
   <div id="modal-profile" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
       <div class="flex justify-between items-center border-b pb-2">
@@ -840,7 +816,8 @@
       </form>
     </div>
   </div>
-  <!-- MODAL ĐÍNH KÈM CÔNG VĂN ĐÃ KÝ ĐỂ GỬI MAIL -->
+
+  <!-- MODAL GỬI MAIL CÔNG VĂN ĐÃ KÝ -->
   <div id="modal-send-cv-mail" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
       <div class="flex justify-between items-center border-b pb-2">
@@ -857,11 +834,11 @@
 
         <div>
           <label class="block font-bold text-slate-700 mb-1">Ghi chú kèm theo trong email (Tùy chọn):</label>
-          <textarea id="mail_cv_note" rows="2" placeholder="VD: Đề nghị các đơn vị liên hệ phòng QTTB nhận chìa khóa trước 15 phút..." class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none text-xs"></textarea>
+          <textarea id="mail_cv_note" rows="2" placeholder="VD: Đề nghị các đơn vị liên hệ phòng QTTB nhận chìa khóa..." class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none text-xs"></textarea>
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Đính kèm file Công văn đã ký (PDF, Word hoặc Ảnh Scan) *:</label>
+          <label class="block font-bold text-slate-700 mb-1">Đính kèm file Công văn đã ký (PDF, Word, Ảnh) *:</label>
           <div class="border-2 border-dashed border-slate-200 rounded-2xl p-4 text-center cursor-pointer hover:border-emerald-500 transition bg-slate-50" onclick="document.getElementById('input-file-cv-signed').click()">
             <i class="fa-solid fa-file-circle-check text-2xl text-emerald-600 mb-1"></i>
             <p class="text-xs font-bold text-slate-700" id="signed-file-name">Bấm để chọn file công văn</p>
@@ -877,13 +854,15 @@
       </div>
     </div>
   </div>
-  </main>
 
-<script src="./config.js"></script>
+  <script src="./config.js"></script>
   <script>
     let loadedCsvcList = [];
     let loadedBaoCaoList = [];
     let loadedHoatDongList = [];
+    let loadedCTVList = [];
+    let currentSelectedBan = "ALL";
+
     let activePhotoMaDon = "";
     let activePhotoType = "BAN_GIAO";
     let activePhotoBase64 = "";
@@ -903,7 +882,6 @@
         }
       } catch(e) {}
 
-      // TỐI ƯU TỐC ĐỘ: CHỈ TẢI TAB ĐẦU TIÊN (CSVC) VÀ BADGE TÀI KHOẢN CHỜ
       loadCsvcDataAdmin();
       loadPendingAccountsAdmin();
       
@@ -911,12 +889,10 @@
       const shiftDateInput = document.getElementById("admin_select_shift_date");
       if (shiftDateInput) shiftDateInput.value = todayIso;
 
-      // Giãn thời gian kiểm tra thông báo (chạy sau 3 giây và lặp lại mỗi 2 phút thay vì 30s)
       setTimeout(fetchSystemNotifications, 3000);
       setInterval(fetchSystemNotifications, 120000);
     });
 
-    // Hàm quy đổi khung giờ sang tiết học chuẩn ĐH Y Dược TP.HCM
     function quyDoiGioSangTietUMP(batDauStr, ketThucStr) {
       try {
         if (!batDauStr || !ketThucStr) return "";
@@ -933,18 +909,16 @@
         const startMin = hStart * 60 + mStart;
         const endMin = hEnd * 60 + mEnd;
 
-        // Tiết 1: 07:00, Tiết 2: 07:50, Tiết 3: 08:50, Tiết 4: 09:40, Tiết 5: 10:30 (kết thúc ~11:30)
-        // Tiết 6: 13:00, Tiết 7: 13:50, Tiết 8: 14:50, Tiết 9: 15:40, Tiết 10: 16:30 (kết thúc ~17:20)
         let tietBD = 1;
-        if (startMin < 450) tietBD = 1;       // Trước 07:30 -> Tiết 1
-        else if (startMin < 510) tietBD = 2;  // ~07:50 -> Tiết 2
-        else if (startMin < 570) tietBD = 3;  // ~08:50 -> Tiết 3
-        else if (startMin < 630) tietBD = 4;  // ~09:40 -> Tiết 4
-        else if (startMin < 750) tietBD = 5;  // ~10:30 -> Tiết 5
-        else if (startMin < 810) tietBD = 6;  // 12:30 - 13:00 -> Tiết 6
-        else if (startMin < 870) tietBD = 7;  // ~13:50 -> Tiết 7
-        else if (startMin < 930) tietBD = 8;  // ~14:50 -> Tiết 8
-        else if (startMin < 990) tietBD = 9;  // ~15:40 -> Tiết 9
+        if (startMin < 450) tietBD = 1;
+        else if (startMin < 510) tietBD = 2;
+        else if (startMin < 570) tietBD = 3;
+        else if (startMin < 630) tietBD = 4;
+        else if (startMin < 750) tietBD = 5;
+        else if (startMin < 810) tietBD = 6;
+        else if (startMin < 870) tietBD = 7;
+        else if (startMin < 930) tietBD = 8;
+        else if (startMin < 990) tietBD = 9;
         else tietBD = 10;
 
         let tietKT = 5;
@@ -981,10 +955,8 @@
 
     function switchAdminTab(tabId) {
       toggleMobileSidebar(false);
-
       const allTabs = ['tab-baocao', 'tab-csvc', 'tab-lich-truc', 'tab-import-data', 'tab-vat-pham', 'tab-xep-loai', 'tab-hoat-dong', 'tab-tai-khoan'];
       
-      // 1. Ẩn tất cả tab và trả style nút về bình thường (icon đứng sát chữ, có khoảng cách gap-3)
       allTabs.forEach(id => {
         const sec = document.getElementById(id);
         const nav = document.getElementById(`nav-${id}`);
@@ -994,7 +966,6 @@
         }
       });
 
-      // 2. Kích hoạt tab được chọn & đổi nút sang màu xanh nổi bật (icon chuyển sang màu trắng)
       const activeSec = document.getElementById(tabId);
       const activeNav = document.getElementById(`nav-${tabId}`);
       if (activeSec) activeSec.classList.remove('hidden');
@@ -1002,7 +973,6 @@
         activeNav.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl bg-sky-600 text-white shadow-md shadow-sky-600/20 transition font-bold text-xs [&>i]:text-white [&>span>i]:text-white";
       }
 
-      // 3. Tự động tải lại dữ liệu của ĐÚNG tab được chọn
       if (tabId === 'tab-csvc') loadCsvcDataAdmin();
       else if (tabId === 'tab-baocao') { loadMonthsAdmin(); loadBaoCaoDataAdmin(); }
       else if (tabId === 'tab-vat-pham') loadDonVatPhamAdmin();
@@ -1018,11 +988,11 @@
     }
 
     // =========================================================================
-    // 1. PHÊ DUYỆT CSVC & XUẤT CÔNG VĂN TỔNG HỢP
+    // 1. DUYỆT CSVC & XUẤT CÔNG VĂN
     // =========================================================================
     async function loadCsvcDataAdmin() {
       const tbody = document.getElementById("tbody-csvc-admin");
-      tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-1 text-sky-600"></i> Đang tải...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-1 text-sky-600"></i> Đang tải...</td></tr>`;
 
       try {
         const res = await fetch(`${API_URL}?action=GET_ADMIN_CSVC`);
@@ -1034,21 +1004,19 @@
           if (badgeEl) badgeEl.innerText = loadedCsvcList.length;
           renderCsvcTable();
         } else {
-          tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-rose-500 font-bold">${data.message || 'Không thể lấy dữ liệu CSVC!'}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-rose-500 font-bold">${data.message || 'Không thể lấy dữ liệu CSVC!'}</td></tr>`;
         }
       } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-rose-500 font-bold">Lỗi kết nối máy chủ (${e.message})!</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-rose-500 font-bold">Lỗi kết nối máy chủ (${e.message})!</td></tr>`;
       }
     }
 
-    // HÀM LỌC VÀ SẮP XẾP DỮ LIỆU CSVC TỰ ĐỘNG
     function applyCsvcFiltersAndSort() {
       if (!loadedCsvcList || loadedCsvcList.length === 0) {
         renderCsvcTableData([]);
         return;
       }
 
-      // 1. BƯỚC GỘP PHÒNG CÙNG ĐƠN
       const groupedList = [];
       const mapGroup = new Map();
 
@@ -1075,34 +1043,28 @@
         }
       });
 
-      // 2. LẤY TIÊU CHÍ LỌC TỪ GIAO DIỆN
       const kw = (document.getElementById("filter-csvc-search")?.value || "").toLowerCase().trim();
       const statusFilter = document.getElementById("filter-csvc-status")?.value || "ALL";
       const typeFilter = document.getElementById("filter-csvc-type")?.value || "ALL";
       const urgentFilter = document.getElementById("filter-csvc-urgent")?.value || "ALL";
       const sortType = document.getElementById("filter-csvc-sort")?.value || "SUBMIT_DESC";
 
-      // 3. THỰC HIỆN LỌC
       let filtered = groupedList.filter(it => {
-        // Tìm kiếm từ khóa (tên đơn vị, người phụ trách, địa điểm, nội dung)
         if (kw) {
           const strSearch = `${it.danhSachDiaDiem.join(' ')} ${it.tenDonVi} ${it.nguoiPhuTrach} ${it.noiDung} ${it.tenHoatDong}`.toLowerCase();
           if (!strSearch.includes(kw)) return false;
         }
 
-        // Lọc theo trạng thái
         if (statusFilter !== "ALL") {
           const st = (it.trangThai || "Chờ duyệt").trim();
           if (st !== statusFilter) return false;
         }
 
-        // Lọc theo loại CSVC
         if (typeFilter !== "ALL") {
           const loai = String(it.loai || "").trim();
           if (loai !== typeFilter) return false;
         }
 
-        // Lọc đơn cận ngày
         if (urgentFilter === "URGENT") {
           const isCanNgay = it.canhBao && !it.canhBao.hopLe;
           if (!isCanNgay) return false;
@@ -1111,7 +1073,6 @@
         return true;
       });
 
-      // 4. SẮP XẾP DỮ LIỆU
       filtered.sort((a, b) => {
         const timeA = parseDateTimeText(a.ngayDangKy);
         const timeB = parseDateTimeText(b.ngayDangKy);
@@ -1120,16 +1081,14 @@
 
         if (sortType === "SUBMIT_ASC") return timeA - timeB;
         if (sortType === "USE_ASC") return startA - startB;
-        return timeB - timeA; // Mặc định: Nộp mới nhất lên đầu
+        return timeB - timeA;
       });
 
       renderCsvcTableData(filtered);
     }
 
-    // Hàm phụ trợ parse thời gian linh hoạt
     function parseDateTimeText(str) {
       if (!str) return 0;
-      // Dạng dd/MM/yyyy HH:mm hoặc chuỗi ISO
       const match = String(str).match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
       if (match) {
         return new Date(match[3], match[2] - 1, match[1]).getTime();
@@ -1138,7 +1097,6 @@
       return isNaN(d.getTime()) ? 0 : d.getTime();
     }
 
-    // RENDER RA BẢNG GIAO DIỆN
     function renderCsvcTableData(list) {
       const tbody = document.getElementById("tbody-csvc-admin");
       if (!tbody) return;
@@ -1157,18 +1115,13 @@
         return `
           <tr class="hover:bg-sky-50/60 transition cursor-pointer border-b border-slate-100 ${isSsatNgay ? 'bg-amber-50/40' : ''}" 
               onclick="handleCsvcRowClick(event, '${maDonGroup}')">
-            <!-- 1. Checkbox chọn xuất CV -->
             <td class="p-3 text-center" onclick="event.stopPropagation()">
               <input type="checkbox" value="${it.maDon}" name="chk_csvc_item" onchange="updateSelectedCsvcCount()" class="w-4 h-4 rounded text-sky-600 cursor-pointer">
             </td>
-
-            <!-- 2. Địa điểm / Xe -->
             <td class="p-3 min-w-[170px]">
               <div class="font-bold text-slate-800 text-xs leading-snug">${diaDiemHienThi}</div>
               <span class="text-slate-400 text-[10.5px] block mt-0.5">Loại: ${it.loai || 'GiangDuong'}</span>
             </td>
-
-            <!-- 3. Người phụ trách & Đơn vị -->
             <td class="p-3 min-w-[190px]">
               <span class="text-slate-800 font-semibold text-[11.5px] block">${it.nguoiPhuTrach || '---'}</span>
               <span class="text-sky-700 text-[10.5px] font-bold block">${it.tenDonVi || '---'}</span>
@@ -1176,8 +1129,6 @@
                 <i class="fa-regular fa-clock mr-1"></i>Nộp: <b>${it.ngayDangKy || '---'}</b>
               </span>
             </td>
-
-            <!-- 4. Thời gian sử dụng & Số tiết -->
             <td class="p-3 text-[11px] min-w-[170px] whitespace-nowrap">
               <div>Từ: <b>${it.batDau}</b></div>
               <div>Đến: <b>${it.ketThuc}</b></div>
@@ -1194,8 +1145,6 @@
                 ` : ''}
               </div>
             </td>
-
-            <!-- 5. Nội dung sử dụng -->
             <td class="p-3 text-xs">
               <div class="font-bold text-slate-800 leading-snug">${it.noiDung || it.tenHoatDong || '---'}</div>
               ${it.linkVanBan ? `
@@ -1204,8 +1153,6 @@
                 </a>
               ` : ''}
             </td>
-
-            <!-- 6. Trạng thái -->
             <td class="p-3 text-center whitespace-nowrap">
               <span class="px-3 py-1 rounded-full text-[10.5px] font-black ${it.trangThai === 'Đã duyệt' ? 'bg-emerald-100 text-emerald-800' : (it.trangThai === 'Từ chối' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800')}">
                 ${it.trangThai || 'Chờ duyệt'}
@@ -1216,7 +1163,6 @@
       }).join('');
     }
 
-    // Đổi lệnh gọi trong hàm tải dữ liệu ban đầu
     function renderCsvcTable() {
       applyCsvcFiltersAndSort();
     }
@@ -1242,7 +1188,6 @@
       const allDiaDiem = [...new Set(matchingItems.map(x => x.diaDiem))].join(', ');
       const tietText = quyDoiGioSangTietUMP(it.batDau, it.ketThuc);
 
-      // Xử lý chống lặp SĐT nếu trong người phụ trách đã có SĐT sẵn
       let nguoiPhuTrachText = it.nguoiPhuTrach || '---';
       let sdtHienThi = "";
       if (it.sdt && !nguoiPhuTrachText.includes(it.sdt)) {
@@ -1266,7 +1211,6 @@
             ${it.linkVanBan ? `<p><b>File kế hoạch:</b> <a href="${it.linkVanBan}" target="_blank" class="text-sky-600 underline font-bold">Xem file Drive</a></p>` : ''}
           </div>
 
-          <!-- KHỐI NÚT THAO TÁC GỌN GÀNG DƯỚI ĐÁY MODAL -->
           <div class="flex items-center justify-between gap-2 pt-3 border-t border-slate-100 mt-3 flex-wrap">
             <div class="flex items-center gap-1.5 flex-wrap">
               ${!isDaDuyet ? `
@@ -1304,7 +1248,7 @@
           <div class="text-left text-xs space-y-2 p-1 text-slate-600">
             <p>Hạng mục: <b>${diaDiem}</b></p>
             <label class="block font-bold text-slate-700 mt-2">Nhập ghi chú / lời nhắn trao đổi cho đơn vị đăng ký:</label>
-            <textarea id="swal-ghi-chu-csvc" rows="3" placeholder="VD: Đã duyệt nhưng đề nghị đơn vị tự vệ sinh sau khi sử dụng; hoặc: Thiếu chữ ký BGH..." class="w-full p-2.5 border rounded-xl bg-slate-50 text-xs font-medium outline-none focus:bg-white focus:border-sky-500">${ghiChuCu || ''}</textarea>
+            <textarea id="swal-ghi-chu-csvc" rows="3" placeholder="VD: Đã duyệt nhưng đề nghị đơn vị tự vệ sinh..." class="w-full p-2.5 border rounded-xl bg-slate-50 text-xs font-medium outline-none focus:bg-white focus:border-sky-500">${ghiChuCu || ''}</textarea>
           </div>
         `,
         focusConfirm: false,
@@ -1359,52 +1303,38 @@
     }
 
     async function xoaDonCsvc(maDon) {
-    const confirmResult = await Swal.fire({
-      title: "Xác nhận xóa yêu cầu?",
-      text: "Bạn có chắc chắn muốn xóa đơn cơ sở vật chất này khỏi danh sách? Thao tác này không thể hoàn tác!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#dc2626",
-      cancelButtonColor: "#64748b",
-      confirmButtonText: "Xóa ngay",
-      cancelButtonText: "Hủy"
-    });
-
-    if (!confirmResult.isConfirmed) return;
-
-    Swal.fire({
-      title: "Đang xóa yêu cầu...",
-      text: "Vui lòng chờ trong giây lát...",
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading()
-    });
-
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          action: "XOA_DON_CSVC",
-          data: { maDon: maDon }
-        })
+      const confirmResult = await Swal.fire({
+        title: "Xác nhận xóa yêu cầu?",
+        text: "Bạn có chắc chắn muốn xóa đơn cơ sở vật chất này khỏi danh sách? Thao tác này không thể hoàn tác!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#dc2626",
+        cancelButtonColor: "#64748b",
+        confirmButtonText: "Xóa ngay",
+        cancelButtonText: "Hủy"
       });
-      const data = await res.json();
-      if (data.success) {
-        Swal.fire({
-          icon: "success",
-          title: "Đã xóa!",
-          text: data.message || "Đã xóa yêu cầu thành công!",
-          timer: 1500,
-          showConfirmButton: false
+
+      if (!confirmResult.isConfirmed) return;
+
+      Swal.fire({ title: "Đang xóa yêu cầu...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "XOA_DON_CSVC", data: { maDon: maDon } })
         });
-        loadCsvcDataAdmin(); // Tải lại bảng sau khi xóa thành công
-      } else {
-        Swal.fire("Lỗi", data.message || "Không thể xóa đơn!", "error");
+        const data = await res.json();
+        if (data.success) {
+          Swal.fire({ icon: "success", title: "Đã xóa!", text: data.message || "Đã xóa yêu cầu thành công!", timer: 1500, showConfirmButton: false });
+          loadCsvcDataAdmin();
+        } else {
+          Swal.fire("Lỗi", data.message || "Không thể xóa đơn!", "error");
+        }
+      } catch (err) {
+        Swal.fire("Lỗi kết nối", err.message, "error");
       }
-    } catch (err) {
-      Swal.fire("Lỗi kết nối", "Không thể gửi lệnh xóa đến máy chủ: " + err.message, "error");
     }
-  }
 
     async function xuatCongVanTongHopMulti() {
       const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
@@ -1417,12 +1347,7 @@
         if (item) selectedItems.push(item);
       });
 
-      Swal.fire({
-        title: "Đang tạo công văn Word tổng hợp...",
-        text: `Hệ thống đang ghép ${selectedItems.length} hoạt động vào bảng công văn theo đúng thể thức...`,
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-      });
+      Swal.fire({ title: "Đang tạo công văn Word...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
       try {
         const res = await fetch(API_URL, {
@@ -1436,10 +1361,10 @@
             icon: "success",
             title: "Tạo công văn thành công!",
             html: `
-              <p class="text-xs text-slate-600 mb-3">Đã tổng hợp hoàn chỉnh <b>${selectedItems.length} hoạt động</b> vào file Word.</p>
+              <p class="text-xs text-slate-600 mb-3">Đã tổng hợp <b>${selectedItems.length} hoạt động</b> vào file Word.</p>
               <div class="flex justify-center gap-2">
                 <a href="${data.downloadUrl}" target="_blank" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md">
-                  <i class="fa-solid fa-download mr-1"></i> Tải file .docx về máy
+                  <i class="fa-solid fa-download mr-1"></i> Tải .docx
                 </a>
                 <a href="${data.docViewUrl}" target="_blank" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border">
                   Mở trên Docs
@@ -1459,7 +1384,7 @@
     }
 
     // =========================================================================
-    // 2. BÁO CÁO THÁNG & MỞ KHÓA THÁNG BẤT KỲ
+    // 2. BÁO CÁO THÁNG
     // =========================================================================
     async function loadMonthsAdmin() {
       const container = document.getElementById("container-months-admin");
@@ -1610,7 +1535,6 @@
               </div>
             </div>
 
-            <!-- NÚT MỞ THƯ MỤC GOOGLE DRIVE MINH CHỨNG -->
             ${(r.linkDrive && r.linkDrive !== "") ? `
               <div class="pt-3 border-t border-purple-100">
                 <a href="${r.linkDrive}" target="_blank" class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-2xl text-xs font-black shadow-md transition">
@@ -1647,12 +1571,7 @@
       }).then(async (r) => {
         if (r.isConfirmed) {
           const thang = document.getElementById("swal-input-thang-ai").value.trim();
-          Swal.fire({
-            title: "AI đang tổng hợp toàn bộ báo cáo cơ sở...",
-            text: "Đang đọc các ý kiến hoạt động và biên tập văn phong công tác Đoàn...",
-            allowOutsideClick: false,
-            didOpen: () => Swal.showLoading()
-          });
+          Swal.fire({ title: "AI đang tổng hợp báo cáo...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
           try {
             const res = await fetch(API_URL, {
@@ -1681,7 +1600,7 @@
     }
 
     // =========================================================================
-    // 3. LỊCH TRỰC CTV: CHỌN NGÀY VÀ XEM DANH SÁCH CTV ĐIỂM DANH
+    // 3. LỊCH TRỰC CTV
     // =========================================================================
     async function loadLichTrucTheoNgayAdmin() {
       const dateVal = document.getElementById("admin_select_shift_date").value;
@@ -1746,7 +1665,7 @@
     }
 
     // =========================================================================
-    // 4. IMPORT DỮ LIỆU ĐỘNG THEO TAB
+    // 4. IMPORT DỮ LIỆU ĐỘNG
     // =========================================================================
     function capNhatTruongThongTinChung() {
       const fileKey = document.getElementById("sel-target-file").value;
@@ -1764,7 +1683,6 @@
         grpHD.classList.remove("hidden");
         grpGCN.classList.remove("hidden");
         grpCLB.classList.add("hidden");
-        // Ẩn Mục ĐRL và xóa giá trị khi ở chế độ Giấy chứng nhận
         if (wrapMucDrl) wrapMucDrl.classList.add("hidden");
         if (inpMucDrl) inpMucDrl.value = "";
       } else if (fileKey === "FILE_CLB" && tabName.includes("thanhvien")) {
@@ -1779,7 +1697,6 @@
         grpHD.classList.remove("hidden");
         grpGCN.classList.add("hidden");
         grpCLB.classList.add("hidden");
-        // Hiện lại Mục ĐRL cho các file khác
         if (wrapMucDrl) wrapMucDrl.classList.remove("hidden");
         if (inpMucDrl && !inpMucDrl.value) inpMucDrl.value = "3.1";
       }
@@ -1864,10 +1781,7 @@
             if (mssvVal.includes("DANH SÁCH") || mssvVal.includes("TỔNG") || mssvVal.includes("*")) continue;
 
             if (mssvVal) {
-              smartParsedRows.push({
-                mssv: mssvVal,
-                vaiTro: vaiTroVal || ""
-              });
+              smartParsedRows.push({ mssv: mssvVal, vaiTro: vaiTroVal || "" });
             }
           }
 
@@ -1900,7 +1814,6 @@
       const rawDrl = document.getElementById("com_muc_drl").value.trim();
       const cleanMucDrl = rawDrl.replace(/,/g, '.');
 
-      // Nếu không phải là file Giấy Chứng Nhận mà bỏ trống Mục ĐRL thì mới cảnh báo
       if (fileKey !== "FILE_GIAY_CHUNG_NHAN" && !cleanMucDrl) {
         return Swal.fire("Thiếu thông tin", "Vui lòng nhập Mục ĐRL cho hoạt động này!", "warning");
       }
@@ -1953,7 +1866,6 @@
       }
     }
 
-    // Tải danh sách file do CTV gửi về
     async function loadCtvSubmittedFilesAdmin() {
       const tbody = document.getElementById("tbody-ctv-files-admin");
       if (!tbody) return;
@@ -2013,12 +1925,12 @@
     async function capNhatTrangThaiFileAdmin(maYC, st) {
       sendPost({ action: "QTV_UPDATE_FILE_STATUS", data: { maYC: maYC, trangThai: st } }, () => {
         loadCtvSubmittedFilesAdmin();
-      loadPendingAccountsAdmin();
+        loadPendingAccountsAdmin();
       });
     }
 
     // =========================================================================
-    // 5. GIAO NHẬN VẬT PHẨM & CHỤP ẢNH TỪ CAMERA
+    // 5. GIAO NHẬN VẬT PHẨM
     // =========================================================================
     async function loadDonVatPhamAdmin() {
       const tbody = document.getElementById("tbody-vatpham-admin");
@@ -2211,7 +2123,6 @@
             const isClosed = hd.trangThai === "CLOSED" || hd.trangThai === "CLOSED_FULL";
             return `
               <div class="border border-slate-200 rounded-3xl p-4 sm:p-5 bg-white shadow-xs space-y-3 transition hover:border-sky-300">
-                <!-- KHỐI HEADER THÔNG TIN CHÍNH (GỌN GÀNG) -->
                 <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 bg-slate-50/80 p-3.5 rounded-2xl border border-slate-100">
                   <div class="space-y-1">
                     <div class="flex items-center gap-2 flex-wrap">
@@ -2228,7 +2139,6 @@
                     </div>
                   </div>
 
-                  <!-- CÁC NÚT THAO TÁC BÊN PHẢI -->
                   <div class="flex sm:flex-col items-end gap-2 shrink-0">
                     <div class="flex items-center gap-1.5 flex-wrap">
                       <span class="text-xs font-black px-2.5 py-1 rounded-xl ${isClosed ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-800'}">
@@ -2244,7 +2154,6 @@
                       <span class="text-xs font-bold text-slate-600">
                         Sĩ số: <b class="text-sky-700">${hd.soLuongDaDK} / ${hd.soLuongCanTuyen}</b> CTV
                       </span>
-                      <!-- NÚT BẬT / TẮT DANH SÁCH CTV -->
                       <button onclick="toggleBangDanhSachCTV('${hd.maHD}')" id="btn-toggle-ctv-${hd.maHD}" 
                               class="px-3 py-1 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
                         <i class="fa-solid fa-users text-[11px]"></i>
@@ -2255,7 +2164,6 @@
                   </div>
                 </div>
 
-                <!-- BẢNG DANH SÁCH CTV (MẶC ĐỊNH BỊ ẨN, CHỈ MỞ KHI BẤM NÚT TRÊN) -->
                 <div id="table-wrap-ctv-${hd.maHD}" class="hidden pt-2 space-y-2.5">
                   <div class="flex justify-between items-center px-1">
                     <span class="text-xs font-bold text-slate-500 italic">* Tích chọn những bạn có mặt rồi bấm nút "Lưu điểm danh" bên phải</span>
@@ -2338,7 +2246,6 @@
       }
     }
 
-    // HÀM ĐÓNG / MỞ BẢNG DANH SÁCH CTV KHI BẤM NÚT
     function toggleBangDanhSachCTV(maHD) {
       const box = document.getElementById(`table-wrap-ctv-${maHD}`);
       const icon = document.getElementById(`icon-chevron-${maHD}`);
@@ -2435,13 +2342,7 @@
         });
         const data = await res.json();
         if (data.success) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Thành công',
-            text: data.message,
-            timer: 1300,
-            showConfirmButton: false
-          });
+          Swal.fire({ icon: 'success', title: 'Thành công', text: data.message, timer: 1300, showConfirmButton: false });
           loadHoatDongCTVAdmin();
         } else {
           Swal.fire("Lỗi", data.message, "error");
@@ -2451,30 +2352,59 @@
       }
     }
 
-    async function xuLyDiemDanhAdmin(id, maHD, mssv, isChecked) {
+    async function luuDiemDanhHangLoat(maHD) {
+      const checkboxes = document.querySelectorAll(`.chk-diemdanh-${maHD}`);
+      if (!checkboxes || checkboxes.length === 0) {
+        Swal.fire("Thông báo", "Không có cộng tác viên nào để điểm danh!", "warning");
+        return;
+      }
+
+      const items = [];
+      checkboxes.forEach(chk => {
+        items.push({
+          maHD: String(chk.getAttribute("data-mahd") || maHD).trim(),
+          mssv: String(chk.getAttribute("data-mssv") || "").trim(),
+          diemDanh: chk.checked
+        });
+      });
+
+      const btn = document.getElementById(`btn-save-dd-${maHD}`);
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> Đang lưu...`;
+      }
+
       try {
         const res = await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({
             action: "CAP_NHAT_DIEM_DANH_CTV",
-            data: { id: id, maHD: maHD, mssv: mssv, diemDanh: isChecked, type: "DIEM_DANH" }
+            data: { maHD: maHD, items: items }
           })
         });
         const data = await res.json();
         if (data.success) {
-          loadHoatDongCTVAdmin();
+          Swal.fire({ icon: "success", title: "Thành công!", text: data.message || "Đã lưu kết quả điểm danh!", timer: 1800, showConfirmButton: false });
+          setTimeout(() => {
+            if (typeof loadDanhSachCTVAdmin === "function") loadDanhSachCTVAdmin();
+          }, 1000);
+        } else {
+          Swal.fire("Lỗi", data.message || "Không tìm thấy bản ghi đăng ký!", "error");
         }
       } catch (e) {
-        Swal.fire("Lỗi", "Không thể cập nhật điểm danh!", "error");
+        Swal.fire("Lỗi kết nối", e.message, "error");
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-floppy-disk text-xs"></i> Lưu điểm danh`;
+        }
       }
     }
 
     // =========================================================================
-    // 7. XẾP LOẠI CTV, LỌC BAN & XUẤT EXCEL
+    // 7. XẾP LOẠI CTV THEO BAN & LƯU HÀNG LOẠT 1 LẦN
     // =========================================================================
-    let loadedCTVList = [];
-
     async function loadDanhSachCTVAdmin() {
       const tbody = document.getElementById("tbody-ctv-admin");
       if (!tbody) return;
@@ -2491,9 +2421,8 @@
             return;
           }
 
-          // TỰ ĐỘNG CẬP NHẬT DANH SÁCH BAN THEO DỮ LIỆU THỰC TẾ
-          capNhatBoLocBanTuDong();
-          locDanhSachCTVTheoBan();
+          taoDanhSachTabsBan();
+          locDanhSachCTVTheoBan(currentSelectedBan);
         } else {
           tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-rose-500 font-bold">${data.message || 'Lỗi tải danh sách CTV!'}</td></tr>`;
         }
@@ -2502,22 +2431,44 @@
       }
     }
 
-    // Tự động gom các Ban thực tế có trong Sheet vào thẻ select
-    function capNhatBoLocBanTuDong() {
-      const selectEl = document.getElementById("filter-ban-ctv");
-      if (!selectEl) return;
+    function taoDanhSachTabsBan() {
+      const container = document.getElementById("container-ban-tabs");
+      if (!container) return;
 
-      const currentValue = selectEl.value; // Giữ lại lựa chọn người dùng đang bấm
-      const uniqueBans = [...new Set(loadedCTVList.map(c => String(c.ban || "").trim()).filter(Boolean))];
+      const uniqueBans = [...new Set(loadedCTVList.map(c => String(c.ban || "Ban Nhân sự").trim()).filter(Boolean))];
 
-      let optionsHtml = `<option value="ALL">-- Tất cả các Ban --</option>`;
+      let tabsHtml = `
+        <button type="button" onclick="locDanhSachCTVTheoBan('ALL')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs border ${currentSelectedBan === 'ALL' ? 'bg-rose-600 text-white border-rose-600 shadow-rose-500/20' : 'bg-white text-slate-600 border-slate-200 hover:bg-rose-50'}">
+          📋 Tất cả (${loadedCTVList.length})
+        </button>
+      `;
+
       uniqueBans.forEach(banName => {
-        optionsHtml += `<option value="${banName}">${banName}</option>`;
+        const countInBan = loadedCTVList.filter(c => String(c.ban || "").trim() === banName).length;
+        const isActive = (currentSelectedBan === banName);
+        tabsHtml += `
+          <button type="button" onclick="locDanhSachCTVTheoBan('${banName}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs border ${isActive ? 'bg-rose-600 text-white border-rose-600 shadow-rose-500/20' : 'bg-white text-slate-600 border-slate-200 hover:bg-rose-50'}">
+            🏷️ ${banName} (${countInBan})
+          </button>
+        `;
       });
 
-      selectEl.innerHTML = optionsHtml;
-      if (uniqueBans.includes(currentValue)) {
-        selectEl.value = currentValue;
+      container.innerHTML = tabsHtml;
+    }
+
+    function locDanhSachCTVTheoBan(banName) {
+      currentSelectedBan = banName;
+      taoDanhSachTabsBan();
+
+      const labelBtn = document.getElementById("label-save-ban");
+      if (labelBtn) {
+        labelBtn.innerText = (banName === "ALL") ? "Lưu Đánh Giá Cả Đội" : `Lưu Đánh Giá ${banName}`;
+      }
+
+      if (banName === "ALL") {
+        renderCTVTable(loadedCTVList);
+      } else {
+        renderCTVTable(loadedCTVList.filter(c => String(c.ban || "").trim() === banName));
       }
     }
 
@@ -2526,7 +2477,7 @@
       if (!tbody) return;
 
       if (!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">Không có CTV nào phù hợp bộ lọc.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">Không có CTV nào thuộc Ban này.</td></tr>`;
         return;
       }
 
@@ -2570,20 +2521,76 @@
             </td>
 
             <td class="p-3 text-center whitespace-nowrap" onclick="event.stopPropagation()">
-              <div class="inline-flex items-center justify-center gap-2">
-                <select id="select-rank-${c.mssv}" class="p-1.5 border border-slate-200 rounded-xl text-xs font-bold bg-white outline-none focus:border-rose-400 cursor-pointer shadow-xs">
-                  <option value="Thành viên hoàn thành xuất sắc" ${c.xepLoai === 'Thành viên hoàn thành xuất sắc' ? 'selected' : ''}>Hoàn thành xuất sắc</option>
-                  <option value="Thành viên hoàn thành" ${c.xepLoai === 'Thành viên hoàn thành' ? 'selected' : ''}>Hoàn thành</option>
-                  <option value="Chưa hoàn thành" ${c.xepLoai === 'Chưa hoàn thành' || !c.xepLoai ? 'selected' : ''}>Chưa hoàn thành</option>
-                </select>
-                <button onclick="luuXepLoaiCTV('${c.mssv}')" id="btn-save-rank-${c.mssv}" class="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs flex items-center gap-1 shadow-sm transition">
-                  <i class="fa-solid fa-floppy-disk"></i> Lưu
-                </button>
-              </div>
+              <select id="select-rank-${c.mssv}" data-mssv="${c.mssv}" class="select-rank-item w-full max-w-[200px] p-2 border border-slate-200 rounded-xl text-xs font-bold bg-white outline-none focus:border-rose-400 cursor-pointer shadow-xs">
+                <option value="Thành viên hoàn thành xuất sắc" ${c.xepLoai === 'Thành viên hoàn thành xuất sắc' ? 'selected' : ''}>Hoàn thành xuất sắc</option>
+                <option value="Thành viên hoàn thành" ${c.xepLoai === 'Thành viên hoàn thành' ? 'selected' : ''}>Hoàn thành</option>
+                <option value="Chưa hoàn thành" ${c.xepLoai === 'Chưa hoàn thành' || !c.xepLoai ? 'selected' : ''}>Chưa hoàn thành</option>
+              </select>
             </td>
           </tr>
         `;
       }).join('');
+    }
+
+    async function luuXepLoaiCaBan() {
+      const selectElements = document.querySelectorAll(".select-rank-item");
+      if (!selectElements || selectElements.length === 0) {
+        return Swal.fire("Thông báo", "Không có thành viên nào trong danh sách để lưu!", "warning");
+      }
+
+      const itemsToUpdate = [];
+      selectElements.forEach(sel => {
+        const mssv = sel.getAttribute("data-mssv");
+        const xepLoai = sel.value;
+        if (mssv) {
+          itemsToUpdate.push({ mssv: mssv, xepLoai: xepLoai });
+        }
+      });
+
+      const btn = document.getElementById("btn-save-all-ban");
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...`;
+
+      Swal.fire({
+        title: "Đang lưu xếp loại...",
+        text: `Đang cập nhật ${itemsToUpdate.length} thành viên (${currentSelectedBan === 'ALL' ? 'toàn Đội' : currentSelectedBan})...`,
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "UPDATE_XEP_LOAI_HANG_LOAT",
+            data: { items: itemsToUpdate }
+          })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          itemsToUpdate.forEach(up => {
+            const found = loadedCTVList.find(x => x.mssv === up.mssv);
+            if (found) found.xepLoai = up.xepLoai;
+          });
+
+          Swal.fire({
+            icon: "success",
+            title: "Lưu thành công!",
+            text: `Đã cập nhật xếp loại cho ${itemsToUpdate.length} thành viên!`,
+            timer: 1800,
+            showConfirmButton: false
+          });
+        } else {
+          Swal.fire("Lỗi", data.message || "Không thể lưu xếp loại!", "error");
+        }
+      } catch (err) {
+        Swal.fire("Lỗi kết nối", err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> <span id="label-save-ban">${currentSelectedBan === 'ALL' ? 'Lưu Đánh Giá Cả Đội' : `Lưu Đánh Giá ${currentSelectedBan}`}</span>`;
+      }
     }
 
     function xemChiTietCTV(mssv) {
@@ -2637,9 +2644,7 @@
 
             <div>
               <span class="block font-black text-slate-700 text-xs mb-1.5 uppercase">Chi tiết các hoạt động đã đăng ký:</span>
-              <div class="space-y-1.5">
-                ${danhSachHDHtml}
-              </div>
+              <div class="space-y-1.5">${danhSachHDHtml}</div>
             </div>
           </div>
         `,
@@ -2647,65 +2652,6 @@
         confirmButtonText: 'Đóng',
         confirmButtonColor: '#e11d48'
       });
-    }
-
-    // Lọc danh sách theo Ban đã chọn
-    function locDanhSachCTVTheoBan() {
-      const selectEl = document.getElementById("filter-ban-ctv");
-      const selectedBan = selectEl ? selectEl.value : "ALL";
-      
-      if (selectedBan === "ALL") {
-        renderCTVTable(loadedCTVList);
-      } else {
-        renderCTVTable(loadedCTVList.filter(c => String(c.ban || "").trim() === selectedBan));
-      }
-    }
-
-    async function luuXepLoaiCTV(mssv) {
-      const sel = document.getElementById(`select-rank-${mssv}`);
-      const newVal = sel ? sel.value : "";
-      const btn = document.getElementById(`btn-save-rank-${mssv}`);
-
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Lưu`;
-      }
-
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "UPDATE_XEP_LOAI_CTV",
-            data: { mssv: mssv, xepLoai: newVal }
-          })
-        });
-        const data = await res.json();
-        if (data.success) {
-          const item = loadedCTVList.find(x => x.mssv === mssv);
-          if (item) item.xepLoai = newVal;
-          Swal.fire({
-            icon: 'success',
-            title: 'Đã lưu xếp loại!',
-            text: `Đã lưu xếp loại "${newVal}" cho CTV MSSV ${mssv}!`,
-            timer: 1500,
-            showConfirmButton: false
-          });
-        } else {
-          Swal.fire("Lỗi", data.message || "Không thể lưu xếp loại!", "error");
-        }
-      } catch (e) {
-        Swal.fire("Lỗi kết nối", e.message, "error");
-      } finally {
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Lưu`;
-        }
-      }
-    }
-
-    async function capNhatXepLoaiCTV(mssv, newVal) {
-      await luuXepLoaiCTV(mssv);
     }
 
     function xuatExcelXepLoaiCTV() {
@@ -2752,10 +2698,6 @@
       Swal.fire("Đã lưu", "Đã cập nhật thông tin cá nhân quản trị viên!", "success");
     }
 
-    function toggleAdminPassModal(show) {
-      Swal.fire("Đổi mật khẩu", "Chức năng đổi mật khẩu quản trị viên", "info");
-    }
-
     function logout() {
       localStorage.removeItem("ump_admin_user");
       localStorage.removeItem("ump_user");
@@ -2775,9 +2717,8 @@
       } catch(e) { Swal.fire("Lỗi kết nối", "Không thể gửi dữ liệu!", "error"); }
     }
 
-
     // =========================================================================
-    // 8. QUẢN LÝ DUYỆT TÀI KHOẢN MỚI
+    // 8. DUYỆT TÀI KHOẢN MỚI
     // =========================================================================
     async function loadPendingAccountsAdmin() {
       const tbody = document.getElementById("tbody-pending-accounts");
@@ -2878,7 +2819,7 @@
     }
 
     // =========================================================================
-    // XỬ LÝ CHUÔNG THÔNG BÁO QUẢN TRỊ VIÊN
+    // THÔNG BÁO HỆ THỐNG
     // =========================================================================
     function toggleSystemNotificationDropdown() {
       const drop = document.getElementById("sys-noti-dropdown");
@@ -2896,15 +2837,13 @@
     async function fetchSystemNotifications() {
       try {
         const res = await fetch(`${API_URL}?action=GET_APP_NOTIFICATIONS&role=ADMIN&username=admin`);
-        if (!res.ok) return; // Nếu máy chủ bận thì bỏ qua êm đẹp, không báo đỏ Console
+        if (!res.ok) return;
         const data = await res.json();
         if (data && data.success && Array.isArray(data.list)) {
           cachedSysNotis = data.list;
           renderSystemNotificationUI();
         }
-      } catch (err) {
-        // Bắt lỗi an toàn
-      }
+      } catch (err) {}
     }
 
     function filterNotiByType(type) {
@@ -3006,181 +2945,103 @@
       localStorage.setItem("read_sys_notis_admin", JSON.stringify(allIds));
       renderSystemNotificationUI();
     }
-  
-    // HÀM ĐÓNG / MỞ BẢNG DANH SÁCH CTV
-    window.toggleBangDanhSachCTV = function(maHD) {
-      const box = document.getElementById("table-wrap-ctv-" + maHD);
-      const icon = document.getElementById("icon-chevron-" + maHD);
-      const btn = document.getElementById("btn-toggle-ctv-" + maHD);
-      if (!box) return;
 
-      const isHidden = box.classList.contains("hidden");
-      if (isHidden) {
-        box.classList.remove("hidden");
-        if (icon) icon.style.transform = "rotate(180deg)";
-        if (btn) btn.classList.add("bg-sky-100", "border-sky-300");
-      } else {
-        box.classList.add("hidden");
-        if (icon) icon.style.transform = "rotate(0deg)";
-        if (btn) btn.classList.remove("bg-sky-100", "border-sky-300");
-      }
-    };
+    // =========================================================================
+    // GỬI MAIL CÔNG VĂN ĐÃ KÝ
+    // =========================================================================
+    let signedCvBase64 = "";
+    let signedCvFileName = "";
+    let signedCvMimeType = "";
 
-    // HÀM GỬI LƯU ĐIỂM DANH 1 LẦN DUY NHẤT CHO CẢ DANH SÁCH
-    window.luuDiemDanhHangLoat = async function(maHD) {
-      const checkboxes = document.querySelectorAll(`.chk-diemdanh-${maHD}`);
-      if (!checkboxes || checkboxes.length === 0) {
-        Swal.fire("Thông báo", "Không có cộng tác viên nào để điểm danh!", "warning");
-        return;
+    function moModalGuiMailCongVan() {
+      const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
+      if (checkedBoxes.length === 0) {
+        return Swal.fire("Chưa chọn đơn vị", "Vui lòng tick chọn ít nhất 1 đơn cần gửi email công văn!", "warning");
       }
 
-      const items = [];
-      checkboxes.forEach(chk => {
-        items.push({
-          maHD: String(chk.getAttribute("data-mahd") || maHD).trim(),
-          mssv: String(chk.getAttribute("data-mssv") || "").trim(),
-          diemDanh: chk.checked
-        });
+      document.getElementById("send-mail-selected-count").innerText = checkedBoxes.length;
+      document.getElementById("mail_cv_note").value = "";
+      document.getElementById("input-file-cv-signed").value = "";
+      document.getElementById("signed-file-name").innerText = "Bấm để chọn file công văn";
+      signedCvBase64 = "";
+      signedCvFileName = "";
+      signedCvMimeType = "";
+
+      toggleModal("modal-send-cv-mail", true);
+    }
+
+    function handleSignedCvFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      signedCvFileName = file.name;
+      signedCvMimeType = file.type || "application/octet-stream";
+      document.getElementById("signed-file-name").innerText = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        signedCvBase64 = evt.target.result.split(',')[1];
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function xacNhanGuiMailCongVan() {
+      const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
+      if (checkedBoxes.length === 0) {
+        return Swal.fire("Lỗi", "Vui lòng chọn ít nhất 1 đơn vị!", "error");
+      }
+
+      if (!signedCvBase64) {
+        return Swal.fire("Thiếu file công văn", "Vui lòng đính kèm file công văn đã ký!", "warning");
+      }
+
+      const selectedItems = [];
+      checkedBoxes.forEach(chk => {
+        const item = loadedCsvcList.find(x => x.maDon === chk.value);
+        if (item) selectedItems.push(item);
       });
 
-      const btn = document.getElementById(`btn-save-dd-${maHD}`);
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> Đang lưu...`;
-      }
+      const note = document.getElementById("mail_cv_note").value.trim();
+      const btn = document.getElementById("btn-submit-send-mail-cv");
+      btn.disabled = true;
+      btn.innerText = "Đang gửi mail...";
+
+      Swal.fire({
+        title: "Đang gửi email công văn...",
+        text: `Đang gửi email đến ${selectedItems.length} đơn vị, vui lòng chờ trong giây lát...`,
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
 
       try {
         const res = await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({
-            action: "CAP_NHAT_DIEM_DANH_CTV",
-            data: { 
-              maHD: maHD,
-              items: items 
+            action: "SEND_SIGNED_CONG_VAN_MAIL",
+            data: {
+              items: selectedItems,
+              note: note,
+              fileName: signedCvFileName,
+              mimeType: signedCvMimeType,
+              fileBase64: signedCvBase64
             }
           })
         });
-        const data = await res.json();
-        if (data.success) {
-          Swal.fire({
-            icon: "success",
-            title: "Thành công!",
-            text: data.message || "Đã lưu kết quả điểm danh!",
-            timer: 1800,
-            showConfirmButton: false
-          });
-          // Làm mới nhẹ danh sách để đồng bộ lại
-          setTimeout(() => {
-            if (typeof loadDanhSachTaiKhoanCTVAdmin === "function") loadDanhSachTaiKhoanCTVAdmin();
-          }, 1000);
+        const result = await res.json();
+        if (result.success) {
+          toggleModal("modal-send-cv-mail", false);
+          Swal.fire("Thành công!", result.message, "success");
         } else {
-          Swal.fire("Lỗi", data.message || "Không tìm thấy bản ghi đăng ký!", "error");
+          Swal.fire("Lỗi", result.message, "error");
         }
-      } catch (e) {
-        Swal.fire("Lỗi kết nối", e.message, "error");
+      } catch (err) {
+        Swal.fire("Lỗi kết nối", err.message, "error");
       } finally {
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = `<i class="fa-solid fa-floppy-disk text-xs"></i> Lưu điểm danh`;
-        }
+        btn.disabled = false;
+        btn.innerText = "Xác Nhận Gửi";
       }
-    };
-  let signedCvBase64 = "";
-  let signedCvFileName = "";
-  let signedCvMimeType = "";
-
-  function moModalGuiMailCongVan() {
-    const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
-    if (checkedBoxes.length === 0) {
-      return Swal.fire("Chưa chọn đơn vị", "Vui lòng tick chọn ít nhất 1 đơn cần gửi email công văn!", "warning");
     }
-
-    document.getElementById("send-mail-selected-count").innerText = checkedBoxes.length;
-    document.getElementById("mail_cv_note").value = "";
-    document.getElementById("input-file-cv-signed").value = "";
-    document.getElementById("signed-file-name").innerText = "Bấm để chọn file công văn";
-    signedCvBase64 = "";
-    signedCvFileName = "";
-    signedCvMimeType = "";
-
-    toggleModal("modal-send-cv-mail", true);
-  }
-
-  function handleSignedCvFile(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    signedCvFileName = file.name;
-    signedCvMimeType = file.type || "application/octet-stream";
-    document.getElementById("signed-file-name").innerText = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
-
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      // Lấy phần chuỗi Base64
-      signedCvBase64 = evt.target.result.split(',')[1];
-    };
-    reader.readAsDataURL(file);
-  }
-
-  async function xacNhanGuiMailCongVan() {
-    const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
-    if (checkedBoxes.length === 0) {
-      return Swal.fire("Lỗi", "Vui lòng chọn ít nhất 1 đơn vị!", "error");
-    }
-
-    if (!signedCvBase64) {
-      return Swal.fire("Thiếu file công văn", "Vui lòng đính kèm file công văn đã ký!", "warning");
-    }
-
-    const selectedItems = [];
-    checkedBoxes.forEach(chk => {
-      const item = loadedCsvcList.find(x => x.maDon === chk.value);
-      if (item) selectedItems.push(item);
-    });
-
-    const note = document.getElementById("mail_cv_note").value.trim();
-    const btn = document.getElementById("btn-submit-send-mail-cv");
-    btn.disabled = true;
-    btn.innerText = "Đang gửi mail...";
-
-    Swal.fire({
-      title: "Đang gửi email công văn...",
-      text: `Đang gửi email đến ${selectedItems.length} đơn vị, vui lòng chờ trong giây lát...`,
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading()
-    });
-
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          action: "SEND_SIGNED_CONG_VAN_MAIL",
-          data: {
-            items: selectedItems,
-            note: note,
-            fileName: signedCvFileName,
-            mimeType: signedCvMimeType,
-            fileBase64: signedCvBase64
-          }
-        })
-      });
-      const result = await res.json();
-      if (result.success) {
-        toggleModal("modal-send-cv-mail", false);
-        Swal.fire("Thành công!", result.message, "success");
-      } else {
-        Swal.fire("Lỗi", result.message, "error");
-      }
-    } catch (err) {
-      Swal.fire("Lỗi kết nối", err.message, "error");
-    } finally {
-      btn.disabled = false;
-      btn.innerText = "Xác Nhận Gửi";
-    }
-  }
   </script>
 </body>
 </html>
-
