@@ -256,6 +256,51 @@
             </div>
 
             <!-- BẢNG DANH SÁCH CSVC -->
+            <!-- THANH TÌM KIẾM, BỘ LỌC VÀ SẮP XẾP CSVC -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 p-3 bg-slate-50 border border-slate-200/80 rounded-2xl text-xs">
+              <!-- 1. Ô tìm kiếm từ khóa -->
+              <div class="relative lg:col-span-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400"></i>
+                <input type="text" id="filter-csvc-search" oninput="applyCsvcFiltersAndSort()" placeholder="Tìm đơn vị, địa điểm..." class="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-sky-500 font-medium">
+              </div>
+
+              <!-- 2. Lọc theo trạng thái duyệt -->
+              <div>
+                <select id="filter-csvc-status" onchange="applyCsvcFiltersAndSort()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-slate-700 cursor-pointer focus:border-sky-500">
+                  <option value="ALL">📋 Tất cả trạng thái</option>
+                  <option value="Chờ duyệt" selected>⏳ Chờ duyệt</option>
+                  <option value="Đã duyệt">✅ Đã duyệt</option>
+                  <option value="Từ chối">❌ Từ chối</option>
+                </select>
+              </div>
+
+              <!-- 3. Lọc theo loại hình -->
+              <div>
+                <select id="filter-csvc-type" onchange="applyCsvcFiltersAndSort()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-slate-700 cursor-pointer focus:border-sky-500">
+                  <option value="ALL">🏛️ Tất cả loại CSVC</option>
+                  <option value="GiangDuong">🏫 Giảng đường</option>
+                  <option value="KhuonVien">📍 Sân, sảnh</option>
+                  <option value="XeRaVao">🚚 Xe ra vào</option>
+                </select>
+              </div>
+
+              <!-- 4. Lọc đơn cận ngày -->
+              <div>
+                <select id="filter-csvc-urgent" onchange="applyCsvcFiltersAndSort()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-slate-700 cursor-pointer focus:border-sky-500">
+                  <option value="ALL">⚡ Mọi mốc thời gian</option>
+                  <option value="URGENT">⚠️ Chỉ đơn Cận ngày (&lt;14 ngày)</option>
+                </select>
+              </div>
+
+              <!-- 5. Tùy chọn sắp xếp -->
+              <div>
+                <select id="filter-csvc-sort" onchange="applyCsvcFiltersAndSort()" class="w-full px-2.5 py-2 bg-white border border-slate-200 rounded-xl outline-none font-bold text-sky-800 cursor-pointer focus:border-sky-500">
+                  <option value="SUBMIT_DESC">🕒 Nộp: Mới nhất trước</option>
+                  <option value="SUBMIT_ASC">🕒 Nộp: Cũ nhất trước</option>
+                  <option value="USE_ASC">📅 Ngày sử dụng: Gần nhất</option>
+                </select>
+              </div>
+            </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs border border-slate-200 rounded-xl overflow-hidden min-w-[760px]">
                 <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 whitespace-nowrap">
@@ -266,7 +311,6 @@
                     <th class="p-3 min-w-[130px]">Thời gian sử dụng</th>
                     <th class="p-3 min-w-[150px]">Nội dung sử dụng</th>
                     <th class="p-3 text-center min-w-[120px]">Trạng thái</th>
-                    <th class="p-3 text-center min-w-[160px]">Trao đổi & Thao tác</th>
                   </tr>
                 </thead>
                 <tbody id="tbody-csvc-admin" class="divide-y divide-slate-100 bg-white">
@@ -997,26 +1041,22 @@
       }
     }
 
-    function renderCsvcTable() {
-      const tbody = document.getElementById("tbody-csvc") || document.querySelector("tbody");
-      if (!tbody) return;
-
+    // HÀM LỌC VÀ SẮP XẾP DỮ LIỆU CSVC TỰ ĐỘNG
+    function applyCsvcFiltersAndSort() {
       if (!loadedCsvcList || loadedCsvcList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">Không có yêu cầu cơ sở vật chất nào.</td></tr>`;
+        renderCsvcTableData([]);
         return;
       }
 
-      // BƯỚC 1: GỘP CÁC DÒNG CÙNG ĐƠN (NẾU CÙNG MÃ GỐC HOẶC CÙNG NGƯỜI NỘP + THỜI GIAN + NỘI DUNG)
+      // 1. BƯỚC GỘP PHÒNG CÙNG ĐƠN
       const groupedList = [];
       const mapGroup = new Map();
 
       loadedCsvcList.forEach(it => {
-        // Khóa nhận diện: nếu mã dạng CSVC_123_1 thì lấy mã gốc CSVC_123, hoặc ghép thông tin đặc trưng
         const baseCode = (it.maDon || "").replace(/_\d+$/, "");
         const groupKey = baseCode || `${it.emailDonVi}_${it.ngayDangKy}_${it.batDau}_${it.noiDung}`;
 
         if (!mapGroup.has(groupKey)) {
-          // Bản ghi mới: tạo mảng danh sách địa điểm
           const groupItem = { 
             ...it, 
             danhSachDiaDiem: [it.diaDiem],
@@ -1025,7 +1065,6 @@
           mapGroup.set(groupKey, groupItem);
           groupedList.push(groupItem);
         } else {
-          // Đã có: gộp thêm địa điểm vào danh sách nếu chưa có
           const existing = mapGroup.get(groupKey);
           if (!existing.danhSachDiaDiem.includes(it.diaDiem)) {
             existing.danhSachDiaDiem.push(it.diaDiem);
@@ -1036,28 +1075,100 @@
         }
       });
 
-      // BƯỚC 2: RENDER BẢNG GỌN GÀNG, KHÔNG RỚT DÒNG
-      tbody.innerHTML = groupedList.map(it => {
+      // 2. LẤY TIÊU CHÍ LỌC TỪ GIAO DIỆN
+      const kw = (document.getElementById("filter-csvc-search")?.value || "").toLowerCase().trim();
+      const statusFilter = document.getElementById("filter-csvc-status")?.value || "ALL";
+      const typeFilter = document.getElementById("filter-csvc-type")?.value || "ALL";
+      const urgentFilter = document.getElementById("filter-csvc-urgent")?.value || "ALL";
+      const sortType = document.getElementById("filter-csvc-sort")?.value || "SUBMIT_DESC";
+
+      // 3. THỰC HIỆN LỌC
+      let filtered = groupedList.filter(it => {
+        // Tìm kiếm từ khóa (tên đơn vị, người phụ trách, địa điểm, nội dung)
+        if (kw) {
+          const strSearch = `${it.danhSachDiaDiem.join(' ')} ${it.tenDonVi} ${it.nguoiPhuTrach} ${it.noiDung} ${it.tenHoatDong}`.toLowerCase();
+          if (!strSearch.includes(kw)) return false;
+        }
+
+        // Lọc theo trạng thái
+        if (statusFilter !== "ALL") {
+          const st = (it.trangThai || "Chờ duyệt").trim();
+          if (st !== statusFilter) return false;
+        }
+
+        // Lọc theo loại CSVC
+        if (typeFilter !== "ALL") {
+          const loai = String(it.loai || "").trim();
+          if (loai !== typeFilter) return false;
+        }
+
+        // Lọc đơn cận ngày
+        if (urgentFilter === "URGENT") {
+          const isCanNgay = it.canhBao && !it.canhBao.hopLe;
+          if (!isCanNgay) return false;
+        }
+
+        return true;
+      });
+
+      // 4. SẮP XẾP DỮ LIỆU
+      filtered.sort((a, b) => {
+        const timeA = parseDateTimeText(a.ngayDangKy);
+        const timeB = parseDateTimeText(b.ngayDangKy);
+        const startA = parseDateTimeText(a.batDau);
+        const startB = parseDateTimeText(b.batDau);
+
+        if (sortType === "SUBMIT_ASC") return timeA - timeB;
+        if (sortType === "USE_ASC") return startA - startB;
+        return timeB - timeA; // Mặc định: Nộp mới nhất lên đầu
+      });
+
+      renderCsvcTableData(filtered);
+    }
+
+    // Hàm phụ trợ parse thời gian linh hoạt
+    function parseDateTimeText(str) {
+      if (!str) return 0;
+      // Dạng dd/MM/yyyy HH:mm hoặc chuỗi ISO
+      const match = String(str).match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+      if (match) {
+        return new Date(match[3], match[2] - 1, match[1]).getTime();
+      }
+      const d = new Date(str);
+      return isNaN(d.getTime()) ? 0 : d.getTime();
+    }
+
+    // RENDER RA BẢNG GIAO DIỆN
+    function renderCsvcTableData(list) {
+      const tbody = document.getElementById("tbody-csvc-admin");
+      if (!tbody) return;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400 italic">Không có yêu cầu nào phù hợp với bộ lọc hiện tại.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(it => {
         const isSsatNgay = it.canhBao && !it.canhBao.hopLe;
         const tietText = quyDoiGioSangTietUMP(it.batDau, it.ketThuc);
-        
-        // Ghép các giảng đường: ví dụ "Giảng đường 4C, 4B2, 4B1"
         const diaDiemHienThi = it.danhSachDiaDiem.join(', ');
+        const maDonGroup = it.danhSachMaDon.join(',');
 
         return `
-          <tr class="hover:bg-slate-50 transition cursor-pointer border-b border-slate-100 ${isSsatNgay ? 'bg-amber-50/40' : ''}" onclick="handleCsvcRowClick(event, '${it.danhSachMaDon ? it.danhSachMaDon.join(',') : it.maDon}')">
-            <!-- Checkbox -->
+          <tr class="hover:bg-sky-50/60 transition cursor-pointer border-b border-slate-100 ${isSsatNgay ? 'bg-amber-50/40' : ''}" 
+              onclick="handleCsvcRowClick(event, '${maDonGroup}')">
+            <!-- 1. Checkbox chọn xuất CV -->
             <td class="p-3 text-center" onclick="event.stopPropagation()">
               <input type="checkbox" value="${it.maDon}" name="chk_csvc_item" onchange="updateSelectedCsvcCount()" class="w-4 h-4 rounded text-sky-600 cursor-pointer">
             </td>
 
-            <!-- 1. Địa điểm / Xe (Gộp nhiều phòng) -->
-            <td class="p-3 min-w-[170px] max-w-[220px]">
+            <!-- 2. Địa điểm / Xe -->
+            <td class="p-3 min-w-[170px]">
               <div class="font-bold text-slate-800 text-xs leading-snug">${diaDiemHienThi}</div>
               <span class="text-slate-400 text-[10.5px] block mt-0.5">Loại: ${it.loai || 'GiangDuong'}</span>
             </td>
 
-            <!-- 2. Người phụ trách & Đơn vị -->
+            <!-- 3. Người phụ trách & Đơn vị -->
             <td class="p-3 min-w-[190px]">
               <span class="text-slate-800 font-semibold text-[11.5px] block">${it.nguoiPhuTrach || '---'}</span>
               <span class="text-sky-700 text-[10.5px] font-bold block">${it.tenDonVi || '---'}</span>
@@ -1066,28 +1177,26 @@
               </span>
             </td>
 
-            <!-- 3. Thời gian sử dụng & Số tiết (Không bị rớt dòng) -->
+            <!-- 4. Thời gian sử dụng & Số tiết -->
             <td class="p-3 text-[11px] min-w-[170px] whitespace-nowrap">
               <div>Từ: <b>${it.batDau}</b></div>
               <div>Đến: <b>${it.ketThuc}</b></div>
-              
               <div class="mt-1.5 flex items-center gap-1.5 flex-wrap">
                 ${tietText ? `
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-sky-50 text-sky-700 border border-sky-200 rounded-md font-bold text-[10px] whitespace-nowrap">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-sky-50 text-sky-700 border border-sky-200 rounded-md font-bold text-[10px]">
                     <i class="fa-solid fa-graduation-cap"></i> ${tietText}
                   </span>
                 ` : ''}
-                
                 ${isSsatNgay ? `
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md font-bold text-[10px] whitespace-nowrap">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md font-bold text-[10px]">
                     <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Cận ngày
                   </span>
                 ` : ''}
               </div>
             </td>
 
-            <!-- 4. Nội dung sử dụng -->
-            <td class="p-3 text-xs min-w-[180px]">
+            <!-- 5. Nội dung sử dụng -->
+            <td class="p-3 text-xs">
               <div class="font-bold text-slate-800 leading-snug">${it.noiDung || it.tenHoatDong || '---'}</div>
               ${it.linkVanBan ? `
                 <a href="${it.linkVanBan}" target="_blank" onclick="event.stopPropagation()" class="text-sky-600 underline text-[11px] mt-1 inline-block font-medium">
@@ -1096,39 +1205,20 @@
               ` : ''}
             </td>
 
-            <!-- 5. Trạng thái -->
+            <!-- 6. Trạng thái -->
             <td class="p-3 text-center whitespace-nowrap">
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-black ${it.trangThai === 'Đã duyệt' ? 'bg-emerald-100 text-emerald-800' : (it.trangThai === 'Từ chối' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800')}">
+              <span class="px-3 py-1 rounded-full text-[10.5px] font-black ${it.trangThai === 'Đã duyệt' ? 'bg-emerald-100 text-emerald-800' : (it.trangThai === 'Từ chối' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800')}">
                 ${it.trangThai || 'Chờ duyệt'}
               </span>
-            </td>
-
-            <!-- 6. Thao tác -->
-            <td class="p-3 text-center whitespace-nowrap" onclick="event.stopPropagation()">
-              <div class="flex items-center justify-center gap-1.5">
-                ${it.trangThai !== 'Đã duyệt' ? `
-                  <button onclick="duyetDonCsvc('${it.danhSachMaDon.join(',')}', 'Đã duyệt')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition">
-                    Duyệt
-                  </button>
-                ` : `
-                  <button onclick="duyetDonCsvc('${it.danhSachMaDon.join(',')}', 'Chờ duyệt')" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition">
-                    Hủy duyệt
-                  </button>
-                `}
-                <button onclick="duyetDonCsvc('${it.danhSachMaDon.join(',')}', 'Từ chối')" class="px-2.5 py-1 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-lg text-xs font-bold transition">
-                  Từ chối
-                </button>
-                <button onclick="xoaDonCsvc('${it.danhSachMaDon.join(',')}')" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-bold transition" title="Xóa yêu cầu">
-                  <i class="fa-regular fa-trash-can"></i>
-                </button>
-                <button onclick="moTraoDoiCsvc('${it.maDon}', '${diaDiemHienThi}', '${it.ghiChu || ''}')" class="px-2 py-1 bg-sky-50 hover:bg-sky-100 text-sky-600 rounded-lg text-xs font-bold transition">
-                  <i class="fa-regular fa-comment-dots"></i>
-                </button>
-              </div>
             </td>
           </tr>
         `;
       }).join('');
+    }
+
+    // Đổi lệnh gọi trong hàm tải dữ liệu ban đầu
+    function renderCsvcTable() {
+      applyCsvcFiltersAndSort();
     }
 
     function toggleSelectAllCsvc(master) {
@@ -1144,45 +1234,66 @@
     function handleCsvcRowClick(e, maDonGroup) {
       if (!loadedCsvcList || loadedCsvcList.length === 0) return;
 
-      // Tách các mã đơn nếu là đơn gộp nhiều phòng
       const listMa = String(maDonGroup || "").split(',').map(m => m.trim());
       const matchingItems = loadedCsvcList.filter(x => listMa.includes(x.maDon));
-
       if (matchingItems.length === 0) return;
 
-      // Lấy bản ghi đại diện
       const it = matchingItems[0];
-
-      // Gộp toàn bộ địa điểm của các phòng trong đơn (loại bỏ trùng lặp nếu có)
       const allDiaDiem = [...new Set(matchingItems.map(x => x.diaDiem))].join(', ');
-
       const tietText = quyDoiGioSangTietUMP(it.batDau, it.ketThuc);
 
-      // Xử lý chống trùng SĐT:
-      // Nếu it.nguoiPhuTrach đã chứa SĐT rồi thì không in thêm "- SĐT: ${it.sdt}"
+      // Xử lý chống lặp SĐT nếu trong người phụ trách đã có SĐT sẵn
       let nguoiPhuTrachText = it.nguoiPhuTrach || '---';
       let sdtHienThi = "";
       if (it.sdt && !nguoiPhuTrachText.includes(it.sdt)) {
         sdtHienThi = ` - <b>SĐT:</b> ${it.sdt}`;
       }
 
+      const isDaDuyet = it.trangThai === 'Đã duyệt';
+
       Swal.fire({
-        title: `<span class="text-sm font-black uppercase text-slate-800">CHI TIẾT ĐƠN: ${allDiaDiem}</span>`,
+        title: `<div class="text-left"><span class="text-sm font-black uppercase text-slate-800 block">CHI TIẾT ĐƠN YÊU CẦU</span><span class="text-xs text-sky-700 font-bold">${allDiaDiem}</span></div>`,
         html: `
-          <div class="select-text text-left text-xs leading-relaxed space-y-2 p-3 bg-slate-50 rounded-2xl border border-slate-100">
-            <p><b>Địa điểm:</b> ${allDiaDiem} (${it.loai || 'CSVC'})</p>
+          <div class="select-text text-left text-xs leading-relaxed space-y-2.5 p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
+            <p><b>Địa điểm:</b> <span class="font-bold text-slate-900">${allDiaDiem}</span> (${it.loai || 'CSVC'})</p>
             <p><b>Người phụ trách:</b> ${nguoiPhuTrachText}${sdtHienThi}</p>
-            <p><b>Đơn vị:</b> ${it.tenDonVi || '---'}</p>
+            <p><b>Đơn vị:</b> <span class="text-sky-700 font-bold">${it.tenDonVi || '---'}</span></p>
             <p><b>Thời gian:</b> Từ ${it.batDau} đến ${it.ketThuc}</p>
             <p><b>Quy đổi số tiết:</b> <span class="text-sky-700 font-bold bg-sky-100/70 px-2 py-0.5 rounded-md">${tietText || 'Không xác định'}</span></p>
             <p><b>Nội dung:</b> ${it.noiDung || it.tenHoatDong || '---'}</p>
-            <p><b>Trạng thái:</b> ${it.trangThai || 'Chờ duyệt'}</p>
+            <p><b>Trạng thái hiện tại:</b> <span class="font-bold ${isDaDuyet ? 'text-emerald-700' : 'text-amber-700'}">${it.trangThai || 'Chờ duyệt'}</span></p>
             ${it.ghiChu ? `<p><b>Ghi chú trao đổi:</b> <span class="text-amber-800 font-medium">${it.ghiChu}</span></p>` : ''}
             ${it.linkVanBan ? `<p><b>File kế hoạch:</b> <a href="${it.linkVanBan}" target="_blank" class="text-sky-600 underline font-bold">Xem file Drive</a></p>` : ''}
           </div>
+
+          <!-- KHỐI NÚT THAO TÁC GỌN GÀNG DƯỚI ĐÁY MODAL -->
+          <div class="flex items-center justify-between gap-2 pt-3 border-t border-slate-100 mt-3 flex-wrap">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              ${!isDaDuyet ? `
+                <button onclick="Swal.close(); duyetDonCsvc('${maDonGroup}', 'Đã duyệt')" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-xs">
+                  <i class="fa-solid fa-check"></i> Duyệt đơn
+                </button>
+              ` : `
+                <button onclick="Swal.close(); duyetDonCsvc('${maDonGroup}', 'Chờ duyệt')" class="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-xs">
+                  <i class="fa-solid fa-rotate-left"></i> Hủy duyệt
+                </button>
+              `}
+              <button onclick="Swal.close(); duyetDonCsvc('${maDonGroup}', 'Từ chối')" class="px-3 py-2 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 rounded-xl text-xs font-bold transition">
+                Từ chối
+              </button>
+              <button onclick="Swal.close(); moTraoDoiCsvc('${maDonGroup}', '${allDiaDiem}', '${it.ghiChu || ''}')" class="px-3 py-2 bg-sky-50 hover:bg-sky-100 text-sky-700 rounded-xl text-xs font-bold transition flex items-center gap-1">
+                <i class="fa-regular fa-comment-dots"></i> Trao đổi
+              </button>
+            </div>
+            
+            <button onclick="Swal.close(); xoaDonCsvc('${maDonGroup}')" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition" title="Xóa đơn yêu cầu này">
+              <i class="fa-regular fa-trash-can text-sm"></i>
+            </button>
+          </div>
         `,
-        confirmButtonText: "Đóng",
-        confirmButtonColor: "#0284c7"
+        width: '560px',
+        showConfirmButton: false,
+        showCloseButton: true
       });
     }
 
