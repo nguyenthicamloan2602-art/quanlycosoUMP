@@ -818,6 +818,7 @@
   </div>
 
   <!-- MODAL GỬI MAIL CÔNG VĂN ĐÃ KÝ -->
+  <!-- MODAL GỬI MAIL CÔNG VĂN ĐÃ KÝ (ĐÃ TINH GỌN, BỎ Ô NOTE) -->
   <div id="modal-send-cv-mail" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
       <div class="flex justify-between items-center border-b pb-2">
@@ -831,11 +832,6 @@
         <p class="text-slate-500 leading-relaxed">
           Đang chọn <b id="send-mail-selected-count" class="text-emerald-700">0</b> đơn vị nhận thông báo.
         </p>
-
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Ghi chú kèm theo trong email (Tùy chọn):</label>
-          <textarea id="mail_cv_note" rows="2" placeholder="VD: Đề nghị các đơn vị liên hệ phòng QTTB nhận chìa khóa..." class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none text-xs"></textarea>
-        </div>
 
         <div>
           <label class="block font-bold text-slate-700 mb-1">Đính kèm file Công văn đã ký (PDF, Word, Ảnh) *:</label>
@@ -3014,14 +3010,6 @@
         if (item) selectedItems.push(item);
       });
 
-      // Thêm đoạn này ngay sau khi lấy mảng selectedItems:
-      selectedItems.sort((a, b) => {
-        const timeA = parseDateTimeText(a.batDau || a.rawBatDau);
-        const timeB = parseDateTimeText(b.batDau || b.rawBatDau);
-        return timeA - timeB;
-      });
-
-      const note = document.getElementById("mail_cv_note").value.trim();
       const btn = document.getElementById("btn-submit-send-mail-cv");
       btn.disabled = true;
       btn.innerText = "Đang gửi mail...";
@@ -3041,7 +3029,6 @@
             action: "SEND_SIGNED_CONG_VAN_MAIL",
             data: {
               items: selectedItems,
-              note: note,
               fileName: signedCvFileName,
               mimeType: signedCvMimeType,
               fileBase64: signedCvBase64
