@@ -3005,61 +3005,74 @@
     }
 
     async function xacNhanGuiMailCongVan() {
-      const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
-      if (checkedBoxes.length === 0) {
-        return Swal.fire("Lỗi", "Vui lòng chọn ít nhất 1 đơn vị!", "error");
-      }
-
-      if (!signedCvBase64) {
-        return Swal.fire("Thiếu file công văn", "Vui lòng đính kèm file công văn đã ký!", "warning");
-      }
-
-      const selectedItems = [];
-      checkedBoxes.forEach(chk => {
-        const item = loadedCsvcList.find(x => x.maDon === chk.value);
-        if (item) selectedItems.push(item);
-      });
-
-      const btn = document.getElementById("btn-submit-send-mail-cv");
-      btn.disabled = true;
-      btn.innerText = "Đang gửi mail...";
-
-      Swal.fire({
-        title: "Đang gửi email công văn...",
-        text: `Đang gửi email đến ${selectedItems.length} đơn vị, vui lòng chờ trong giây lát...`,
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-      });
-
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "SEND_SIGNED_CONG_VAN_MAIL",
-            data: {
-              items: selectedItems,
-              fileName: signedCvFileName,
-              mimeType: signedCvMimeType,
-              fileBase64: signedCvBase64
-            }
-          })
-        });
-        const result = await res.json();
-        if (result.success) {
-          toggleModal("modal-send-cv-mail", false);
-          Swal.fire("Thành công!", result.message, "success");
-          loadCsvcDataAdmin(); // Bảng tự động tải lại, đơn vừa xong biến mất khỏi danh sách Chờ duyệt
-        } else {
-          Swal.fire("Lỗi", result.message, "error");
-        }
-      } catch (err) {
-        Swal.fire("Lỗi kết nối", err.message, "error");
-      } finally {
-        btn.disabled = false;
-        btn.innerText = "Xác Nhận Gửi";
-      }
+    const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
+    if (checkedBoxes.length === 0) {
+      return Swal.fire("Lỗi", "Vui lòng chọn ít nhất 1 đơn vị!", "error");
     }
+
+    if (!signedCvBase64) {
+      return Swal.fire("Thiếu file công văn", "Vui lòng đính kèm file công văn đã ký!", "warning");
+    }
+
+    // LẤY ĐẦY ĐỦ CẢ DANH SÁCH MÃ ĐƠN GỘP
+    const selectedItems = [];
+    checkedBoxes.forEach(chk => {
+      const val = chk.value;
+      // Tìm item trong danh sách đã gộp hoặc danh sách gốc
+      const item = loadedCsvcList.find(x => x.maDon === val || (x.danhSachMaDon && x.danhSachMaDon.includes(val)));
+      if (item) {
+        selectedItems.push(item);
+      }
+    });
+
+    const btn = document.getElementById("btn-submit-send-mail-cv");
+    btn.disabled = true;
+    btn.innerText = "Đang gửi mail...";
+
+    Swal.fire({
+      title: "Đang gửi email công văn...",
+      text: `Đang gửi email đến ${selectedItems.length} đơn vị, vui lòng chờ trong giây lát...`,
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading()
+    });
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "SEND_SIGNED_CONG_VAN_MAIL",
+          data: {
+            items: selectedItems,
+            fileName: signedCvFileName,
+            mimeType: signedCvMimeType,
+            fileBase64: signedCvBase64
+          }
+        })
+      });
+      const result = await res.json();
+      if (result.success) {
+        toggleModal("modal-send-cv-mail", false);
+        Swal.fire({
+          icon: "success",
+          title: "Thành công!",
+          text: result.message || "Đã gửi email công văn và cập nhật trạng thái đơn!",
+          timer: 2000,
+          showConfirmButton: false
+        });
+        
+        // TỰ ĐỘNG TẢI LẠI BẢNG ĐỂ CẬP NHẬT TRẠNG THÁI MỚI NGAY LẬP TỨC
+        loadCsvcDataAdmin();
+      } else {
+        Swal.fire("Lỗi", result.message, "error");
+      }
+    } catch (err) {
+      Swal.fire("Lỗi kết nối", err.message, "error");
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "Xác Nhận Gửi";
+    }
+  }
   </script>
 </body>
 </html>
