@@ -260,6 +260,7 @@
                 <option value="ALL">📋 Tất cả trạng thái</option>
                 <option value="Chờ duyệt" selected>⏳ Chờ duyệt</option>
                 <option value="Đã duyệt">✅ Đã duyệt</option>
+                <option value="Đã hoàn thành">🎉 Đã hoàn thành</option>
                 <option value="Từ chối">❌ Từ chối</option>
               </select>
             </div>
@@ -2968,10 +2969,15 @@
         return Swal.fire("Chưa chọn đơn vị", "Vui lòng tick chọn ít nhất 1 đơn cần gửi email công văn!", "warning");
       }
 
-      document.getElementById("send-mail-selected-count").innerText = checkedBoxes.length;
-      document.getElementById("mail_cv_note").value = "";
-      document.getElementById("input-file-cv-signed").value = "";
-      document.getElementById("signed-file-name").innerText = "Bấm để chọn file công văn";
+      const countEl = document.getElementById("send-mail-selected-count");
+      if (countEl) countEl.innerText = checkedBoxes.length;
+
+      const inputFile = document.getElementById("input-file-cv-signed");
+      if (inputFile) inputFile.value = "";
+
+      const nameEl = document.getElementById("signed-file-name");
+      if (nameEl) nameEl.innerText = "Bấm để chọn file công văn";
+
       signedCvBase64 = "";
       signedCvFileName = "";
       signedCvMimeType = "";
@@ -3039,6 +3045,7 @@
         if (result.success) {
           toggleModal("modal-send-cv-mail", false);
           Swal.fire("Thành công!", result.message, "success");
+          loadCsvcDataAdmin(); // Bảng tự động tải lại, đơn vừa xong biến mất khỏi danh sách Chờ duyệt
         } else {
           Swal.fire("Lỗi", result.message, "error");
         }
