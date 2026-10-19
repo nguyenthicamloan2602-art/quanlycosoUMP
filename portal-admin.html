@@ -2964,26 +2964,30 @@
     let signedCvMimeType = "";
 
     function moModalGuiMailCongVan() {
-      const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
-      if (checkedBoxes.length === 0) {
-        return Swal.fire("Chưa chọn đơn vị", "Vui lòng tick chọn ít nhất 1 đơn cần gửi email công văn!", "warning");
-      }
-
-      const countEl = document.getElementById("send-mail-selected-count");
-      if (countEl) countEl.innerText = checkedBoxes.length;
-
-      const inputFile = document.getElementById("input-file-cv-signed");
-      if (inputFile) inputFile.value = "";
-
-      const nameEl = document.getElementById("signed-file-name");
-      if (nameEl) nameEl.innerText = "Bấm để chọn file công văn";
-
-      signedCvBase64 = "";
-      signedCvFileName = "";
-      signedCvMimeType = "";
-
-      toggleModal("modal-send-cv-mail", true);
+    const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
+    if (checkedBoxes.length === 0) {
+      return Swal.fire("Chưa chọn đơn vị", "Vui lòng tick chọn ít nhất 1 đơn cần gửi email công văn!", "warning");
     }
+
+    const countEl = document.getElementById("send-mail-selected-count");
+    if (countEl) countEl.innerText = checkedBoxes.length;
+
+    // Xóa an toàn nếu còn tồn tại ô note, nếu không có thì bỏ qua
+    const noteEl = document.getElementById("mail_cv_note");
+    if (noteEl) noteEl.value = "";
+
+    const inputFile = document.getElementById("input-file-cv-signed");
+    if (inputFile) inputFile.value = "";
+
+    const nameEl = document.getElementById("signed-file-name");
+    if (nameEl) nameEl.innerText = "Bấm để chọn file công văn";
+
+    signedCvBase64 = "";
+    signedCvFileName = "";
+    signedCvMimeType = "";
+
+    toggleModal("modal-send-cv-mail", true);
+  }
 
     function handleSignedCvFile(e) {
       const file = e.target.files[0];
