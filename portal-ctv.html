@@ -126,9 +126,14 @@
         </span>
       </div>
       
-      <div class="grid grid-cols-2 gap-1.5 pt-1">
-        <button onclick="toggleCtvChangePassModal(true)" class="py-1.5 bg-white hover:bg-sky-50 text-sky-700 border border-slate-200 rounded-xl text-[11px] font-bold transition">Đổi MK</button>
-        <button onclick="logout()" class="py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-[11px] font-bold transition">Thoát</button>
+      <div class="space-y-1.5 pt-1">
+        <button onclick="openModalProfileCTV()" class="w-full py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1.5 shadow-xs">
+          <i class="fa-solid fa-user-pen"></i> Cập nhật hồ sơ
+        </button>
+        <div class="grid grid-cols-2 gap-1.5">
+          <button onclick="toggleCtvChangePassModal(true)" class="py-1.5 bg-white hover:bg-sky-50 text-slate-700 border border-slate-200 rounded-xl text-[11px] font-bold transition">Đổi MK</button>
+          <button onclick="logout()" class="py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-[11px] font-bold transition">Thoát</button>
+        </div>
       </div>
     </div>
   </aside>
@@ -1796,6 +1801,93 @@
       const modal = document.getElementById("modal-ds-hoatdong-ctv");
       if (modal) modal.classList.add("hidden");
     };
+
+  function toggleModalProfileCTV(show) {
+      document.getElementById('modal-profile-ctv').classList.toggle('hidden', !show);
+    }
+
+    async function openModalProfileCTV() {
+      const u = currentUser || {};
+      const mssv = String(u.username || u.mssv || "").trim();
+
+      document.getElementById("ctv_prof_mssv").value = mssv;
+      document.getElementById("ctv_prof_hoten").value = u.hoTen || "";
+      document.getElementById("ctv_prof_ngaysinh").value = u.ngaySinh || "";
+      document.getElementById("ctv_prof_lop").value = u.lop || "";
+      document.getElementById("ctv_prof_nganh").value = u.nganh || "";
+      document.getElementById("ctv_prof_sdt").value = u.sdt || "";
+      document.getElementById("ctv_prof_email").value = u.email || "";
+      document.getElementById("ctv_prof_diachi").value = u.diaChi || "";
+      document.getElementById("ctv_prof_ban").value = u.ban || "Ban Sự kiện - Hậu cần";
+
+      toggleModalProfileCTV(true);
+
+      // Tự động tải lại thông tin mới nhất từ sheet HoSo_CTV về điền vào form
+      try {
+        const res = await fetch(`${API_URL}?action=GET_CTV_PROFILE&username=${encodeURIComponent(mssv)}`);
+        const data = await res.json();
+        if (data.success && data.profile) {
+          const p = data.profile;
+          document.getElementById("ctv_prof_hoten").value = p.hoTen || document.getElementById("ctv_prof_hoten").value;
+          document.getElementById("ctv_prof_ngaysinh").value = p.ngaySinh || document.getElementById("ctv_prof_ngaysinh").value;
+          document.getElementById("ctv_prof_lop").value = p.lop || document.getElementById("ctv_prof_lop").value;
+          document.getElementById("ctv_prof_nganh").value = p.nganh || document.getElementById("ctv_prof_nganh").value;
+          document.getElementById("ctv_prof_sdt").value = p.sdt || document.getElementById("ctv_prof_sdt").value;
+          document.getElementById("ctv_prof_email").value = p.email || document.getElementById("ctv_prof_email").value;
+          document.getElementById("ctv_prof_diachi").value = p.diaChi || document.getElementById("ctv_prof_diachi").value;
+          document.getElementById("ctv_prof_ban").value = p.ban || document.getElementById("ctv_prof_ban").value;
+        }
+      } catch (e) {}
+    }
+
+    async function submitUpdateProfileCTV(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btn-save-profile-ctv");
+      btn.disabled = true;
+      btn.innerText = "Đang lưu...";
+
+      const payload = {
+        mssv: document.getElementById("ctv_prof_mssv").value.trim(),
+        hoTen: document.getElementById("ctv_prof_hoten").value.trim(),
+        ngaySinh: document.getElementById("ctv_prof_ngaysinh").value.trim(),
+        lop: document.getElementById("ctv_prof_lop").value.trim(),
+        nganh: document.getElementById("ctv_prof_nganh").value.trim(),
+        sdt: document.getElementById("ctv_prof_sdt").value.trim(),
+        email: document.getElementById("ctv_prof_email").value.trim(),
+        diaChi: document.getElementById("ctv_prof_diachi").value.trim()
+      };
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "UPDATE_CTV_PROFILE", data: payload })
+        });
+        const result = await res.json();
+        if (result.success) {
+          // Cập nhật lại vào currentUser trong bộ nhớ
+          currentUser = { ...currentUser, ...payload };
+          localStorage.setItem("ump_user", JSON.stringify(currentUser));
+          document.getElementById("ctv-name").innerText = payload.hoTen;
+
+          toggleModalProfileCTV(false);
+          Swal.fire({
+            icon: "success",
+            title: "Cập nhật thành công!",
+            text: "Thông tin cá nhân của bạn đã được lưu vào hệ thống!",
+            timer: 1800,
+            showConfirmButton: false
+          });
+        } else {
+          Swal.fire("Lỗi", result.message || "Không thể cập nhật hồ sơ!", "error");
+        }
+      } catch (err) {
+        Swal.fire("Lỗi kết nối", err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Lưu Thay Đổi";
+      }
+    }
   </script>
   <!-- POPUP XEM CHI TIẾT HOẠT ĐỘNG CTV ĐÃ THAM GIA -->
 <div id="modal-ds-hoatdong-ctv" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
@@ -1823,5 +1915,72 @@
     </div>
   </div>
 </div>
+
+<!-- MODAL CẬP NHẬT HỒ SƠ CTV -->
+  <div id="modal-profile-ctv" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-2.5">
+        <h3 class="font-black text-xs uppercase text-slate-800 flex items-center gap-2">
+          <i class="fa-solid fa-id-card text-sky-600"></i> Cập Nhật Thông Tin Cá Nhân CTV
+        </h3>
+        <button onclick="toggleModalProfileCTV(false)" class="text-slate-400 hover:text-rose-500 font-bold text-lg">&times;</button>
+      </div>
+
+      <form onsubmit="submitUpdateProfileCTV(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Mã số sinh viên (MSSV)</label>
+            <input type="text" id="ctv_prof_mssv" readonly class="w-full p-2.5 border rounded-xl bg-slate-100 text-slate-500 font-mono font-bold outline-none cursor-not-allowed">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Họ và Tên *</label>
+            <input type="text" id="ctv_prof_hoten" required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500 font-bold">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Ngày sinh (DD/MM/YYYY) *</label>
+            <input type="text" id="ctv_prof_ngaysinh" placeholder="VD: 27/05/2007" required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Lớp sinh hoạt *</label>
+            <input type="text" id="ctv_prof_lop" placeholder="VD: ĐD25, Y2024..." required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500 font-bold">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Chuyên ngành đào tạo *</label>
+            <input type="text" id="ctv_prof_nganh" placeholder="VD: Cử nhân Điều dưỡng..." required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Số điện thoại liên hệ *</label>
+            <input type="tel" id="ctv_prof_sdt" placeholder="VD: 0935574705" required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500 font-mono font-bold">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 mb-1">Email sinh viên (UMP) *</label>
+          <input type="email" id="ctv_prof_email" placeholder="VD: hannguyen.dd25@ump.edu.vn" required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500 font-mono">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 mb-1">Địa chỉ thường trú / liên hệ *</label>
+          <input type="text" id="ctv_prof_diachi" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh..." required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500 font-medium">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 mb-1">Ban chuyên môn (Cố định theo phân công)</label>
+          <input type="text" id="ctv_prof_ban" readonly class="w-full p-2.5 border rounded-xl bg-slate-100 text-rose-700 font-bold outline-none cursor-not-allowed">
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="toggleModalProfileCTV(false)" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-600">Đóng</button>
+          <button type="submit" id="btn-save-profile-ctv" class="flex-1 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl shadow transition">Lưu Thay Đổi</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </body>
 </html>
