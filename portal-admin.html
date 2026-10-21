@@ -298,7 +298,7 @@
                   <th class="p-3 min-w-[140px]">Địa điểm / Xe</th>
                   <th class="p-3 min-w-[150px]">Người phụ trách & Đơn vị</th>
                   <th class="p-3 min-w-[130px]">Thời gian sử dụng</th>
-                  <th class="p-3 min-w-[150px]">Nội dung sử dụng</th>
+                  <th class="p-3 min-w-[180px]">Nội dung sử dụng</th>
                   <th class="p-3 text-center min-w-[120px]">Trạng thái</th>
                 </tr>
               </thead>
@@ -793,33 +793,74 @@
     </div>
   </div>
 
-  <!-- MODAL PROFILE ADMIN -->
+  <!-- MODAL PROFILE ADMIN (ĐỒNG BỘ ĐẦY ĐỦ CÁC TRƯỜNG & GHI LÊN SHEET) -->
   <div id="modal-profile" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="font-black text-xs uppercase text-slate-800">Cập Nhật Thông Tin Cá Nhân</h3>
-        <button onclick="toggleModal('modal-profile', false)" class="text-slate-400 hover:text-rose-500 font-bold">&times;</button>
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-2.5">
+        <h3 class="font-black text-xs uppercase text-slate-800 flex items-center gap-2">
+          <i class="fa-solid fa-id-card text-sky-600"></i> Cập Nhật Thông Tin Cá Nhân (BĐH)
+        </h3>
+        <button onclick="toggleModal('modal-profile', false)" class="text-slate-400 hover:text-rose-500 font-bold text-lg">&times;</button>
       </div>
+
       <form onsubmit="saveProfileAdmin(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-600 mb-1">Họ và Tên *</label>
-          <input type="text" id="prof_hoten" required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Tài khoản / MSSV</label>
+            <input type="text" id="prof_username" readonly class="w-full p-2.5 border rounded-xl bg-slate-100 text-slate-500 font-mono font-bold outline-none cursor-not-allowed">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Họ và Tên *</label>
+            <input type="text" id="prof_hoten" required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500 font-bold">
+          </div>
         </div>
-        <div>
-          <label class="block font-bold text-slate-600 mb-1">Số điện thoại *</label>
-          <input type="tel" id="prof_sdt" required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Ngày sinh (DD/MM/YYYY) *</label>
+            <input type="text" id="prof_ngaysinh" placeholder="VD: 26/02/2003" required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Lớp sinh hoạt *</label>
+            <input type="text" id="prof_lop" placeholder="VD: BTV, Y2020..." required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500 font-bold">
+          </div>
         </div>
-        <div>
-          <label class="block font-bold text-slate-600 mb-1">Lớp</label>
-          <input type="text" id="prof_lop" class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Chuyên ngành đào tạo *</label>
+            <input type="text" id="prof_nganh" placeholder="VD: Bác sĩ Đa khoa, Dược sĩ..." required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Số điện thoại liên hệ *</label>
+            <input type="tel" id="prof_sdt" placeholder="VD: 0965651882" required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500 font-mono font-bold">
+          </div>
         </div>
-        <button type="submit" class="w-full py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl shadow">Lưu Thay Đổi</button>
+
+        <div>
+          <label class="block font-bold text-slate-600 mb-1">Email liên hệ (UMP / Gmail) *</label>
+          <input type="email" id="prof_email" placeholder="VD: vpdhump@gmail.com" required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500 font-mono">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 mb-1">Địa chỉ thường trú / liên hệ *</label>
+          <input type="text" id="prof_diachi" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh..." required class="w-full p-2.5 border rounded-xl bg-slate-50 outline-none focus:border-sky-500 font-medium">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 mb-1">Ban / Vai trò quản trị</label>
+          <input type="text" id="prof_ban" readonly class="w-full p-2.5 border rounded-xl bg-slate-100 text-sky-700 font-bold outline-none cursor-not-allowed">
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="toggleModal('modal-profile', false)" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-600">Đóng</button>
+          <button type="submit" id="btn-save-profile-admin" class="flex-1 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl shadow transition">Lưu Thay Đổi</button>
+        </div>
       </form>
     </div>
   </div>
 
   <!-- MODAL GỬI MAIL CÔNG VĂN ĐÃ KÝ -->
-  <!-- MODAL GỬI MAIL CÔNG VĂN ĐÃ KÝ (ĐÃ TINH GỌN, BỎ Ô NOTE) -->
   <div id="modal-send-cv-mail" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
       <div class="flex justify-between items-center border-b pb-2">
@@ -1025,12 +1066,16 @@
           const groupItem = { 
             ...it, 
             danhSachDiaDiem: [it.diaDiem],
-            danhSachMaDon: [it.maDon]
+            danhSachMaDon: [it.maDon],
+            ghiChu: String(it.ghiChu || "").trim()
           };
           mapGroup.set(groupKey, groupItem);
           groupedList.push(groupItem);
         } else {
           const existing = mapGroup.get(groupKey);
+          if (!existing.ghiChu && it.ghiChu) {
+            existing.ghiChu = String(it.ghiChu).trim();
+          }
           if (!existing.danhSachDiaDiem.includes(it.diaDiem)) {
             existing.danhSachDiaDiem.push(it.diaDiem);
           }
@@ -1142,16 +1187,24 @@
                 ` : ''}
               </div>
             </td>
-            <td class="p-3 text-xs">
+            <td class="p-3 text-xs min-w-[200px]">
               <div class="font-bold text-slate-800 leading-snug">${it.noiDung || it.tenHoatDong || '---'}</div>
               ${it.linkVanBan ? `
                 <a href="${it.linkVanBan}" target="_blank" onclick="event.stopPropagation()" class="text-sky-600 underline text-[11px] mt-1 inline-block font-medium">
-                  Xem kế hoạch
+                  <i class="fa-solid fa-file-pdf mr-1"></i>Xem kế hoạch
                 </a>
+              ` : ''}
+              ${it.ghiChu ? `
+                <div class="mt-2 p-2 bg-amber-50/90 border border-amber-200/80 rounded-xl text-[11px] text-amber-950 leading-relaxed shadow-xs">
+                  <span class="font-extrabold text-amber-800 text-[10.5px] block">
+                    <i class="fa-regular fa-comment-dots mr-1 text-amber-600"></i>Trao đổi:
+                  </span>
+                  <p class="font-medium mt-0.5 whitespace-pre-line text-slate-700">${it.ghiChu}</p>
+                </div>
               ` : ''}
             </td>
             <td class="p-3 text-center whitespace-nowrap">
-              <span class="px-3 py-1 rounded-full text-[10.5px] font-black ${it.trangThai === 'Đã duyệt' ? 'bg-emerald-100 text-emerald-800' : (it.trangThai === 'Từ chối' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800')}">
+              <span class="px-3 py-1 rounded-full text-[10.5px] font-black ${it.trangThai === 'Đã hoàn thành' ? 'bg-teal-100 text-teal-800 border border-teal-200' : (it.trangThai === 'Đã duyệt' ? 'bg-emerald-100 text-emerald-800' : (it.trangThai === 'Từ chối' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'))}">
                 ${it.trangThai || 'Chờ duyệt'}
               </span>
             </td>
@@ -1343,10 +1396,7 @@
       checkedBoxes.forEach(chk => {
         const item = loadedCsvcList.find(x => x.maDon === chk.value);
         if (item) {
-          // Sao chép object để xử lý ghép địa điểm đầy đủ
           const exportItem = { ...item };
-          
-          // NẾU CÓ DANH SÁCH NHIỀU ĐỊA ĐIỂM ĐÃ GOM, GHÉP LẠI TOÀN BỘ VÀO diaDiem
           if (item.danhSachDiaDiem && Array.isArray(item.danhSachDiaDiem) && item.danhSachDiaDiem.length > 0) {
             exportItem.diaDiem = item.danhSachDiaDiem.join(', ');
           }
@@ -1354,7 +1404,6 @@
         }
       });
 
-      // SẮP XẾP THEO THỜI GIAN SỬ DỤNG GẦN NHẤT ĐẾN XA NHẤT
       selectedItems.sort((a, b) => {
         const timeA = parseDateTimeText(a.batDau || a.rawBatDau);
         const timeB = parseDateTimeText(b.batDau || b.rawBatDau);
@@ -2498,7 +2547,7 @@
       const container = document.getElementById("container-ban-tabs");
       if (!container) return;
 
-      const uniqueBans = [...new Set(loadedCTVList.map(c => String(c.ban || "Ban Nhân sự").trim()).filter(Boolean))];
+      const uniqueBans = ["Hậu cần - Sự kiện", "Thông tin Tổng hợp"];
 
       let tabsHtml = `
         <button type="button" onclick="locDanhSachCTVTheoBan('ALL')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs border ${currentSelectedBan === 'ALL' ? 'bg-rose-600 text-white border-rose-600 shadow-rose-500/20' : 'bg-white text-slate-600 border-slate-200 hover:bg-rose-50'}">
@@ -2507,7 +2556,7 @@
       `;
 
       uniqueBans.forEach(banName => {
-        const countInBan = loadedCTVList.filter(c => String(c.ban || "").trim() === banName).length;
+        const countInBan = loadedCTVList.filter(c => String(c.ban || "").trim().toLowerCase() === banName.toLowerCase()).length;
         const isActive = (currentSelectedBan === banName);
         tabsHtml += `
           <button type="button" onclick="locDanhSachCTVTheoBan('${banName}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs border ${isActive ? 'bg-rose-600 text-white border-rose-600 shadow-rose-500/20' : 'bg-white text-slate-600 border-slate-200 hover:bg-rose-50'}">
@@ -2557,7 +2606,7 @@
             </td>
             <td class="p-3 whitespace-nowrap">
               <span class="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 border border-rose-100 text-[11px] font-bold inline-block">
-                ${c.ban || 'Ban Nhân sự'}
+                ${c.ban || 'Hậu cần - Sự kiện'}
               </span>
             </td>
             
@@ -2738,27 +2787,100 @@
       XLSX.writeFile(wb, "DanhSach_CTV_HoanThanhNhiemVu.xlsx");
     }
 
-    function openModalProfile() {
+    async function openModalProfile() {
       let u = {};
-      try { u = JSON.parse(localStorage.getItem("ump_admin_user")) || {}; } catch(e){}
-      document.getElementById("prof_hoten").value = u.hoTen || "Vũ Nhật Tân";
-      document.getElementById("prof_sdt").value = u.sdt || "09xxxxxxx";
+      try { 
+        u = JSON.parse(localStorage.getItem("ump_admin_user")) || JSON.parse(localStorage.getItem("ump_user")) || {}; 
+      } catch(e){}
+
+      const username = String(u.username || u.mssv || "admin").trim();
+
+      document.getElementById("prof_username").value = username;
+      document.getElementById("prof_hoten").value = u.hoTen || "";
+      document.getElementById("prof_ngaysinh").value = u.ngaySinh || "";
       document.getElementById("prof_lop").value = u.lop || "BTV";
+      document.getElementById("prof_nganh").value = u.nganh || "";
+      document.getElementById("prof_sdt").value = u.sdt || "";
+      document.getElementById("prof_email").value = u.email || "";
+      document.getElementById("prof_diachi").value = u.diaChi || "";
+      document.getElementById("prof_ban").value = u.ban || "Ban Điều hành";
+
       toggleModal('modal-profile', true);
+
+      // Tự động kéo dữ liệu từ Google Sheets về điền vào form
+      try {
+        const res = await fetch(`${API_URL}?action=GET_ADMIN_PROFILE&username=${encodeURIComponent(username)}`);
+        const data = await res.json();
+        if (data.success && data.profile) {
+          const p = data.profile;
+          document.getElementById("prof_hoten").value = p.hoTen || document.getElementById("prof_hoten").value;
+          document.getElementById("prof_ngaysinh").value = p.ngaySinh || document.getElementById("prof_ngaysinh").value;
+          document.getElementById("prof_lop").value = p.lop || document.getElementById("prof_lop").value;
+          document.getElementById("prof_nganh").value = p.nganh || document.getElementById("prof_nganh").value;
+          document.getElementById("prof_sdt").value = p.sdt || document.getElementById("prof_sdt").value;
+          document.getElementById("prof_email").value = p.email || document.getElementById("prof_email").value;
+          document.getElementById("prof_diachi").value = p.diaChi || document.getElementById("prof_diachi").value;
+          document.getElementById("prof_ban").value = p.ban || document.getElementById("prof_ban").value;
+        }
+      } catch (e) {}
     }
 
-    function saveProfileAdmin(e) {
+    async function saveProfileAdmin(e) {
       e.preventDefault();
+      const btn = document.getElementById("btn-save-profile-admin");
+      btn.disabled = true;
+      btn.innerText = "Đang lưu...";
+
       let u = {};
-      try { u = JSON.parse(localStorage.getItem("ump_admin_user")) || {}; } catch(e){}
-      u.hoTen = document.getElementById("prof_hoten").value.trim();
-      u.sdt = document.getElementById("prof_sdt").value.trim();
-      u.lop = document.getElementById("prof_lop").value.trim();
-      localStorage.setItem("ump_admin_user", JSON.stringify(u));
-      document.getElementById("admin-display-name").innerText = `${u.hoTen} (${u.lop})`;
-      document.getElementById("user-footer-name").innerText = u.hoTen;
-      toggleModal('modal-profile', false);
-      Swal.fire("Đã lưu", "Đã cập nhật thông tin cá nhân quản trị viên!", "success");
+      try { 
+        u = JSON.parse(localStorage.getItem("ump_admin_user")) || JSON.parse(localStorage.getItem("ump_user")) || {}; 
+      } catch(e){}
+
+      const payload = {
+        username: document.getElementById("prof_username").value.trim(),
+        hoTen: document.getElementById("prof_hoten").value.trim(),
+        ngaySinh: document.getElementById("prof_ngaysinh").value.trim(),
+        lop: document.getElementById("prof_lop").value.trim(),
+        nganh: document.getElementById("prof_nganh").value.trim(),
+        sdt: document.getElementById("prof_sdt").value.trim(),
+        email: document.getElementById("prof_email").value.trim(),
+        diaChi: document.getElementById("prof_diachi").value.trim()
+      };
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "UPDATE_ADMIN_PROFILE", data: payload })
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          u = { ...u, ...payload };
+          localStorage.setItem("ump_admin_user", JSON.stringify(u));
+
+          const displayName = document.getElementById("admin-display-name");
+          const footerName = document.getElementById("user-footer-name");
+          if (displayName) displayName.innerText = `${payload.hoTen} (${payload.lop})`;
+          if (footerName) footerName.innerText = payload.hoTen;
+
+          toggleModal('modal-profile', false);
+          Swal.fire({
+            icon: "success",
+            title: "Cập nhật thành công!",
+            text: "Thông tin Ban Điều hành đã được lưu vào hệ thống!",
+            timer: 1800,
+            showConfirmButton: false
+          });
+        } else {
+          Swal.fire("Lỗi", result.message || "Không thể cập nhật hồ sơ!", "error");
+        }
+      } catch (err) {
+        Swal.fire("Lỗi kết nối", err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Lưu Thay Đổi";
+      }
     }
 
     function logout() {
@@ -3017,30 +3139,26 @@
     let signedCvMimeType = "";
 
     function moModalGuiMailCongVan() {
-    const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
-    if (checkedBoxes.length === 0) {
-      return Swal.fire("Chưa chọn đơn vị", "Vui lòng tick chọn ít nhất 1 đơn cần gửi email công văn!", "warning");
+      const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
+      if (checkedBoxes.length === 0) {
+        return Swal.fire("Chưa chọn đơn vị", "Vui lòng tick chọn ít nhất 1 đơn cần gửi email công văn!", "warning");
+      }
+
+      const countEl = document.getElementById("send-mail-selected-count");
+      if (countEl) countEl.innerText = checkedBoxes.length;
+
+      const inputFile = document.getElementById("input-file-cv-signed");
+      if (inputFile) inputFile.value = "";
+
+      const nameEl = document.getElementById("signed-file-name");
+      if (nameEl) nameEl.innerText = "Bấm để chọn file công văn";
+
+      signedCvBase64 = "";
+      signedCvFileName = "";
+      signedCvMimeType = "";
+
+      toggleModal("modal-send-cv-mail", true);
     }
-
-    const countEl = document.getElementById("send-mail-selected-count");
-    if (countEl) countEl.innerText = checkedBoxes.length;
-
-    // Xóa an toàn nếu còn tồn tại ô note, nếu không có thì bỏ qua
-    const noteEl = document.getElementById("mail_cv_note");
-    if (noteEl) noteEl.value = "";
-
-    const inputFile = document.getElementById("input-file-cv-signed");
-    if (inputFile) inputFile.value = "";
-
-    const nameEl = document.getElementById("signed-file-name");
-    if (nameEl) nameEl.innerText = "Bấm để chọn file công văn";
-
-    signedCvBase64 = "";
-    signedCvFileName = "";
-    signedCvMimeType = "";
-
-    toggleModal("modal-send-cv-mail", true);
-  }
 
     function handleSignedCvFile(e) {
       const file = e.target.files[0];
@@ -3058,74 +3176,71 @@
     }
 
     async function xacNhanGuiMailCongVan() {
-    const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
-    if (checkedBoxes.length === 0) {
-      return Swal.fire("Lỗi", "Vui lòng chọn ít nhất 1 đơn vị!", "error");
-    }
-
-    if (!signedCvBase64) {
-      return Swal.fire("Thiếu file công văn", "Vui lòng đính kèm file công văn đã ký!", "warning");
-    }
-
-    // LẤY ĐẦY ĐỦ CẢ DANH SÁCH MÃ ĐƠN GỘP
-    const selectedItems = [];
-    checkedBoxes.forEach(chk => {
-      const val = chk.value;
-      // Tìm item trong danh sách đã gộp hoặc danh sách gốc
-      const item = loadedCsvcList.find(x => x.maDon === val || (x.danhSachMaDon && x.danhSachMaDon.includes(val)));
-      if (item) {
-        selectedItems.push(item);
+      const checkedBoxes = document.querySelectorAll('input[name="chk_csvc_item"]:checked');
+      if (checkedBoxes.length === 0) {
+        return Swal.fire("Lỗi", "Vui lòng chọn ít nhất 1 đơn vị!", "error");
       }
-    });
 
-    const btn = document.getElementById("btn-submit-send-mail-cv");
-    btn.disabled = true;
-    btn.innerText = "Đang gửi mail...";
+      if (!signedCvBase64) {
+        return Swal.fire("Thiếu file công văn", "Vui lòng đính kèm file công văn đã ký!", "warning");
+      }
 
-    Swal.fire({
-      title: "Đang gửi email công văn...",
-      text: `Đang gửi email đến ${selectedItems.length} đơn vị, vui lòng chờ trong giây lát...`,
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading()
-    });
-
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          action: "SEND_SIGNED_CONG_VAN_MAIL",
-          data: {
-            items: selectedItems,
-            fileName: signedCvFileName,
-            mimeType: signedCvMimeType,
-            fileBase64: signedCvBase64
-          }
-        })
+      const selectedItems = [];
+      checkedBoxes.forEach(chk => {
+        const val = chk.value;
+        const item = loadedCsvcList.find(x => x.maDon === val || (x.danhSachMaDon && x.danhSachMaDon.includes(val)));
+        if (item) {
+          selectedItems.push(item);
+        }
       });
-      const result = await res.json();
-      if (result.success) {
-        toggleModal("modal-send-cv-mail", false);
-        Swal.fire({
-          icon: "success",
-          title: "Thành công!",
-          text: result.message || "Đã gửi email công văn và cập nhật trạng thái đơn!",
-          timer: 2000,
-          showConfirmButton: false
+
+      const btn = document.getElementById("btn-submit-send-mail-cv");
+      btn.disabled = true;
+      btn.innerText = "Đang gửi mail...";
+
+      Swal.fire({
+        title: "Đang gửi email công văn...",
+        text: `Đang gửi email đến ${selectedItems.length} đơn vị, vui lòng chờ trong giây lát...`,
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "SEND_SIGNED_CONG_VAN_MAIL",
+            data: {
+              items: selectedItems,
+              fileName: signedCvFileName,
+              mimeType: signedCvMimeType,
+              fileBase64: signedCvBase64
+            }
+          })
         });
-        
-        // TỰ ĐỘNG TẢI LẠI BẢNG ĐỂ CẬP NHẬT TRẠNG THÁI MỚI NGAY LẬP TỨC
-        loadCsvcDataAdmin();
-      } else {
-        Swal.fire("Lỗi", result.message, "error");
+        const result = await res.json();
+        if (result.success) {
+          toggleModal("modal-send-cv-mail", false);
+          Swal.fire({
+            icon: "success",
+            title: "Thành công!",
+            text: result.message || "Đã gửi email công văn và cập nhật trạng thái đơn!",
+            timer: 2000,
+            showConfirmButton: false
+          });
+          
+          loadCsvcDataAdmin();
+        } else {
+          Swal.fire("Lỗi", result.message, "error");
+        }
+      } catch (err) {
+        Swal.fire("Lỗi kết nối", err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Xác Nhận Gửi";
       }
-    } catch (err) {
-      Swal.fire("Lỗi kết nối", err.message, "error");
-    } finally {
-      btn.disabled = false;
-      btn.innerText = "Xác Nhận Gửi";
     }
-  }
   </script>
 </body>
 </html>
