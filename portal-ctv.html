@@ -1336,7 +1336,21 @@
                 ` : `
                   <label class="block font-bold text-[11px] text-slate-700">Chọn vị trí công việc:</label>
                   <select id="pos-${a.maHD}" class="w-full p-2 border border-slate-200 rounded-xl text-xs font-bold bg-white outline-none focus:border-sky-500" ${isClosed ? 'disabled' : ''}>
-                    ${viTriList.map(v => `<option value="${v.ten}">${v.ten} (Chỉ tiêu: ${v.soLuong})</option>`).join('')}
+                    ${viTriList.map(v => {
+                      // Đếm số lượng bạn đã đăng ký thực tế vào từng vị trí
+                      const daDKViTri = (a.danhSachCTV || []).filter(c => 
+                        String(c.viTri || "").trim().toLowerCase() === String(v.ten).trim().toLowerCase() && 
+                        c.trangThaiDK !== "CHO_HUY"
+                      ).length;
+                      const maxSlot = Number(v.soLuong) || 0;
+                      const isFull = maxSlot > 0 && daDKViTri >= maxSlot;
+
+                      return `
+                        <option value="${v.ten}" ${isFull ? 'disabled class="text-slate-400 bg-slate-100"' : ''}>
+                          ${v.ten} (Đã nhận: ${daDKViTri}/${maxSlot}) ${isFull ? '— [ĐÃ ĐỦ CHỖ]' : ''}
+                        </option>
+                      `;
+                    }).join('')}
                   </select>
 
                   ${!isClosed ? `
