@@ -130,6 +130,14 @@
           <span id="badge-nav-pending-users" class="hidden bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded-full font-black animate-pulse">0</span>
         </button>
 
+        <!-- 9. Tạo Đường Link Đăng Ký -->
+        <button onclick="switchAdminTab('tab-tao-link')" id="nav-tab-tao-link" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-slate-600 hover:bg-sky-50 transition font-bold text-xs">
+          <span class="flex items-center gap-3">
+            <i class="fa-solid fa-link text-sm w-4 text-sky-600"></i> Tạo Link Đăng Ký
+          </span>
+          <span class="bg-sky-100 text-sky-800 text-[9px] px-1.5 py-0.5 rounded font-black">MỚI</span>
+        </button>
+
         <div class="pt-3 pb-1 px-2 text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">
           Tiện ích mở rộng
         </div>
@@ -699,6 +707,70 @@
         </div>
       </section>
 
+      <!-- ======================================================== -->
+      <!-- TAB 9: TẠO ĐƯỜNG DẪN HOẠT ĐỘNG & QUẢN LÝ LINK            -->
+      <!-- ======================================================== -->
+      <section id="tab-tao-link" class="hidden space-y-4">
+        <div class="glass-card rounded-[28px] p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-link text-sky-600"></i> Tạo Link Đăng Ký Chương Trình Mới
+              </h2>
+              <p class="text-[11px] text-slate-400 mt-0.5">Hệ thống sẽ tự động tạo tab mới trong Google Sheets, điền tên chương trình vào ô L1 và cung cấp link đăng ký.</p>
+            </div>
+            <button onclick="loadLichSuTaoLink()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+              <i class="fa-solid fa-arrows-rotate"></i> Làm mới lịch sử
+            </button>
+          </div>
+
+          <!-- FORM TẠO LINK -->
+          <div class="bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">1. Tên Tab trang tính (viết liền/không dấu để link đẹp nhất) *</label>
+                <input type="text" id="link_ten_tab" placeholder="VD: Eureka2026, Lafes2026, HoiThaoAI..." class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-bold bg-white outline-none focus:border-sky-500">
+                <span class="text-[10.5px] text-slate-400 mt-1 block">Link sẽ có dạng: <code>https://dangkyhoatdongump.vercel.app/?event=...</code></span>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">2. Tên Chương Trình (Sẽ được ghi vào ô L1) *</label>
+                <input type="text" id="link_ten_ct" placeholder="VD: Bán kết giải thưởng sinh viên nghiên cứu khoa học Euréka 2026" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-bold bg-white outline-none focus:border-sky-500">
+              </div>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+              <button onclick="xacNhanTaoLinkVaTab()" id="btn-submit-taolink" class="px-5 py-2.5 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white rounded-xl text-xs font-black shadow-md flex items-center gap-2 transition">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Tạo Tab & Sinh Link Đăng Ký
+              </button>
+            </div>
+          </div>
+
+          <!-- BẢNG LỊCH SỬ LINK ĐÃ TẠO -->
+          <div class="space-y-2 pt-2">
+            <h3 class="font-black text-xs uppercase text-slate-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> Lịch sử các link đăng ký đã tạo
+            </h3>
+            <div class="overflow-x-auto border border-slate-200 rounded-2xl">
+              <table class="w-full text-left text-xs min-w-[700px]">
+                <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200">
+                  <tr>
+                    <th class="p-3 w-12 text-center">STT</th>
+                    <th class="p-3 min-w-[140px]">Thời gian</th>
+                    <th class="p-3 min-w-[130px]">Tên Tab</th>
+                    <th class="p-3 min-w-[220px]">Tên chương trình (Ô L1)</th>
+                    <th class="p-3 min-w-[200px]">Đường link phát động</th>
+                    <th class="p-3 text-center min-w-[100px]">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-lich-su-link" class="divide-y divide-slate-100 bg-white">
+                  <tr><td colspan="6" class="text-center py-6 text-slate-400">Đang tải lịch sử link...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
   </main>
 
@@ -993,8 +1065,8 @@
 
     function switchAdminTab(tabId) {
       toggleMobileSidebar(false);
-      const allTabs = ['tab-baocao', 'tab-csvc', 'tab-lich-truc', 'tab-import-data', 'tab-vat-pham', 'tab-xep-loai', 'tab-hoat-dong', 'tab-tai-khoan'];
-      
+      const allTabs = ['tab-baocao', 'tab-csvc', 'tab-lich-truc', 'tab-import-data', 'tab-vat-pham', 'tab-xep-loai', 'tab-hoat-dong', 'tab-tai-khoan', 'tab-tao-link'];
+
       allTabs.forEach(id => {
         const sec = document.getElementById(id);
         const nav = document.getElementById(`nav-${id}`);
@@ -1008,7 +1080,7 @@
       const activeNav = document.getElementById(`nav-${tabId}`);
       if (activeSec) activeSec.classList.remove('hidden');
       if (activeNav) {
-        activeNav.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl bg-sky-600 text-white shadow-md shadow-sky-600/20 transition font-bold text-xs [&>i]:text-white [&>span>i]:text-white";
+        activeNav.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl bg-sky-600 text-white shadow-md shadow-sky-600/20 transition font-bold text-xs";
       }
 
       if (tabId === 'tab-csvc') loadCsvcDataAdmin();
@@ -1019,6 +1091,7 @@
       else if (tabId === 'tab-lich-truc') loadLichTrucTheoNgayAdmin();
       else if (tabId === 'tab-import-data') loadCtvSubmittedFilesAdmin();
       else if (tabId === 'tab-tai-khoan') loadPendingAccountsAdmin();
+      else if (tabId === 'tab-tao-link') loadLichSuTaoLink();
     }
 
     function toggleModal(modalId, show) {
@@ -3247,6 +3320,113 @@
         btn.disabled = false;
         btn.innerText = "Xác Nhận Gửi";
       }
+    }
+
+    async function xacNhanTaoLinkVaTab() {
+      const tenTab = document.getElementById("link_ten_tab").value.trim();
+      const tenChuongTrinh = document.getElementById("link_ten_ct").value.trim();
+
+      if (!tenTab || !tenChuongTrinh) {
+        return Swal.fire("Thiếu thông tin", "Vui lòng nhập đầy đủ Tên Tab và Tên Chương Trình!", "warning");
+      }
+
+      let uName = "Ban Quản Trị";
+      try {
+        const u = JSON.parse(localStorage.getItem("ump_admin_user"));
+        if (u && (u.hoTen || u.username)) uName = u.hoTen || u.username;
+      } catch(e) {}
+
+      const btn = document.getElementById("btn-submit-taolink");
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo tab và sinh link...`;
+
+      Swal.fire({
+        title: "Đang tạo Tab Google Sheet...",
+        text: `Đang khởi tạo tab "${tenTab}" và ghi Tên chương trình vào ô L1...`,
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "TAO_TAB_VA_LINK_DANG_KY",
+            data: { tenTab: tenTab, tenChuongTrinh: tenChuongTrinh, nguoiTao: uName }
+          })
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          document.getElementById("link_ten_tab").value = "";
+          document.getElementById("link_ten_ct").value = "";
+          
+          Swal.fire({
+            icon: "success",
+            title: "Tạo link thành công!",
+            html: `
+              <div class="text-left text-xs space-y-2 p-2 bg-slate-50 rounded-xl border border-slate-200 mt-2">
+                <p><b>Tên Tab:</b> <span class="font-bold text-sky-700">${result.tenTab}</span> (Đã ghi ô L1: <i>${result.tenChuongTrinh}</i>)</p>
+                <p><b>Đường link:</b></p>
+                <input type="text" value="${result.link}" readonly id="swal-copy-link" class="w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-mono font-bold select-all">
+              </div>
+            `,
+            confirmButtonText: "Sao chép link & Đóng",
+            confirmButtonColor: "#0284c7"
+          }).then(() => {
+            navigator.clipboard.writeText(result.link);
+          });
+
+          loadLichSuTaoLink();
+        } else {
+          Swal.fire("Lỗi", result.message || "Không thể tạo tab!", "error");
+        }
+      } catch (err) {
+        Swal.fire("Lỗi kết nối", err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Tạo Tab & Sinh Link Đăng Ký`;
+      }
+    }
+
+    async function loadLichSuTaoLink() {
+      const tbody = document.getElementById("tbody-lich-su-link");
+      if (!tbody) return;
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang nạp lịch sử...</td></tr>`;
+
+      try {
+        const res = await fetch(`${API_URL}?action=GET_LICH_SU_TAO_LINK`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.list) && data.list.length > 0) {
+          tbody.innerHTML = data.list.map((item, idx) => `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
+              <td class="p-3 text-slate-500 font-mono text-[11px] whitespace-nowrap">${item.thoiGian}</td>
+              <td class="p-3 font-bold text-sky-800 font-mono">${item.tenTab}</td>
+              <td class="p-3 font-semibold text-slate-800">${item.tenChuongTrinh}</td>
+              <td class="p-3">
+                <a href="${item.link}" target="_blank" class="text-sky-600 underline font-mono text-[11px] block truncate max-w-[260px]">${item.link}</a>
+              </td>
+              <td class="p-3 text-center whitespace-nowrap">
+                <button onclick="saoChepLinkNhanh('${item.link}')" class="px-2.5 py-1 bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 rounded-lg font-bold text-[11px] shadow-2xs">
+                  <i class="fa-regular fa-copy mr-1"></i> Chép Link
+                </button>
+              </td>
+            </tr>
+          `).join('');
+        } else {
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-slate-400">Chưa có đường link nào được tạo.</td></tr>`;
+        }
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-rose-500">Lỗi tải lịch sử link!</td></tr>`;
+      }
+    }
+
+    function saoChepLinkNhanh(link) {
+      navigator.clipboard.writeText(link).then(() => {
+        Swal.fire({ icon: "success", title: "Đã sao chép link!", timer: 1200, showConfirmButton: false });
+      });
     }
   </script>
 </body>
