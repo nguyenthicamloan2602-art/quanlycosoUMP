@@ -670,7 +670,16 @@
                   <td class="p-2.5 font-semibold text-sky-700">${s.gioBatDauDK} - ${s.gioKetThucDK}</td>
                   <td class="p-2.5 text-center font-mono text-[11px]">${s.checkIn}</td>
                   <td class="p-2.5 text-center font-mono text-[11px]">${s.checkOut}</td>
-                  <td class="p-2.5 text-center font-bold text-emerald-600">${Number(s.soCa || 0).toFixed(1)}</td>
+                  <td class="p-2.5 text-center whitespace-nowrap">
+                  <div class="inline-flex items-center gap-1.5 justify-center">
+                    <span class="font-bold text-emerald-700">${Number(s.soCa || 0).toFixed(1)} ca</span>
+                    ${s.uuDai ? `
+                      <span class="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+                        ${s.uuDai}
+                      </span>
+                    ` : ''}
+                  </div>
+                </td>
                   <td class="p-2.5 text-center">
                     <span class="px-2 py-0.5 rounded text-[10px] font-bold ${s.trangThai === 'Hợp lệ' ? 'bg-emerald-100 text-emerald-700' : 'bg-sky-100 text-sky-700'}">${s.trangThai}</span>
                   </td>
