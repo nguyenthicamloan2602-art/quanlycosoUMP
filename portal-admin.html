@@ -1713,14 +1713,16 @@
                   <span class="text-slate-400 font-mono text-[10.5px]">(${s.username})</span>
                 </td>
                 <td class="p-3 font-semibold text-slate-700">${s.lop || '---'}</td>
-                <td class="p-3 text-center">
+                <td class="p-3 text-center whitespace-nowrap">
                   <span class="px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-900 rounded-lg font-black text-xs inline-block">
                     ${s.khungGio || '---'}
                   </span>
-                  ${!s.maCa.startsWith("CT_FREE_") ? `
-                    <span class="block mt-1 text-[9.5px] font-bold text-emerald-600">
-                      <i class="fa-solid fa-gift mr-0.5"></i>+15p ưu đãi
-                    </span>
+                  ${s.uuDai ? `
+                    <div class="mt-1">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+                        <i class="fa-solid fa-gift mr-1 text-[8.5px]"></i>${s.uuDai}
+                      </span>
+                    </div>
                   ` : ''}
                 </td>
                 <td class="p-3 text-center font-mono font-bold text-emerald-700 text-xs">${s.checkIn || '---'}</td>
