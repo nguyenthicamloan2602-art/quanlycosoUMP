@@ -3393,7 +3393,7 @@
     async function loadLichSuTaoLink() {
       const tbody = document.getElementById("tbody-lich-su-link");
       if (!tbody) return;
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang nạp lịch sử...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang tải...</td></tr>`;
 
       try {
         const res = await fetch(API_URL, {
