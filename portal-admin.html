@@ -717,7 +717,7 @@
               <h2 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
                 <i class="fa-solid fa-link text-sky-600"></i> Tạo Link Đăng Ký Chương Trình Mới
               </h2>
-              <p class="text-[11px] text-slate-400 mt-0.5">Hệ thống sẽ tự động tạo tab mới trong Google Sheets, điền tên chương trình vào ô L1 và cung cấp link đăng ký.</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">Hệ thống đường dẫn đăng ký chương trình tự động</p>
             </div>
             <button onclick="loadLichSuTaoLink()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
               <i class="fa-solid fa-arrows-rotate"></i> Làm mới lịch sử
@@ -733,7 +733,7 @@
                 <span class="text-[10.5px] text-slate-400 mt-1 block">Link sẽ có dạng: <code>https://dangkyhoatdongump.vercel.app/?event=...</code></span>
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">2. Tên Chương Trình (Sẽ được ghi vào ô L1) *</label>
+                <label class="block text-xs font-bold text-slate-700 mb-1">2. Tên Chương Trình (Ghi rõ ràng)</label>
                 <input type="text" id="link_ten_ct" placeholder="VD: Bán kết giải thưởng sinh viên nghiên cứu khoa học Euréka 2026" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-bold bg-white outline-none focus:border-sky-500">
               </div>
             </div>
@@ -3386,7 +3386,7 @@
         Swal.fire("Lỗi kết nối", err.message, "error");
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Tạo Tab & Sinh Link Đăng Ký`;
+        btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Tạo link đăng ký`;
       }
     }
 
