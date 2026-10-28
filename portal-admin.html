@@ -3338,11 +3338,11 @@
 
       const btn = document.getElementById("btn-submit-taolink");
       btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo tab và sinh link...`;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo...`;
 
       Swal.fire({
-        title: "Đang tạo Tab Google Sheet...",
-        text: `Đang khởi tạo tab "${tenTab}" và ghi Tên chương trình vào ô L1...`,
+        title: "Đang tạo...",
+        text: `Đang tạo đường dẫn...`,
         allowOutsideClick: false,
         didOpen: () => Swal.showLoading()
       });
