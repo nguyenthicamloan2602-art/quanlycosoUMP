@@ -2020,7 +2020,7 @@
             <tr class="hover:bg-slate-50 transition">
               <td class="p-3 font-semibold text-slate-900">${it.tenChuongTrinh || '---'}</td>
               <td class="p-3">
-                <b class="text-sky-800 block text-xs font-bold">${it.tenDonVi || 'Đội Cộng tác viên Văn phòng'}</b>
+                <b class="text-sky-800 block text-xs font-bold">${it.tenDonVi || (it.emailDonVi ? it.emailDonVi.split('@')[0].toUpperCase() : 'Cơ sở Đoàn - Hội')}</b>
                 <span class="text-slate-500 text-[11px] block mt-0.5">Người mượn: <b class="text-slate-700">${it.nguoiDaiDien || it.nguoiMuon || '---'}</b> (Lớp: ${it.lop || '---'} • SĐT: ${it.sdt || '---'})</span>
               </td>
               <td class="p-3 text-[11px] leading-relaxed whitespace-nowrap">
