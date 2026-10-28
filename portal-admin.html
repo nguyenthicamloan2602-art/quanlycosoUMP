@@ -740,7 +740,7 @@
 
             <div class="pt-2 flex justify-end">
               <button onclick="xacNhanTaoLinkVaTab()" id="btn-submit-taolink" class="px-5 py-2.5 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white rounded-xl text-xs font-black shadow-md flex items-center gap-2 transition">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Tạo Tab & Sinh Link Đăng Ký
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Tạo đường dẫn
               </button>
             </div>
           </div>
@@ -3396,20 +3396,27 @@
       tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang nạp lịch sử...</td></tr>`;
 
       try {
-        const res = await fetch(`${API_URL}?action=GET_LICH_SU_TAO_LINK`);
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "GET_LICH_SU_TAO_LINK" })
+        });
         const data = await res.json();
+
         if (data.success && Array.isArray(data.list) && data.list.length > 0) {
           tbody.innerHTML = data.list.map((item, idx) => `
-            <tr class="hover:bg-slate-50 transition">
+            <tr class="hover:bg-slate-50 transition border-b border-slate-100">
               <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
               <td class="p-3 text-slate-500 font-mono text-[11px] whitespace-nowrap">${item.thoiGian}</td>
               <td class="p-3 font-bold text-sky-800 font-mono">${item.tenTab}</td>
               <td class="p-3 font-semibold text-slate-800">${item.tenChuongTrinh}</td>
               <td class="p-3">
-                <a href="${item.link}" target="_blank" class="text-sky-600 underline font-mono text-[11px] block truncate max-w-[260px]">${item.link}</a>
+                <a href="${item.link}" target="_blank" class="text-sky-600 underline font-mono text-[11px] block truncate max-w-[260px] hover:text-sky-800">
+                  ${item.link}
+                </a>
               </td>
               <td class="p-3 text-center whitespace-nowrap">
-                <button onclick="saoChepLinkNhanh('${item.link}')" class="px-2.5 py-1 bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 rounded-lg font-bold text-[11px] shadow-2xs">
+                <button onclick="saoChepLinkNhanh('${item.link}')" class="px-2.5 py-1 bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 rounded-lg font-bold text-[11px] transition shadow-2xs">
                   <i class="fa-regular fa-copy mr-1"></i> Chép Link
                 </button>
               </td>
@@ -3419,7 +3426,8 @@
           tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-slate-400">Chưa có đường link nào được tạo.</td></tr>`;
         }
       } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-rose-500">Lỗi tải lịch sử link!</td></tr>`;
+        console.error("Lỗi nạp lịch sử:", e);
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-rose-500">Lỗi kết nối khi tải lịch sử link!</td></tr>`;
       }
     }
 
