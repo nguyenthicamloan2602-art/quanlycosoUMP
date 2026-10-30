@@ -1398,6 +1398,39 @@
       });
     }
 
+    // Tách ngày và giờ ban đầu để đổ vào 2 ô riêng biệt
+      function tachNgayGio(valStr) {
+        let d = "", t = "07:00";
+        if (!valStr) return { dateIso: "", dateDisp: "", time: t };
+        
+        if (valStr.includes("T")) {
+          const parts = valStr.split("T");
+          d = parts[0];
+          t = parts[1].slice(0, 5);
+        } else {
+          const match = String(valStr).match(/(\d{1,2}):(\d{2}).*?(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+          if (match) {
+            const pad = n => String(n).padStart(2, '0');
+            d = `${match[5]}-${pad(match[4])}-${pad(match[3])}`;
+            t = `${pad(match[1])}:${pad(match[2])}`;
+          }
+        }
+        
+        const disp = d ? d.split('-').reverse().join('/') : ""; // dd/mm/yyyy
+        return { dateIso: d, dateDisp: disp, time: t };
+      }
+
+      const infoBD = tachNgayGio(dataObj.batDau);
+      const infoKT = tachNgayGio(dataObj.ketThuc);
+
+      const rawBatDauDate = infoBD.dateIso;
+      const dispBatDauDate = infoBD.dateDisp;
+      const rawBatDauTime = infoBD.time;
+
+      const rawKetThucDate = infoKT.dateIso;
+      const dispKetThucDate = infoKT.dateDisp;
+      const rawKetThucTime = infoKT.time;
+
     // ==============================================================
     // MODAL TRAO ĐỔI & ĐIỀU PHỐI (CÓ CHỈNH SỬA THỜI GIAN THỰC TẾ)
     // ==============================================================
@@ -1450,14 +1483,34 @@
             <!-- 2. ĐIỀU CHỈNH THỜI GIAN THỰC TẾ -->
             <div class="p-2.5 bg-amber-50/60 rounded-xl border border-amber-200 space-y-2">
               <span class="block font-bold text-amber-950 text-[11px]">2. Thời gian duyệt sử dụng thực tế:</span>
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <label class="block text-[10px] font-semibold text-slate-600 mb-0.5">Thời gian bắt đầu:</label>
-                  <input type="datetime-local" id="swal_bat_dau" value="${isoBatDau}" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none focus:border-amber-500">
+              
+              <!-- BẮT ĐẦU -->
+              <div>
+                <span class="text-[10px] font-semibold text-slate-600 block mb-0.5">Thời gian bắt đầu:</span>
+                <div class="grid grid-cols-12 gap-1.5">
+                  <div class="col-span-7 relative">
+                    <input type="text" id="swal_bat_dau_date_disp" readonly onclick="document.getElementById('swal_bat_dau_date_pk').showPicker()" 
+                      value="${dispBatDauDate}" placeholder="dd/mm/yyyy" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none cursor-pointer">
+                    <input type="date" id="swal_bat_dau_date_pk" value="${rawBatDauDate}" onchange="capNhatNgayModalAdmin('swal_bat_dau')" class="absolute inset-0 opacity-0 pointer-events-none">
+                  </div>
+                  <div class="col-span-5">
+                    <input type="time" id="swal_bat_dau_time" value="${rawBatDauTime}" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none">
+                  </div>
                 </div>
-                <div>
-                  <label class="block text-[10px] font-semibold text-slate-600 mb-0.5">Thời gian kết thúc:</label>
-                  <input type="datetime-local" id="swal_ket_thuc" value="${isoKetThuc}" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none focus:border-amber-500">
+              </div>
+
+              <!-- KẾT THÚC -->
+              <div>
+                <span class="text-[10px] font-semibold text-slate-600 block mb-0.5">Thời gian kết thúc:</span>
+                <div class="grid grid-cols-12 gap-1.5">
+                  <div class="col-span-7 relative">
+                    <input type="text" id="swal_ket_thuc_date_disp" readonly onclick="document.getElementById('swal_ket_thuc_date_pk').showPicker()" 
+                      value="${dispKetThucDate}" placeholder="dd/mm/yyyy" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none cursor-pointer">
+                    <input type="date" id="swal_ket_thuc_date_pk" value="${rawKetThucDate}" onchange="capNhatNgayModalAdmin('swal_ket_thuc')" class="absolute inset-0 opacity-0 pointer-events-none">
+                  </div>
+                  <div class="col-span-5">
+                    <input type="time" id="swal_ket_thuc_time" value="${rawKetThucTime}" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none">
+                  </div>
                 </div>
               </div>
             </div>
@@ -1487,24 +1540,30 @@
         confirmButtonColor: '#d97706',
         preConfirm: () => {
           const ddDuyet = document.getElementById("swal_dia_diem_duyet").value.trim();
-          const batDauVal = document.getElementById("swal_bat_dau").value;
-          const ketThucVal = document.getElementById("swal_ket_thuc").value;
           const gc = document.getElementById("swal_ghi_chu").value.trim();
           const st = document.getElementById("swal_trang_thai").value;
+
+          const dateBD = document.getElementById("swal_bat_dau_date_pk").value;
+          const timeBD = document.getElementById("swal_bat_dau_time").value || "07:00";
+          const dateKT = document.getElementById("swal_ket_thuc_date_pk").value;
+          const timeKT = document.getElementById("swal_ket_thuc_time").value || "17:00";
+
+          const batDauIso = (dateBD && timeBD) ? `${dateBD}T${timeBD}` : "";
+          const ketThucIso = (dateKT && timeKT) ? `${dateKT}T${timeKT}` : "";
 
           if (!ddDuyet) {
             Swal.showValidationMessage("Vui lòng nhập địa điểm/phòng được duyệt!");
             return false;
           }
-          if (batDauVal && ketThucVal && new Date(batDauVal) >= new Date(ketThucVal)) {
+          if (batDauIso && ketThucIso && new Date(batDauIso) >= new Date(ketThucIso)) {
             Swal.showValidationMessage("Thời gian kết thúc phải sau thời gian bắt đầu!");
             return false;
           }
 
           return { 
             diaDiemDuyet: ddDuyet, 
-            batDau: batDauVal, 
-            ketThuc: ketThucVal, 
+            batDau: batDauIso, 
+            ketThuc: ketThucIso, 
             ghiChu: gc, 
             status: st 
           };
@@ -1550,6 +1609,14 @@
       }
     }
 
+    function capNhatNgayModalAdmin(prefix) {
+      const pk = document.getElementById(`${prefix}_date_pk`);
+      const disp = document.getElementById(`${prefix}_date_disp`);
+      if (pk && pk.value && disp) {
+        const [y, m, d] = pk.value.split("-");
+        disp.value = `${d}/${m}/${y}`;
+      }
+    }
 
     async function duyetDonCsvc(maDon, status) {
       Swal.fire({ title: "Đang xử lý...", text: `Đang cập nhật trạng thái ${status}...`, allowOutsideClick: false, didOpen: () => Swal.showLoading() });
