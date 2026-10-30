@@ -1322,6 +1322,9 @@
       document.getElementById("count-selected-csvc").innerText = count;
     }
 
+    // BIẾN TOÀN CỤC LƯU ĐƠN ĐANG XEM CHI TIẾT
+    let currentCsvcModalData = null;
+
     function handleCsvcRowClick(e, maDonGroup) {
       if (!loadedCsvcList || loadedCsvcList.length === 0) return;
 
@@ -1340,6 +1343,19 @@
       }
 
       const isDaDuyet = it.trangThai === 'Đã duyệt';
+
+      // LƯU DỮ LIỆU ĐANG XEM VÀO BIẾN TẠM (TRÁNH LỖI CÚ PHÁP JSON TRÊN HTML)
+      currentCsvcModalData = {
+        maDonGroup: maDonGroup,
+        tenDonVi: it.tenDonVi || "",
+        noiDung: it.noiDung || it.tenHoatDong || "",
+        batDau: it.batDau || "",
+        ketThuc: it.ketThuc || "",
+        diaDiemGoc: allDiaDiem || it.diaDiem || "Giảng đường",
+        diaDiemDuyet: it.diaDiemDuyet || allDiaDiem || it.diaDiem || "Giảng đường",
+        ghiChu: it.ghiChu || "",
+        trangThai: it.trangThai || "Chờ duyệt"
+      };
 
       Swal.fire({
         title: `<div class="text-left"><span class="text-sm font-black uppercase text-slate-800 block">CHI TIẾT ĐƠN YÊU CẦU</span><span class="text-xs text-sky-700 font-bold">${allDiaDiem}</span></div>`,
@@ -1371,18 +1387,8 @@
                 Từ chối
               </button>
               
-              <!-- NÚT DUY NHẤT: TRUYỀN ĐẦY ĐỦ THÔNG TIN KHÔNG BỊ UNDEFINED -->
-              <button onclick='Swal.close(); moModalSuaThongTinCSVC(${JSON.stringify({
-                maDonGroup: maDonGroup,
-                tenDonVi: it.tenDonVi || "",
-                noiDung: it.noiDung || it.tenHoatDong || "",
-                batDau: it.batDau || "",
-                ketThuc: it.ketThuc || "",
-                diaDiemGoc: allDiaDiem || it.diaDiem || "",
-                diaDiemDuyet: it.diaDiemDuyet || allDiaDiem || it.diaDiem || "",
-                ghiChu: it.ghiChu || "",
-                trangThai: it.trangThai || "Chờ duyệt"
-              }).replace(/'/g, "&apos;")})' class="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+              <!-- NÚT GỌI MODAL ĐIỀU PHỐI QUA BIẾN TẠM KHÔNG BỊ VỠ HTML -->
+              <button onclick="moModalSuaThongTinCSVC(currentCsvcModalData)" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
                 <i class="fa-regular fa-comment-dots text-amber-600"></i> Trao đổi &amp; Điều phối
               </button>
             </div>
@@ -1398,215 +1404,194 @@
       });
     }
 
-    // Tách ngày và giờ ban đầu để đổ vào 2 ô riêng biệt
-      function tachNgayGio(valStr) {
-        let d = "", t = "07:00";
-        if (!valStr) return { dateIso: "", dateDisp: "", time: t };
-        
-        if (valStr.includes("T")) {
-          const parts = valStr.split("T");
-          d = parts[0];
-          t = parts[1].slice(0, 5);
-        } else {
-          const match = String(valStr).match(/(\d{1,2}):(\d{2}).*?(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-          if (match) {
-            const pad = n => String(n).padStart(2, '0');
-            d = `${match[5]}-${pad(match[4])}-${pad(match[3])}`;
-            t = `${pad(match[1])}:${pad(match[2])}`;
-          }
-        }
-        
-        const disp = d ? d.split('-').reverse().join('/') : ""; // dd/mm/yyyy
-        return { dateIso: d, dateDisp: disp, time: t };
-      }
-
-      const infoBD = tachNgayGio(dataObj.batDau);
-      const infoKT = tachNgayGio(dataObj.ketThuc);
-
-      const rawBatDauDate = infoBD.dateIso;
-      const dispBatDauDate = infoBD.dateDisp;
-      const rawBatDauTime = infoBD.time;
-
-      const rawKetThucDate = infoKT.dateIso;
-      const dispKetThucDate = infoKT.dateDisp;
-      const rawKetThucTime = infoKT.time;
-
     // ==============================================================
-    // MODAL TRAO ĐỔI & ĐIỀU PHỐI (CÓ CHỈNH SỬA THỜI GIAN THỰC TẾ)
+    // MODAL TRAO ĐỔI & ĐIỀU PHỐI (CHUẨN HÓA TOÀN DIỆN DỮ LIỆU)
     // ==============================================================
     async function moModalSuaThongTinCSVC(dataObj) {
       if (!dataObj) return;
 
-      const maDonGroup = dataObj.maDonGroup || dataObj.maDon || "";
-      const tenDonVi = dataObj.tenDonVi || "---";
-      const noiDung = dataObj.noiDung || dataObj.tenHoatDong || "---";
-      const diaDiemGoc = dataObj.diaDiemGoc || dataObj.diaDiem || "Giảng đường";
-      const diaDiemDuyetHienTai = dataObj.diaDiemDuyet || diaDiemGoc;
-      const ghiChuHienTai = dataObj.ghiChu || "";
-      const trangThaiHienTai = dataObj.trangThai || "Chờ duyệt";
+      setTimeout(async () => {
+        const maDonGroup = dataObj.maDonGroup || dataObj.maDon || "";
+        const tenDonVi = dataObj.tenDonVi || "---";
+        const noiDung = dataObj.noiDung || dataObj.tenHoatDong || "---";
+        const diaDiemGoc = dataObj.diaDiemGoc || dataObj.diaDiem || "Giảng đường";
+        const diaDiemDuyetHienTai = dataObj.diaDiemDuyet || diaDiemGoc;
+        const ghiChuHienTai = dataObj.ghiChu || "";
+        const trangThaiHienTai = dataObj.trangThai || "Chờ duyệt";
 
-      // Hàm phụ trợ chuyển chuỗi "HH:mm ngày dd/MM/yyyy" hoặc "yyyy-MM-ddTHH:mm" sang chuẩn input datetime-local
-      function convertToIsoInput(valStr) {
-        if (!valStr) return "";
-        if (valStr.includes("T")) return valStr.slice(0, 16);
-        const match = String(valStr).match(/(\d{1,2}):(\d{2}).*?(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-        if (match) {
-          const pad = n => String(n).padStart(2, '0');
-          return `${match[5]}-${pad(match[4])}-${pad(match[3])}T${pad(match[1])}:${pad(match[2])}`;
-        }
-        return "";
-      }
-
-      const isoBatDau = convertToIsoInput(dataObj.batDau);
-      const isoKetThuc = convertToIsoInput(dataObj.ketThuc);
-
-      const { value: formValues } = await Swal.fire({
-        title: `<span class="text-sm font-black uppercase text-slate-800">Điều Phối & Phản Hồi CSVC</span>`,
-        html: `
-          <div class="text-left text-xs space-y-3 p-1">
-            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-slate-700 space-y-1">
-              <p><b>Đơn vị:</b> <span class="text-sky-700 font-bold">${tenDonVi}</span></p>
-              <p><b>Hoạt động:</b> ${noiDung}</p>
-              <p><b>Địa điểm ban đầu:</b> <span class="font-bold text-slate-900">${diaDiemGoc}</span></p>
-            </div>
-
-            <!-- 1. ĐỊA ĐIỂM DUYỆT -->
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">1. Địa điểm / Giảng đường phê duyệt thực tế *</label>
-              <input id="swal_dia_diem_duyet" type="text" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold outline-none focus:border-amber-500 bg-white" 
-                value="${diaDiemDuyetHienTai}" placeholder="Nhập phòng duyệt thực tế (VD: Hội trường A, GĐ 401...)">
-              <span class="text-[10px] text-amber-700 font-medium block mt-0.5">
-                * Đổi phòng khác đơn vị đăng ký sẽ làm lịch phía User chuyển màu vàng cảnh báo.
-              </span>
-            </div>
-
-            <!-- 2. ĐIỀU CHỈNH THỜI GIAN THỰC TẾ -->
-            <div class="p-2.5 bg-amber-50/60 rounded-xl border border-amber-200 space-y-2">
-              <span class="block font-bold text-amber-950 text-[11px]">2. Thời gian duyệt sử dụng thực tế:</span>
-              
-              <!-- BẮT ĐẦU -->
-              <div>
-                <span class="text-[10px] font-semibold text-slate-600 block mb-0.5">Thời gian bắt đầu:</span>
-                <div class="grid grid-cols-12 gap-1.5">
-                  <div class="col-span-7 relative">
-                    <input type="text" id="swal_bat_dau_date_disp" readonly onclick="document.getElementById('swal_bat_dau_date_pk').showPicker()" 
-                      value="${dispBatDauDate}" placeholder="dd/mm/yyyy" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none cursor-pointer">
-                    <input type="date" id="swal_bat_dau_date_pk" value="${rawBatDauDate}" onchange="capNhatNgayModalAdmin('swal_bat_dau')" class="absolute inset-0 opacity-0 pointer-events-none">
-                  </div>
-                  <div class="col-span-5">
-                    <input type="time" id="swal_bat_dau_time" value="${rawBatDauTime}" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none">
-                  </div>
-                </div>
-              </div>
-
-              <!-- KẾT THÚC -->
-              <div>
-                <span class="text-[10px] font-semibold text-slate-600 block mb-0.5">Thời gian kết thúc:</span>
-                <div class="grid grid-cols-12 gap-1.5">
-                  <div class="col-span-7 relative">
-                    <input type="text" id="swal_ket_thuc_date_disp" readonly onclick="document.getElementById('swal_ket_thuc_date_pk').showPicker()" 
-                      value="${dispKetThucDate}" placeholder="dd/mm/yyyy" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none cursor-pointer">
-                    <input type="date" id="swal_ket_thuc_date_pk" value="${rawKetThucDate}" onchange="capNhatNgayModalAdmin('swal_ket_thuc')" class="absolute inset-0 opacity-0 pointer-events-none">
-                  </div>
-                  <div class="col-span-5">
-                    <input type="time" id="swal_ket_thuc_time" value="${rawKetThucTime}" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3. NỘI DUNG TRAO ĐỔI -->
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">3. Nội dung trao đổi / Ghi chú phản hồi gửi cơ sở</label>
-              <textarea id="swal_ghi_chu" rows="2" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs outline-none focus:border-amber-500 bg-white font-medium" 
-                placeholder="VD: Không có lịch giảng đường, chỉ có lịch buổi sáng, đã chuyển sang Hội trường A...">${ghiChuHienTai}</textarea>
-            </div>
-
-            <!-- 4. TRẠNG THÁI DUYỆT -->
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">4. Trạng thái phê duyệt</label>
-              <select id="swal_trang_thai" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold outline-none bg-white">
-                <option value="Đã duyệt" ${trangThaiHienTai === 'Đã duyệt' ? 'selected' : ''}>🟢 Đã duyệt chính thức</option>
-                <option value="Chờ duyệt" ${trangThaiHienTai === 'Chờ duyệt' ? 'selected' : ''}>🟡 Chờ duyệt</option>
-                <option value="Từ chối" ${trangThaiHienTai === 'Từ chối' ? 'selected' : ''}>🔴 Từ chối cấp phép</option>
-              </select>
-            </div>
-          </div>
-        `,
-        focusConfirm: false,
-        showCancelButton: true,
-        confirmButtonText: '<i class="fa-solid fa-floppy-disk mr-1"></i> Lưu thay đổi',
-        cancelButtonText: 'Đóng',
-        confirmButtonColor: '#d97706',
-        preConfirm: () => {
-          const ddDuyet = document.getElementById("swal_dia_diem_duyet").value.trim();
-          const gc = document.getElementById("swal_ghi_chu").value.trim();
-          const st = document.getElementById("swal_trang_thai").value;
-
-          const dateBD = document.getElementById("swal_bat_dau_date_pk").value;
-          const timeBD = document.getElementById("swal_bat_dau_time").value || "07:00";
-          const dateKT = document.getElementById("swal_ket_thuc_date_pk").value;
-          const timeKT = document.getElementById("swal_ket_thuc_time").value || "17:00";
-
-          const batDauIso = (dateBD && timeBD) ? `${dateBD}T${timeBD}` : "";
-          const ketThucIso = (dateKT && timeKT) ? `${dateKT}T${timeKT}` : "";
-
-          if (!ddDuyet) {
-            Swal.showValidationMessage("Vui lòng nhập địa điểm/phòng được duyệt!");
-            return false;
-          }
-          if (batDauIso && ketThucIso && new Date(batDauIso) >= new Date(ketThucIso)) {
-            Swal.showValidationMessage("Thời gian kết thúc phải sau thời gian bắt đầu!");
-            return false;
-          }
-
-          return { 
-            diaDiemDuyet: ddDuyet, 
-            batDau: batDauIso, 
-            ketThuc: ketThucIso, 
-            ghiChu: gc, 
-            status: st 
-          };
-        }
-      });
-
-      if (!formValues) return;
-
-      Swal.fire({ title: "Đang lưu thay đổi...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "DUYET_DON_CSVC",
-            data: {
-              maDon: maDonGroup,
-              diaDiemDuyet: formValues.diaDiemDuyet,
-              batDau: formValues.batDau,     // Gửi thời gian bắt đầu mới
-              ketThuc: formValues.ketThuc,   // Gửi thời gian kết thúc mới
-              ghiChu: formValues.ghiChu,
-              status: formValues.status
+        // Hàm bóc tách ngày và giờ sang 2 ô riêng biệt
+        function tachNgayGio(valStr) {
+          let d = "", t = "07:00";
+          if (!valStr) return { dateIso: "", dateDisp: "", time: t };
+          
+          if (valStr.includes("T")) {
+            const parts = valStr.split("T");
+            d = parts[0];
+            t = parts[1].slice(0, 5);
+          } else {
+            const match = String(valStr).match(/(\d{1,2}):(\d{2}).*?(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+            if (match) {
+              const pad = n => String(n).padStart(2, '0');
+              d = `${match[5]}-${pad(match[4])}-${pad(match[3])}`;
+              t = `${pad(match[1])}:${pad(match[2])}`;
             }
-          })
-        });
-        const result = await res.json();
-
-        if (result.success) {
-          Swal.fire({
-            icon: "success",
-            title: "Thành công!",
-            text: result.message || "Đã lưu cập nhật thông tin và điều phối!",
-            timer: 1500,
-            showConfirmButton: false
-          });
-          loadCsvcDataAdmin();
-        } else {
-          Swal.fire("Lỗi", result.message || "Không thể cập nhật!", "error");
+          }
+          
+          const disp = d ? d.split('-').reverse().join('/') : ""; // dd/mm/yyyy
+          return { dateIso: d, dateDisp: disp, time: t };
         }
-      } catch (err) {
-        Swal.fire("Lỗi kết nối", err.message, "error");
-      }
+
+        const infoBD = tachNgayGio(dataObj.batDau);
+        const infoKT = tachNgayGio(dataObj.ketThuc);
+
+        const { value: formValues } = await Swal.fire({
+          title: `<span class="text-sm font-black uppercase text-slate-800">Điều Phối &amp; Phản Hồi CSVC</span>`,
+          html: `
+            <div class="text-left text-xs space-y-3 p-1">
+              <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-slate-700 space-y-1">
+                <p><b>Đơn vị:</b> <span class="text-sky-700 font-bold">${tenDonVi}</span></p>
+                <p><b>Hoạt động:</b> ${noiDung}</p>
+                <p><b>Địa điểm ban đầu:</b> <span class="font-bold text-slate-900">${diaDiemGoc}</span></p>
+              </div>
+
+              <!-- 1. ĐỊA ĐIỂM DUYỆT -->
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">1. Địa điểm / Giảng đường phê duyệt thực tế *</label>
+                <input id="swal_dia_diem_duyet" type="text" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold outline-none focus:border-amber-500 bg-white" 
+                  value="${diaDiemDuyetHienTai}" placeholder="Nhập phòng duyệt thực tế (VD: Hội trường A, GĐ 401...)">
+                <span class="text-[10px] text-amber-700 font-medium block mt-0.5">
+                  * Đổi phòng khác đơn vị đăng ký sẽ làm lịch phía User chuyển màu vàng cảnh báo.
+                </span>
+              </div>
+
+              <!-- 2. ĐIỀU CHỈNH THỜI GIAN THỰC TẾ (DD/MM/YYYY) -->
+              <div class="p-2.5 bg-amber-50/60 rounded-xl border border-amber-200 space-y-2">
+                <span class="block font-bold text-amber-950 text-[11px]">2. Thời gian duyệt sử dụng thực tế:</span>
+                
+                <!-- BẮT ĐẦU -->
+                <div>
+                  <span class="text-[10px] font-semibold text-slate-600 block mb-0.5">Thời gian bắt đầu:</span>
+                  <div class="grid grid-cols-12 gap-1.5">
+                    <div class="col-span-7 relative">
+                      <input type="text" id="swal_bat_dau_date_disp" readonly onclick="document.getElementById('swal_bat_dau_date_pk').showPicker()" 
+                        value="${infoBD.dateDisp}" placeholder="dd/mm/yyyy" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none cursor-pointer">
+                      <input type="date" id="swal_bat_dau_date_pk" value="${infoBD.dateIso}" onchange="capNhatNgayModalAdmin('swal_bat_dau')" class="absolute inset-0 opacity-0 pointer-events-none">
+                    </div>
+                    <div class="col-span-5">
+                      <input type="time" id="swal_bat_dau_time" value="${infoBD.time}" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- KẾT THÚC -->
+                <div>
+                  <span class="text-[10px] font-semibold text-slate-600 block mb-0.5">Thời gian kết thúc:</span>
+                  <div class="grid grid-cols-12 gap-1.5">
+                    <div class="col-span-7 relative">
+                      <input type="text" id="swal_ket_thuc_date_disp" readonly onclick="document.getElementById('swal_ket_thuc_date_pk').showPicker()" 
+                        value="${infoKT.dateDisp}" placeholder="dd/mm/yyyy" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none cursor-pointer">
+                      <input type="date" id="swal_ket_thuc_date_pk" value="${infoKT.dateIso}" onchange="capNhatNgayModalAdmin('swal_ket_thuc')" class="absolute inset-0 opacity-0 pointer-events-none">
+                    </div>
+                    <div class="col-span-5">
+                      <input type="time" id="swal_ket_thuc_time" value="${infoKT.time}" class="w-full p-2 border border-slate-300 rounded-xl text-xs font-bold bg-white outline-none">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. NỘI DUNG TRAO ĐỔI -->
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">3. Nội dung trao đổi / Ghi chú phản hồi gửi cơ sở</label>
+                <textarea id="swal_ghi_chu" rows="2" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs outline-none focus:border-amber-500 bg-white font-medium" 
+                  placeholder="VD: Không có lịch giảng đường, chỉ có lịch buổi sáng, đã chuyển sang Hội trường A...">${ghiChuHienTai}</textarea>
+              </div>
+
+              <!-- 4. TRẠNG THÁI DUYỆT -->
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">4. Trạng thái phê duyệt</label>
+                <select id="swal_trang_thai" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold outline-none bg-white">
+                  <option value="Đã duyệt" ${trangThaiHienTai === 'Đã duyệt' ? 'selected' : ''}>🟢 Đã duyệt chính thức</option>
+                  <option value="Chờ duyệt" ${trangThaiHienTai === 'Chờ duyệt' ? 'selected' : ''}>🟡 Chờ duyệt</option>
+                  <option value="Từ chối" ${trangThaiHienTai === 'Từ chối' ? 'selected' : ''}>🔴 Từ chối cấp phép</option>
+                </select>
+              </div>
+            </div>
+          `,
+          focusConfirm: false,
+          showCancelButton: true,
+          confirmButtonText: '<i class="fa-solid fa-floppy-disk mr-1"></i> Lưu thay đổi',
+          cancelButtonText: 'Đóng',
+          confirmButtonColor: '#d97706',
+          preConfirm: () => {
+            const ddDuyet = document.getElementById("swal_dia_diem_duyet").value.trim();
+            const gc = document.getElementById("swal_ghi_chu").value.trim();
+            const st = document.getElementById("swal_trang_thai").value;
+
+            const dateBD = document.getElementById("swal_bat_dau_date_pk").value;
+            const timeBD = document.getElementById("swal_bat_dau_time").value || "07:00";
+            const dateKT = document.getElementById("swal_ket_thuc_date_pk").value;
+            const timeKT = document.getElementById("swal_ket_thuc_time").value || "17:00";
+
+            const batDauIso = (dateBD && timeBD) ? `${dateBD}T${timeBD}` : "";
+            const ketThucIso = (dateKT && timeKT) ? `${dateKT}T${timeKT}` : "";
+
+            if (!ddDuyet) {
+              Swal.showValidationMessage("Vui lòng nhập địa điểm/phòng được duyệt!");
+              return false;
+            }
+            if (batDauIso && ketThucIso && new Date(batDauIso) >= new Date(ketThucIso)) {
+              Swal.showValidationMessage("Thời gian kết thúc phải sau thời gian bắt đầu!");
+              return false;
+            }
+
+            return { 
+              diaDiemDuyet: ddDuyet, 
+              batDau: batDauIso, 
+              ketThuc: ketThucIso, 
+              ghiChu: gc, 
+              status: st 
+            };
+          }
+        });
+
+        if (!formValues) return;
+
+        Swal.fire({ title: "Đang lưu thay đổi...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+        try {
+          const res = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+              action: "DUYET_DON_CSVC",
+              data: {
+                maDon: maDonGroup,
+                diaDiemDuyet: formValues.diaDiemDuyet,
+                batDau: formValues.batDau,
+                ketThuc: formValues.ketThuc,
+                ghiChu: formValues.ghiChu,
+                status: formValues.status
+              }
+            })
+          });
+          const result = await res.json();
+
+          if (result.success) {
+            Swal.fire({
+              icon: "success",
+              title: "Thành công!",
+              text: result.message || "Đã lưu cập nhật thông tin và điều phối!",
+              timer: 1500,
+              showConfirmButton: false
+            });
+            loadCsvcDataAdmin();
+          } else {
+            Swal.fire("Lỗi", result.message || "Không thể cập nhật!", "error");
+          }
+        } catch (err) {
+          Swal.fire("Lỗi kết nối", err.message, "error");
+        }
+      }, 100);
     }
 
     function capNhatNgayModalAdmin(prefix) {
