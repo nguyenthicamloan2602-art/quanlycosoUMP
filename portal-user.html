@@ -6,7 +6,6 @@
   <title>HỆ THỐNG QUẢN LÝ SỐ ĐOÀN - HỘI ĐH Y DƯỢC TPHCM</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,9 +22,6 @@
 
     .fa, .fas, .far, .fa-solid, .fa-regular, .fa-brands, [class*="fa-"] {
       font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
-    }
-    .fc-icon {
-      font-family: "fcicons" !important;
     }
 
     .bg-mesh {
@@ -53,35 +49,14 @@
         0 0 0 1px rgba(226, 232, 240, 0.8),
         0 1px 3px rgba(0, 0, 0, 0.03);
     }
-
-    .fc { 
-      --fc-button-bg-color: #0284c7; 
-      --fc-button-border-color: #0284c7; 
-      font-size: 0.75rem; 
-    }
-    .fc-toolbar-title { 
-      font-size: 0.9rem !important; 
-      font-weight: 800; 
-      color: #0369a1; 
-    }
-    .fc-event { 
-      cursor: pointer; 
-      border-radius: 8px !important; 
-      padding: 2px 4px !important; 
-    }
-    .fc-event-title { 
-      font-weight: 700 !important; 
-      font-size: 11px !important; 
-    }
   </style>
 </head>
 <body class="bg-mesh min-h-screen flex flex-col justify-between text-slate-800 relative selection:bg-sky-500 selection:text-white select-none">
   <div class="fixed inset-0 grid-pattern pointer-events-none z-0"></div>
 
-  <!-- HEADER ĐÃ TỐI ƯU MOBILE CHỐNG RỚT CHỮ -->
+  <!-- HEADER -->
   <header class="bg-white/90 backdrop-blur-xl border-b border-slate-200/90 shadow-sm sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex justify-between items-center gap-2">
-      <!-- CỤM LOGO & TIÊU ĐỀ KHÔNG BỊ BÓP MẶT BẰNG -->
       <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
         <img alt="Logo UMP" class="h-9 sm:h-12 w-auto object-contain shrink-0 drop-shadow-sm cursor-pointer" onclick="backToMenu()" src="logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/f/f7/Logo_Đại_học_Y_Dược_TP.HCM.png'">
         <div class="h-7 w-[2px] bg-sky-500 rounded-full hidden sm:block shrink-0"></div>
@@ -95,7 +70,6 @@
         </div>
       </div>
 
-      <!-- CỤM NÚT THAO TÁC GỌN GÀNG TRÊN MOBILE -->
       <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         <div class="hidden md:flex items-center gap-2 bg-sky-50 px-3 py-1.5 rounded-xl border border-sky-100">
           <i class="fa-solid fa-building-columns text-xs text-sky-600"></i>
@@ -114,7 +88,6 @@
             <span id="sys-noti-badge" class="hidden absolute -top-1 -right-1 px-1.5 py-0.2 bg-rose-500 text-white font-black text-[9px] rounded-full border-2 border-white animate-pulse">0</span>
           </button>
 
-          <!-- MENU DROPDOWN -->
           <div id="sys-noti-dropdown" class="hidden absolute right-0 mt-2 w-72 sm:w-96 bg-white rounded-3xl shadow-2xl border border-slate-100 p-4 z-50 space-y-3">
             <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
               <h4 class="font-black text-xs uppercase text-slate-800 flex items-center gap-1.5">
@@ -143,7 +116,6 @@
     
     <!-- MENU 6 THẺ ĐIỀU HƯỚNG -->
     <div id="section-menu-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
-      <!-- 1. Vật phẩm -->
       <div onclick="openModule('vat-pham')" class="glass-card rounded-[28px] p-6 hover:shadow-xl hover:-translate-y-1 transition duration-200 cursor-pointer flex flex-col justify-between">
         <span class="w-9 h-9 bg-sky-500 text-white font-black text-xs rounded-xl flex items-center justify-center mb-4 shadow-md shadow-sky-500/20">1</span>
         <div>
@@ -153,17 +125,15 @@
         <div class="mt-6 flex justify-end text-sky-600 font-black"><i class="fa-solid fa-arrow-right"></i></div>
       </div>
 
-      <!-- 2. CSVC -->
       <div onclick="openModule('csvc')" class="glass-card rounded-[28px] p-6 hover:shadow-xl hover:-translate-y-1 transition duration-200 cursor-pointer flex flex-col justify-between">
         <span class="w-9 h-9 bg-emerald-500 text-white font-black text-xs rounded-xl flex items-center justify-center mb-4 shadow-md shadow-emerald-500/20">2</span>
         <div>
           <h2 class="font-extrabold text-base text-slate-800">CƠ SỞ VẬT CHẤT</h2>
-          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">Mượn giảng đường, địa điểm,xin xe ra/vào tổ chức chương trình</p>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">Mượn giảng đường, địa điểm, xin xe ra/vào tổ chức chương trình.</p>
         </div>
         <div class="mt-6 flex justify-end text-emerald-600 font-black"><i class="fa-solid fa-arrow-right"></i></div>
       </div>
 
-      <!-- 3. Báo cáo hoạt động -->
       <div onclick="openModule('bao-cao')" class="glass-card rounded-[28px] p-6 hover:shadow-xl hover:-translate-y-1 transition duration-200 cursor-pointer flex flex-col justify-between border-purple-200/80">
         <span class="w-9 h-9 bg-purple-600 text-white font-black text-xs rounded-xl flex items-center justify-center mb-4 shadow-md shadow-purple-500/20">3</span>
         <div>
@@ -176,7 +146,6 @@
         <div class="mt-6 flex justify-end text-purple-600 font-black"><i class="fa-solid fa-arrow-right"></i></div>
       </div>
 
-      <!-- 4. Quản lý Văn bản (Đã khóa) -->
       <div class="glass-card rounded-[28px] p-6 opacity-60 hover:opacity-70 transition duration-200 cursor-not-allowed flex flex-col justify-between relative bg-slate-50 grayscale-[30%]">
         <div class="absolute top-5 right-5 bg-slate-200 text-slate-500 text-[10px] font-black px-2.5 py-1 rounded-md border border-slate-300">
           <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> SẮP RA MẮT
@@ -184,11 +153,10 @@
         <span class="w-9 h-9 bg-slate-400 text-white font-black text-xs rounded-xl flex items-center justify-center mb-4">4</span>
         <div>
           <h2 class="font-extrabold text-base text-slate-600">QUẢN LÝ VĂN BẢN</h2>
-          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">tham khảo quy trình tổ chức, các biểu mẫu văn bản và hồ sơ.</p>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">Tham khảo quy trình tổ chức, các biểu mẫu văn bản và hồ sơ.</p>
         </div>
       </div>
 
-      <!-- 5. Hồ sơ dự toán (Đã khóa) -->
       <div id="card-menu-5" class="glass-card rounded-[28px] p-6 opacity-60 hover:opacity-70 transition duration-200 cursor-not-allowed flex flex-col justify-between relative bg-slate-50 grayscale-[30%]">
         <div class="absolute top-5 right-5 bg-slate-200 text-slate-500 text-[10px] font-black px-2.5 py-1 rounded-md border border-slate-300">
           <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> SẮP RA MẮT
@@ -196,11 +164,10 @@
         <span class="w-9 h-9 bg-slate-400 text-white font-black text-xs rounded-xl flex items-center justify-center mb-4">5</span>
         <div>
           <h2 class="font-extrabold text-base text-slate-600">HỒ SƠ DỰ TOÁN</h2>
-          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">Thống kế hoạt động xin kinh phí từ Đại học Y Dược TPHCM, gợi ý lập bảng dự toán theo quy chế.</p>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">Thống kê hoạt động xin kinh phí từ ĐHYD TPHCM.</p>
         </div>
       </div>
 
-      <!-- 6. Quyết toán AI (Đã khóa) -->
       <div id="card-menu-6" class="glass-card rounded-[28px] p-6 opacity-60 hover:opacity-70 transition duration-200 cursor-not-allowed flex flex-col justify-between relative bg-slate-50 grayscale-[30%]">
         <div class="absolute top-5 right-5 bg-slate-200 text-slate-500 text-[10px] font-black px-2.5 py-1 rounded-md border border-slate-300">
           <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> SẮP RA MẮT
@@ -208,7 +175,7 @@
         <span class="w-9 h-9 bg-slate-400 text-white font-black text-xs rounded-xl flex items-center justify-center mb-4">6</span>
         <div>
           <h2 class="font-extrabold text-base text-slate-600">HỒ SƠ QUYẾT TOÁN</h2>
-          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">Hỗ trợ hoàn thành hồ sơ quyết toán theo quy định</p>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">Hỗ trợ hoàn thành hồ sơ quyết toán theo quy định.</p>
         </div>
       </div>
     </div>
@@ -219,19 +186,82 @@
         <i class="fa-solid fa-arrow-left"></i> Quay lại Menu chọn
       </button>
 
-      <!-- 1. MODULE VẬT PHẨM (CHẶN T7 & CN) -->
-      <div id="detail-vat-pham" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div class="lg:col-span-7 glass-card rounded-[28px] p-6 space-y-3">
-          <div class="flex justify-between items-center">
-            <h3 class="font-extrabold text-xs text-slate-800 uppercase flex items-center gap-2">
-              <i class="fa-solid fa-calendar-days text-sky-600"></i> Lịch Mượn Vật Phẩm Chung
-            </h3>
-            <span class="text-[10px] text-sky-600 font-bold bg-sky-50 px-2.5 py-1 rounded-full border border-sky-100">💡 Nhấn vào đơn để xem chi tiết</span>
+      <!-- 1. MODULE VẬT PHẨM: LỊCH TUẦN & FORM ĐĂNG KÝ -->
+      <div id="detail-vat-pham" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        <div class="xl:col-span-7 glass-card rounded-[28px] p-4 sm:p-5 space-y-3.5">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="font-black text-xs sm:text-sm text-slate-800 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-boxes-stacked text-sky-600"></i> Lịch Sử Dụng Vật Phẩm Tuần
+              </h3>
+              <p class="text-[10.5px] text-slate-400 mt-0.5">Lịch bàn giao và hoàn trả vật phẩm từ Thứ 2 đến Thứ 6</p>
+            </div>
+            
+            <div class="flex items-center gap-1.5 self-end sm:self-auto">
+              <button type="button" onclick="changeVpWeek(-1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition">
+                <i class="fa-solid fa-chevron-left text-[11px]"></i>
+              </button>
+              <button type="button" onclick="goToVpCurrentWeek()" class="px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-800 font-bold text-[11px] border border-sky-200 transition">
+                Hiện tại
+              </button>
+              <button type="button" onclick="changeVpWeek(1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition">
+                <i class="fa-solid fa-chevron-right text-[11px]"></i>
+              </button>
+              <button type="button" onclick="loadVpWeeklySchedule()" class="p-1.5 px-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold transition ml-1" title="Làm mới lịch">
+                <i class="fa-solid fa-arrows-rotate"></i>
+              </button>
+            </div>
           </div>
-          <div id="calendar-vat-pham" class="min-h-[480px]"></div>
+
+          <div class="flex items-center justify-between text-xs">
+            <span id="vp-week-range-label" class="font-black text-sky-800 font-mono">Đang tải lịch...</span>
+            <div class="flex items-center gap-2 text-[10px] text-slate-500 font-semibold">
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-sky-500"></span> Chờ nhận</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Đang mượn</span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-2xl bg-white shadow-2xs">
+            <table class="w-full min-w-[550px] border-collapse text-xs table-fixed">
+              <thead>
+                <tr id="vp-week-thead" class="bg-slate-50 text-slate-700 border-b border-slate-200 font-bold text-center">
+                  <th class="p-2 w-16 border-r border-slate-200 text-slate-600 text-[10.5px]">Buổi</th>
+                  <th class="p-2 border-r border-slate-100">T2</th>
+                  <th class="p-2 border-r border-slate-100">T3</th>
+                  <th class="p-2 border-r border-slate-100">T4</th>
+                  <th class="p-2 border-r border-slate-100">T5</th>
+                  <th class="p-2">T6</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr>
+                  <td class="p-2 font-black text-center bg-sky-50/60 text-sky-900 border-r border-slate-200 align-top text-[11px]">
+                    <i class="fa-regular fa-sun text-amber-500 block text-sm mb-0.5"></i> SÁNG
+                    <span class="block text-[8.5px] text-slate-400 font-normal">8:00 - 11:30</span>
+                  </td>
+                  <td id="cell-vp-sang-0" class="p-1 border-r border-slate-100 align-top space-y-1 h-36 bg-slate-50/20"></td>
+                  <td id="cell-vp-sang-1" class="p-1 border-r border-slate-100 align-top space-y-1 bg-slate-50/20"></td>
+                  <td id="cell-vp-sang-2" class="p-1 border-r border-slate-100 align-top space-y-1 bg-slate-50/20"></td>
+                  <td id="cell-vp-sang-3" class="p-1 border-r border-slate-100 align-top space-y-1 bg-slate-50/20"></td>
+                  <td id="cell-vp-sang-4" class="p-1 align-top space-y-1 bg-slate-50/20"></td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-black text-center bg-orange-50/60 text-orange-900 border-r border-slate-200 align-top text-[11px]">
+                    <i class="fa-solid fa-cloud-sun text-orange-500 block text-sm mb-0.5"></i> CHIỀU
+                    <span class="block text-[8.5px] text-slate-400 font-normal">13:30 - 17:00</span>
+                  </td>
+                  <td id="cell-vp-chieu-0" class="p-1 border-r border-slate-100 align-top space-y-1 h-36"></td>
+                  <td id="cell-vp-chieu-1" class="p-1 border-r border-slate-100 align-top space-y-1"></td>
+                  <td id="cell-vp-chieu-2" class="p-1 border-r border-slate-100 align-top space-y-1"></td>
+                  <td id="cell-vp-chieu-3" class="p-1 border-r border-slate-100 align-top space-y-1"></td>
+                  <td id="cell-vp-chieu-4" class="p-1 align-top space-y-1"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="lg:col-span-5 glass-card rounded-[28px] p-6 space-y-4">
+        <div class="xl:col-span-5 glass-card rounded-[28px] p-6 space-y-4 max-h-[90vh] overflow-y-auto">
           <div class="border-b border-slate-100 pb-2">
             <h3 class="font-extrabold text-xs text-slate-800 uppercase flex items-center gap-2">
               <i class="fa-solid fa-file-pen text-sky-600"></i> Phiếu Mượn Vật Phẩm
@@ -294,7 +324,6 @@
               </div>
             </div>
 
-            <!-- Input ẩn tương thích mã lưu backend -->
             <input type="hidden" id="vp_time_muon" value="">
             <input type="hidden" id="vp_time_tra" value="">
 
@@ -315,13 +344,9 @@
         </div>
       </div>
 
-      <!-- ======================================================== -->
-      <!-- 2. MODULE CƠ SỞ VẬT CHẤT: LỊCH TUẦN & FORM ĐĂNG KÝ SONG SONG -->
-      <!-- ======================================================== -->
-      <div id="detail-csvc" class="hidden grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
-        
-        <!-- CỘT TRÁI (7 CỘT): LỊCH TUẦN SỬ DỤNG CSVC CỦA TẤT CẢ USER ĐÃ DUYỆT -->
-        <div class="xl:col-span-7 glass-card rounded-[28px] p-4 sm:p-5 space-y-3.5">
+      <!-- 2. MODULE CSVC: LỊCH TUẦN & FORM ĐĂNG KÝ -->
+      <div id="detail-csvc" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        <div class="lg:col-span-7 glass-card rounded-[28px] p-4 sm:p-5 space-y-3.5">
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-3">
             <div>
               <h3 class="font-black text-xs sm:text-sm text-slate-800 uppercase flex items-center gap-2">
@@ -354,7 +379,6 @@
             </div>
           </div>
 
-          <!-- BẢNG LỊCH TUẦN -->
           <div class="overflow-x-auto border border-slate-200 rounded-2xl bg-white shadow-2xs">
             <table class="w-full min-w-[650px] border-collapse text-xs table-fixed">
               <thead>
@@ -370,11 +394,9 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200">
-                <!-- SÁNG -->
                 <tr>
                   <td class="p-2 font-black text-center bg-sky-50/60 text-sky-900 border-r border-slate-200 align-top text-[11px]">
-                    <i class="fa-regular fa-sun text-amber-500 block text-sm mb-0.5"></i>
-                    SÁNG
+                    <i class="fa-regular fa-sun text-amber-500 block text-sm mb-0.5"></i> SÁNG
                     <span class="block text-[8.5px] text-slate-400 font-normal">Tiết 1-5</span>
                   </td>
                   <td id="cell-csvc-sang-0" class="p-1 border-r border-slate-100 align-top space-y-1 h-32 bg-slate-50/20"></td>
@@ -385,12 +407,9 @@
                   <td id="cell-csvc-sang-5" class="p-1 border-r border-slate-100 align-top space-y-1 bg-slate-50/20"></td>
                   <td id="cell-csvc-sang-6" class="p-1 align-top space-y-1 bg-slate-50/20"></td>
                 </tr>
-
-                <!-- CHIỀU -->
                 <tr>
                   <td class="p-2 font-black text-center bg-orange-50/60 text-orange-900 border-r border-slate-200 align-top text-[11px]">
-                    <i class="fa-solid fa-cloud-sun text-orange-500 block text-sm mb-0.5"></i>
-                    CHIỀU
+                    <i class="fa-solid fa-cloud-sun text-orange-500 block text-sm mb-0.5"></i> CHIỀU
                     <span class="block text-[8.5px] text-slate-400 font-normal">Tiết 7-11</span>
                   </td>
                   <td id="cell-csvc-chieu-0" class="p-1 border-r border-slate-100 align-top space-y-1 h-32"></td>
@@ -401,12 +420,9 @@
                   <td id="cell-csvc-chieu-5" class="p-1 border-r border-slate-100 align-top space-y-1"></td>
                   <td id="cell-csvc-chieu-6" class="p-1 align-top space-y-1"></td>
                 </tr>
-
-                <!-- TỐI -->
                 <tr>
                   <td class="p-2 font-black text-center bg-indigo-50/60 text-indigo-900 border-r border-slate-200 align-top text-[11px]">
-                    <i class="fa-regular fa-moon text-indigo-500 block text-sm mb-0.5"></i>
-                    TỐI
+                    <i class="fa-regular fa-moon text-indigo-500 block text-sm mb-0.5"></i> TỐI
                     <span class="block text-[8.5px] text-slate-400 font-normal">Sau 17:30</span>
                   </td>
                   <td id="cell-csvc-toi-0" class="p-1 border-r border-slate-100 align-top space-y-1 h-24 bg-slate-50/30"></td>
@@ -422,8 +438,7 @@
           </div>
         </div>
 
-        <!-- CỘT PHẢI (5 CỘT): FORM ĐĂNG KÝ CƠ SỞ VẬT CHẤT NGAY BÊN CẠNH -->
-        <div class="xl:col-span-5 glass-card rounded-[28px] p-4 sm:p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+        <div class="lg:col-span-5 glass-card rounded-[28px] p-4 sm:p-5 space-y-4 max-h-[90vh] overflow-y-auto">
           <div class="border-b border-slate-100 pb-2">
             <h3 class="font-extrabold text-sm text-slate-800 uppercase flex items-center gap-2">
               <i class="fa-solid fa-building-circle-check text-emerald-600"></i> Phiếu Đăng Ký Cơ Sở Vật Chất
@@ -432,7 +447,6 @@
           </div>
 
           <form onsubmit="submitFormCsvcTungMuc(event)" class="space-y-4 text-xs">
-            <!-- I. THÔNG TIN CƠ BẢN -->
             <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
               <span class="block font-black text-slate-700 uppercase text-[10px] tracking-wider">
                 I. Thông tin người đại diện
@@ -453,13 +467,12 @@
               </div>
             </div>
 
-            <!-- II. DANH MỤC TICK CHỌN -->
             <div class="space-y-3">
               <span class="block font-black text-slate-700 uppercase text-[10px] tracking-wider">
                 II. Tick chọn các hạng mục cần đăng ký
               </span>
 
-              <!-- 1. MƯỢN GIẢNG ĐƯỜNG (CHỌN TIẾT THEO QUY ĐỊNH 1853) -->
+              <!-- MƯỢN GIẢNG ĐƯỜNG -->
               <div class="border border-sky-200 rounded-2xl overflow-hidden bg-white shadow-xs">
                 <label class="flex items-center justify-between p-3 bg-sky-50/70 cursor-pointer select-none border-b border-sky-100">
                   <div class="flex items-center gap-2">
@@ -475,7 +488,6 @@
                     <input type="text" id="gd_ten_hd" placeholder="VD: Sinh hoạt Chi đoàn, Hội thảo chuyên đề..." class="w-full p-2 border border-slate-200 rounded-xl bg-slate-50 font-bold text-slate-800 outline-none">
                   </div>
 
-                  <!-- CHỌN GIẢNG ĐƯỜNG -->
                   <div class="space-y-1.5">
                     <div class="flex justify-between items-center">
                       <label class="block font-bold text-slate-700 text-xs">Chọn phòng theo danh sách *</label>
@@ -517,11 +529,9 @@
                     </div>
                   </div>
 
-                  <!-- 3.1: CHỌN NGÀY CỐ ĐỊNH THỨ TỰ NGÀY - THÁNG - NĂM -->
                   <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5">
                     <label class="block font-bold text-slate-700 text-[10.5px]">Ngày mượn giảng đường *</label>
                     <div class="flex items-center gap-2">
-                      <!-- Ô hiển thị Ngày / Tháng / Năm cố định -->
                       <div class="relative flex-1">
                         <input type="text" id="gd_date_display" readonly onclick="document.getElementById('gd_date_picker').showPicker()" 
                           placeholder="dd/mm/yyyy" class="w-full p-2 border rounded-xl text-xs bg-white font-bold outline-none cursor-pointer">
@@ -531,52 +541,13 @@
                         Chưa chọn ngày
                       </span>
                     </div>
-                    <!-- Input ẩn lưu chuỗi yyyy-mm-dd -->
                     <input type="hidden" id="gd_date_val" value="">
                   </div>
 
-                  <!-- 3.2: BẢNG TRA CỨU GIỜ LÊN LỚP (BỔ SUNG BUỔI TỐI) -->
                   <div class="p-2.5 bg-amber-50/70 border border-amber-200 rounded-xl space-y-2">
                     <span class="text-[10px] font-black uppercase text-amber-900 tracking-tight block">
-                      📋 Quy định giờ lên lớp (QĐ 1853/QĐ-ĐHYD):
+                      📋 Giờ lên lớp theo QĐ 1853/QĐ-ĐHYD:
                     </span>
-                    
-                    <div class="grid grid-cols-3 gap-1.5 text-[9.5px] bg-white p-2 rounded-lg border border-amber-200">
-                      <div>
-                        <b class="text-sky-800 block border-b pb-0.5 mb-1">BUỔI SÁNG</b>
-                        <div class="space-y-0.5 text-slate-600">
-                          <div>• Tiết 1: <b>7g00 - 7g50</b></div>
-                          <div>• Tiết 2: <b>7g50 - 8g40</b></div>
-                          <div>• Tiết 3: <b>8g40 - 9g30</b></div>
-                          <div class="text-slate-400 italic text-[8.5px]">Nghỉ 15p</div>
-                          <div>• Tiết 4: <b>9g45 - 10g35</b></div>
-                          <div>• Tiết 5: <b>10g35 - 11g25</b></div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <b class="text-orange-800 block border-b pb-0.5 mb-1">BUỔI CHIỀU</b>
-                        <div class="space-y-0.5 text-slate-600">
-                          <div>• Tiết 7: <b>13g00 - 13g50</b></div>
-                          <div>• Tiết 8: <b>13g50 - 14g40</b></div>
-                          <div>• Tiết 9: <b>14g40 - 15g30</b></div>
-                          <div class="text-slate-400 italic text-[8.5px]">Nghỉ 15p</div>
-                          <div>• Tiết 10: <b>15g45 - 16g35</b></div>
-                          <div>• Tiết 11: <b>16g35 - 17g25</b></div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <b class="text-indigo-800 block border-b pb-0.5 mb-1">BUỔI TỐI</b>
-                        <div class="space-y-0.5 text-slate-600">
-                          <div>• Tiết 12: <b>17g25 - 18g15</b></div>
-                          <div>• Tiết 13: <b>18g15 - 19g05</b></div>
-                          <div>• Tiết 14: <b>19g05 - 20g00</b></div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- 3.3: CHỌN TỪ TIẾT ĐẾN TIẾT (ĐẦY ĐỦ TIẾT 12, 13, 14) -->
                     <div class="grid grid-cols-2 gap-2 pt-1">
                       <div>
                         <label class="block font-bold text-slate-700 mb-1 text-[10.5px]">Từ tiết *</label>
@@ -630,21 +601,20 @@
                         </select>
                       </div>
                     </div>
-
                     <input type="hidden" id="gd_start" value="">
                     <input type="hidden" id="gd_end" value="">
                     <input type="hidden" id="gd_tiet_quy_doi_val" value="">
                   </div>
 
                   <div class="space-y-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <label class="block font-bold text-slate-700 text-[10.5px]">Import văn bản / Kế hoạch (Chọn file hoặc link Drive) *</label>
+                    <label class="block font-bold text-slate-700 text-[10.5px]">Import văn bản / Kế hoạch *</label>
                     <input type="file" id="gd_file_vb" accept=".pdf,.doc,.docx" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-sky-100 file:text-sky-800 bg-white p-1 rounded-lg border outline-none">
                     <input type="url" id="gd_link_vb" placeholder="Hoặc dán link Google Drive minh chứng..." class="w-full p-1.5 border rounded-lg text-xs bg-white outline-none">
                   </div>
                 </div>
               </div>
 
-              <!-- 2. MƯỢN SÂN, SẢNH -->
+              <!-- MƯỢN SÂN, SẢNH -->
               <div class="border border-emerald-200 rounded-2xl overflow-hidden bg-white shadow-xs">
                 <label class="flex items-center justify-between p-3 bg-emerald-50/70 cursor-pointer select-none border-b border-emerald-100">
                   <div class="flex items-center gap-2">
@@ -670,12 +640,10 @@
                     </select>
                   </div>
 
-                  <!-- KHUNG CHỌN KHUNG GIỜ CỐ ĐỊNH & NHIỀU NGÀY -->
                   <div class="space-y-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                    <!-- 1. KHUNG GIỜ SỬ DỤNG TRONG NGÀY -->
                     <div>
                       <label class="block font-bold text-slate-700 text-[10.5px] mb-1">
-                        Khung giờ sử dụng trong ngày (Áp dụng cho tất cả các ngày được chọn) *
+                        Khung giờ sử dụng trong ngày *
                       </label>
                       <div class="grid grid-cols-2 gap-2">
                         <div>
@@ -689,17 +657,11 @@
                       </div>
                     </div>
 
-                    <!-- 2. BẤM CHỌN TỪNG NGÀY THÊM VÀO DANH SÁCH -->
                     <div class="pt-2 border-t border-slate-200/80">
                       <div class="flex justify-between items-center mb-1">
-                        <label class="font-bold text-slate-700 text-[10.5px]">
-                          Chọn các ngày sử dụng (Bấm chọn ngày để thêm vào danh sách) *
-                        </label>
-                        <span id="kv_count_days_badge" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">
-                          Đã chọn: 0 ngày
-                        </span>
+                        <label class="font-bold text-slate-700 text-[10.5px]">Chọn các ngày sử dụng *</label>
+                        <span id="kv_count_days_badge" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">Đã chọn: 0 ngày</span>
                       </div>
-
                       <div class="flex items-center gap-2">
                         <div class="relative flex-1">
                           <input type="text" id="kv_temp_date_disp" readonly onclick="document.getElementById('kv_temp_date_pk').showPicker()" 
@@ -711,7 +673,6 @@
                         </button>
                       </div>
 
-                      <!-- KHU VỰC HIỂN THỊ CÁC THẺ NGÀY ĐÃ CHỌN -->
                       <div id="kv_selected_days_container" class="mt-2.5 p-2 bg-white rounded-xl border border-dashed border-slate-200 min-h-[44px] flex flex-wrap gap-1.5 items-center">
                         <span class="text-slate-400 text-[11px] italic px-1" id="kv_empty_days_hint">Chưa chọn ngày nào. Vui lòng bấm chọn ngày ở trên.</span>
                       </div>
@@ -719,14 +680,14 @@
                   </div>
 
                   <div class="space-y-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <label class="block font-bold text-slate-700 text-[10.5px]">Import VB / Kế hoạch (File hoặc Drive) *</label>
+                    <label class="block font-bold text-slate-700 text-[10.5px]">Import VB / Kế hoạch *</label>
                     <input type="file" id="kv_file_vb" accept=".pdf,.doc,.docx" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-emerald-100 file:text-emerald-800 bg-white p-1 rounded-lg border outline-none">
                     <input type="url" id="kv_link_vb" placeholder="Hoặc dán link Google Drive minh chứng..." class="w-full p-1.5 border rounded-lg text-xs bg-white outline-none">
                   </div>
                 </div>
               </div>
 
-              <!-- 3. XIN XE RA VÀO -->
+              <!-- XIN XE RA VÀO -->
               <div class="border border-amber-200 rounded-2xl overflow-hidden bg-white shadow-xs">
                 <label class="flex items-center justify-between p-3 bg-amber-50/70 cursor-pointer select-none border-b border-amber-100">
                   <div class="flex items-center gap-2">
@@ -747,7 +708,6 @@
                     <input type="text" id="xe_info_type" placeholder="VD: Xe tải 1.5 tấn (Biển số: 51C-987.65)..." class="w-full p-2 border border-slate-200 rounded-xl bg-slate-50 font-semibold outline-none">
                   </div>
 
-                  <!-- THỜI GIAN VÀO CỔNG VÀ RA CỔNG CHUẨN DD/MM/YYYY -->
                   <div class="space-y-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                     <div>
                       <div class="flex justify-between items-center mb-0.5">
@@ -784,18 +744,16 @@
                     </div>
                   </div>
 
-                  <!-- Input ẩn tương thích mã lưu backend -->
                   <input type="hidden" id="xe_start" value="">
                   <input type="hidden" id="xe_end" value="">
 
                   <div class="space-y-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <label class="block font-bold text-slate-700 text-[10.5px]">Import VB / Kế hoạch (File hoặc Drive) *</label>
+                    <label class="block font-bold text-slate-700 text-[10.5px]">Import VB / Kế hoạch *</label>
                     <input type="file" id="xe_file_vb" accept=".pdf,.doc,.docx" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-amber-100 file:text-amber-800 bg-white p-1 rounded-lg border outline-none">
                     <input type="url" id="xe_link_vb" placeholder="Hoặc dán link Google Drive minh chứng..." class="w-full p-1.5 border rounded-lg text-xs bg-white outline-none">
                   </div>
                 </div>
               </div>
-
             </div>
 
             <button type="submit" id="btn-submit-csvc" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black rounded-2xl shadow-md transition text-xs tracking-wide">
@@ -803,10 +761,9 @@
             </button>
           </form>
         </div>
-
       </div>
 
-      <!-- 3. MODULE BÁO CÁO HOẠT ĐỘNG THÁNG (TRẢ LỜI CÂU HỎI & XEM LỊCH SỬ) -->
+      <!-- 3. MODULE BÁO CÁO HOẠT ĐỘNG THÁNG -->
       <div id="detail-bao-cao" class="hidden max-w-4xl mx-auto glass-card rounded-[32px] p-6 sm:p-8 space-y-5 border-purple-100">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-3 border-b border-purple-100 pb-3">
           <div>
@@ -822,7 +779,6 @@
         </div>
         
         <form onsubmit="submitFormBaoCao(event)" class="space-y-5 text-xs">
-          <!-- CHỌN THÁNG (Format MM/yyyy: 10/2026) -->
           <div class="p-4 bg-purple-50/50 rounded-2xl border border-purple-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="w-full sm:w-72">
               <label class="block font-bold text-purple-950 mb-1">Chọn kỳ tháng báo cáo (VD: 10/2026) *</label>
@@ -839,7 +795,6 @@
             </div>
           </div>
 
-          <!-- BANNER CẢNH BÁO NỘP TRỄ SAU NGÀY 20 -->
           <div id="bc-late-warning-banner" class="hidden p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 flex items-start gap-2.5">
             <i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm mt-0.5 shrink-0"></i>
             <div class="leading-relaxed">
@@ -848,7 +803,7 @@
             </div>
           </div>
 
-          <!-- PHẦN I: BẢNG 14 CHỈ TIÊU CÔNG TÁC (CHO PHÉP NHẬP SỐ 0) -->
+          <!-- BẢNG 14 CHỈ TIÊU -->
           <div class="border border-purple-100 rounded-2xl p-4 bg-purple-50/30">
             <h4 class="font-black text-purple-900 uppercase mb-2.5 flex items-center gap-1.5 text-xs">
               <i class="fa-solid fa-table-cells text-purple-600"></i> I. Bảng thống kê số liệu hoạt động (Cho phép nhập 0)
@@ -872,10 +827,10 @@
                   <tr><td class="p-2 text-center font-bold">6</td><td class="p-2">Số lượt TTN tham gia nâng cao năng lực sử dụng ngoại ngữ và hội nhập quốc tế</td><td class="p-1"><input type="number" min="0" id="bc_metric_6" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_6" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
                   <tr><td class="p-2 text-center font-bold">7</td><td class="p-2">Số cán bộ Đoàn - Hội - Đội đạt chứng chỉ Ngoại ngữ tương đương B1</td><td class="p-1"><input type="number" min="0" id="bc_metric_7" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_7" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
                   <tr><td class="p-2 text-center font-bold">8</td><td class="p-2">Số cán bộ được đào tạo trung cấp công tác thanh niên và LLCT</td><td class="p-1"><input type="number" min="0" id="bc_metric_8" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_8" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
-                  <tr><td class="p-2 text-center font-bold">9</td><td class="p-2">Số đoàn viên ưu tú được học các lớp cảm tình Đảng</td><td class="p-1"><input type="number" min="0" id="bc_metric_9" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_9" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
-                  <tr><td class="p-2 text-center font-bold">10</td><td class="p-2">Số đoàn viên ưu tú được giới thiệu cho Đảng xem xét kết tải</td><td class="p-1"><input type="number" min="0" id="bc_metric_10" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_10" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
-                  <tr><td class="p-2 text-center font-bold">11</td><td class="p-2">Số đoàn viên ưu tú được kết tải Đảng</td><td class="p-1"><input type="number" min="0" id="bc_metric_11" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_11" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
-                  <tr><td class="p-2 text-center font-bold">12</td><td class="p-2">Số thanh niên được kết tải Đoàn</td><td class="p-1"><input type="number" min="0" id="bc_metric_12" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_12" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
+                  <tr><td class="p-2 text-center font-bold">9</td><td class="p-2">Số đoàn viên ưu tú được học các lớp cảm tình Đảng</td><td class="p-1"><input type="number" min="0" id="bc_metric_9" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_8" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
+                  <tr><td class="p-2 text-center font-bold">10</td><td class="p-2">Số đoàn viên ưu tú được giới thiệu cho Đảng xem xét kết nạp</td><td class="p-1"><input type="number" min="0" id="bc_metric_10" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_10" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
+                  <tr><td class="p-2 text-center font-bold">11</td><td class="p-2">Số đoàn viên ưu tú được kết nạp Đảng</td><td class="p-1"><input type="number" min="0" id="bc_metric_11" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_11" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
+                  <tr><td class="p-2 text-center font-bold">12</td><td class="p-2">Số thanh niên được kết nạp Đoàn</td><td class="p-1"><input type="number" min="0" id="bc_metric_12" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_12" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
                   <tr><td class="p-2 text-center font-bold">13</td><td class="p-2">Số chi đoàn được thành lập mới</td><td class="p-1"><input type="number" min="0" id="bc_metric_13" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_13" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
                   <tr><td class="p-2 text-center font-bold">14</td><td class="p-2">Số chi hội được thành lập mới</td><td class="p-1"><input type="number" min="0" id="bc_metric_14" required value="0" class="w-full p-1.5 text-center font-bold border rounded outline-none bg-purple-50/20"></td><td class="p-1"><input type="text" id="bc_note_14" placeholder="Ghi chú..." class="w-full p-1.5 outline-none bg-transparent"></td></tr>
                 </tbody>
@@ -883,7 +838,7 @@
             </div>
           </div>
 
-          <!-- PHẦN II: TRẢ LỜI CÁC CÂU HỎI VĂN BẢN DÀI THEO FILE WORD ĐÍNH KÈM -->
+          <!-- PHẦN II: CÂU HỎI CHI TIẾT -->
           <div class="border border-purple-100 rounded-2xl p-4 bg-white shadow-sm space-y-4">
             <h4 class="font-black text-purple-950 uppercase flex items-center gap-1.5 text-xs">
               <i class="fa-solid fa-pen-to-square text-purple-600 text-sm"></i> II. Báo Cáo Nội Dung Theo Từng Hạng Mục Hoạt Động
@@ -900,40 +855,40 @@
               <label class="block font-bold text-slate-800 mb-1">
                 1. Phong trào "Sinh viên 5 tốt" - 1.3. Học tập, sáng tạo, nghiên cứu khoa học:
               </label>
-              <textarea id="qa_1_3" rows="2" placeholder="VD: Tổ chức Workshop 'Kỹ năng khám lâm sàng cơ bản', Cuộc thi 'Tranh tài Dược lý'..." class="w-full p-2.5 border rounded-xl outline-none bg-purple-50/20 text-xs focus:bg-white"></textarea>
+              <textarea id="qa_1_3" rows="2" placeholder="VD: Tổ chức Workshop 'Kỹ năng khám lâm sàng cơ bản'..." class="w-full p-2.5 border rounded-xl outline-none bg-purple-50/20 text-xs focus:bg-white"></textarea>
             </div>
 
             <div>
               <label class="block font-bold text-slate-800 mb-1">
                 1. Phong trào "Sinh viên 5 tốt" - 1.4. Tình nguyện vì cuộc sống cộng đồng:
               </label>
-              <textarea id="qa_1_4" rows="2" placeholder="VD: Chương trình 'Khám sức khỏe cộng đồng', chiến dịch 'Nhịp Xanh'..." class="w-full p-2.5 border rounded-xl outline-none bg-purple-50/20 text-xs focus:bg-white"></textarea>
+              <textarea id="qa_1_4" rows="2" placeholder="VD: Chương trình 'Khám sức khỏe cộng đồng'..." class="w-full p-2.5 border rounded-xl outline-none bg-purple-50/20 text-xs focus:bg-white"></textarea>
             </div>
 
             <div>
               <label class="block font-bold text-slate-800 mb-1">
                 1. Phong trào "Sinh viên 5 tốt" - 1.5. Rèn luyện thể chất:
               </label>
-              <textarea id="qa_1_5" rows="2" placeholder="VD: Tổ chức Giải Cầu lông CLB năm 2026, duy trì lịch tập luyện định kỳ..." class="w-full p-2.5 border rounded-xl outline-none bg-purple-50/20 text-xs focus:bg-white"></textarea>
+              <textarea id="qa_1_5" rows="2" placeholder="VD: Tổ chức Giải Cầu lông CLB năm 2026..." class="w-full p-2.5 border rounded-xl outline-none bg-purple-50/20 text-xs focus:bg-white"></textarea>
             </div>
 
             <div>
               <label class="block font-bold text-slate-800 mb-1">
                 1. Phong trào "Sinh viên 5 tốt" - 1.6. Chủ động hội nhập quốc tế:
               </label>
-              <textarea id="qa_1_6" rows="2" placeholder="VD: Tổ chức thi thử IELTS 2 kỹ năng Listening và Reading cho 120 sinh viên..." class="w-full p-2.5 border rounded-xl outline-none bg-purple-50/20 text-xs focus:bg-white"></textarea>
+              <textarea id="qa_1_6" rows="2" placeholder="VD: Tổ chức thi thử IELTS 2 kỹ năng..." class="w-full p-2.5 border rounded-xl outline-none bg-purple-50/20 text-xs focus:bg-white"></textarea>
             </div>
 
             <div>
               <label class="block font-bold text-slate-800 mb-1">
                 2. Chương trình tư vấn, hỗ trợ sinh viên:
               </label>
-              <textarea id="qa_2_0" rows="2" placeholder="VD: Tổ chức Talkshow 'Định hướng chuyên ngành sau tốt nghiệp' với 3 diễn giả cựu sinh viên..." class="w-full p-2.5 border rounded-xl outline-none bg-purple-50/20 text-xs focus:bg-white"></textarea>
+              <textarea id="qa_2_0" rows="2" placeholder="VD: Tổ chức Talkshow 'Định hướng chuyên ngành'..." class="w-full p-2.5 border rounded-xl outline-none bg-purple-50/20 text-xs focus:bg-white"></textarea>
             </div>
 
             <div>
               <label class="block font-bold text-slate-800 mb-1">3. Khó khăn, vướng mắc & Đề xuất kiến nghị:</label>
-              <textarea id="qa_kien_nghi" rows="2" placeholder="Nêu các khó khăn về kinh phí, thủ tục hoặc đề xuất hỗ trợ từ Đoàn - Hội cấp trên..." class="w-full p-2.5 border rounded-xl outline-none bg-purple-50/20 text-xs focus:bg-white"></textarea>
+              <textarea id="qa_kien_nghi" rows="2" placeholder="Nêu các khó khăn về kinh phí, thủ tục hoặc đề xuất hỗ trợ..." class="w-full p-2.5 border rounded-xl outline-none bg-purple-50/20 text-xs focus:bg-white"></textarea>
             </div>
 
             <div class="p-3 bg-purple-50/50 rounded-xl border border-purple-100">
@@ -1017,45 +972,177 @@
     }
 
     // ==============================================================
-    // TỰ ĐỘNG ẨN THẺ 5 VÀ 6 CHO KHỐI KHOA (CHẠY TRỰC TIẾP NGAY KHI NẠP TRANG)
+    // 1. LỊCH TUẦN VẬT PHẨM (T2 - T6)
+    // ==============================================================
+    let currentVpWeekStartDate = getMondayOfWeek(new Date());
+    let rawVpEvents = [];
+
+    function changeVpWeek(offsetWeeks) {
+      currentVpWeekStartDate.setDate(currentVpWeekStartDate.getDate() + offsetWeeks * 7);
+      renderVpWeekGrid();
+    }
+
+    function goToVpCurrentWeek() {
+      currentVpWeekStartDate = getMondayOfWeek(new Date());
+      renderVpWeekGrid();
+    }
+
+    async function loadVpWeeklySchedule() {
+      const label = document.getElementById("vp-week-range-label");
+      if (label) label.innerText = "Đang nạp dữ liệu...";
+
+      try {
+        const res = await fetch(`${API_URL}?action=GET_USER_SCHEDULE&type=VAT_PHAM&_t=${Date.now()}`);
+        const data = await res.json();
+        rawVpEvents = (data && data.success) ? (data.events || data.list || []) : [];
+        renderVpWeekGrid();
+      } catch (err) {
+        if (label) label.innerText = "Lỗi nạp lịch!";
+      }
+    }
+
+    function renderVpWeekGrid() {
+      const pad = n => String(n).padStart(2, '0');
+      const dayNames = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6"];
+
+      const weekDates = [];
+      for (let i = 0; i < 5; i++) {
+        const d = new Date(currentVpWeekStartDate);
+        d.setDate(d.getDate() + i);
+        weekDates.push(d);
+      }
+
+      const startStr = `${pad(weekDates[0].getDate())}/${pad(weekDates[0].getMonth() + 1)}/${weekDates[0].getFullYear()}`;
+      const endStr = `${pad(weekDates[4].getDate())}/${pad(weekDates[4].getMonth() + 1)}/${weekDates[4].getFullYear()}`;
+      const rangeEl = document.getElementById("vp-week-range-label");
+      if (rangeEl) rangeEl.innerText = `Tuần: ${startStr} - ${endStr}`;
+
+      const theadTr = document.getElementById("vp-week-thead");
+      if (theadTr) {
+        theadTr.innerHTML = `
+          <th class="p-2 w-16 border-r border-slate-200 text-slate-600 text-[10.5px]">Buổi</th>
+          ${weekDates.map((d, i) => `
+            <th class="p-2 border-r border-slate-100 ${d.toDateString() === new Date().toDateString() ? 'bg-sky-50 text-sky-900 font-extrabold' : ''}">
+              ${dayNames[i]}<br>
+              <span class="text-[9.5px] font-normal text-slate-400 font-mono">${pad(d.getDate())}/${pad(d.getMonth() + 1)}</span>
+            </th>
+          `).join('')}
+        `;
+      }
+
+      for (let i = 0; i < 5; i++) {
+        const s = document.getElementById(`cell-vp-sang-${i}`);
+        const c = document.getElementById(`cell-vp-chieu-${i}`);
+        if (s) s.innerHTML = "";
+        if (c) c.innerHTML = "";
+      }
+
+      rawVpEvents.forEach(item => {
+        const props = item.extendedProps || item;
+        const timeStartStr = props.thoiGianMuon || item.start;
+        if (!timeStartStr) return;
+
+        let eventDate;
+        if (timeStartStr.includes("T")) {
+          eventDate = new Date(timeStartStr);
+        } else {
+          const match = timeStartStr.match(/(\d{1,2}):(\d{2}).*?(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+          if (match) {
+            eventDate = new Date(Number(match[5]), Number(match[4]) - 1, Number(match[3]), Number(match[1]), Number(match[2]));
+          } else {
+            eventDate = new Date(timeStartStr);
+          }
+        }
+
+        if (isNaN(eventDate.getTime())) return;
+
+        const dayIdx = weekDates.findIndex(d => 
+          d.getFullYear() === eventDate.getFullYear() &&
+          d.getMonth() === eventDate.getMonth() &&
+          d.getDate() === eventDate.getDate()
+        );
+
+        if (dayIdx === -1) return;
+
+        const startHour = eventDate.getHours();
+        const session = (startHour < 12) ? "sang" : "chieu";
+
+        const targetCell = document.getElementById(`cell-vp-${session}-${dayIdx}`);
+        if (!targetCell) return;
+
+        const isDangMuon = (props.trangThai === "Đang mượn");
+        const startTimeFormat = `${pad(eventDate.getHours())}:${pad(eventDate.getMinutes())}`;
+
+        const card = document.createElement("div");
+        card.className = isDangMuon
+          ? "p-1.5 rounded-xl bg-emerald-50 border border-emerald-300 hover:shadow-md cursor-pointer transition text-left space-y-0.5"
+          : "p-1.5 rounded-xl bg-sky-50 border border-sky-200 hover:shadow-md cursor-pointer transition text-left space-y-0.5";
+
+        card.onclick = () => showVpDetailModal(props);
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-[8.5px] font-black uppercase px-1.5 py-0.2 rounded ${isDangMuon ? 'bg-emerald-200 text-emerald-900' : 'bg-sky-200 text-sky-900'}">
+              ${props.trangThai || 'Chờ nhận'}
+            </span>
+            <span class="text-[9px] font-mono text-slate-500 font-bold">${startTimeFormat}</span>
+          </div>
+          <div class="font-bold text-slate-800 text-[10px] truncate leading-tight">${props.danhSachVatPham || 'Vật phẩm'}</div>
+          <div class="text-[9.5px] font-semibold text-sky-800 truncate">${props.tenDonVi || 'Cơ sở'}</div>
+        `;
+
+        targetCell.appendChild(card);
+      });
+    }
+
+    function showVpDetailModal(props) {
+      Swal.fire({
+        title: `<span class="text-sm font-black text-slate-800 uppercase flex items-center justify-center gap-1.5"><i class="fa-solid fa-boxes-stacked text-sky-600"></i> CHI TIẾT MƯỢN VẬT PHẨM</span>`,
+        html: `
+          <div class="text-left text-xs space-y-2 p-1.5 text-slate-700">
+            <div class="bg-sky-50/70 p-3 rounded-2xl border border-sky-100 space-y-1">
+              <p><b>Hoạt động:</b> <span class="text-sky-900 font-bold">${props.tenChuongTrinh || '---'}</span></p>
+              <p><b>Đơn vị:</b> ${props.tenDonVi || '---'}</p>
+              <p><b>Người mượn:</b> ${props.nguoiMuon || '---'} (SĐT: ${props.sdt || '---'})</p>
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+              <p><b>Bắt đầu mượn:</b> ${props.thoiGianMuon || '---'}</p>
+              <p><b>Dự kiến trả:</b> ${props.thoiGianTra || '---'}</p>
+              <p><b>Danh mục đồ:</b> <span class="font-bold text-slate-800">${props.danhSachVatPham || '---'}</span></p>
+              <p><b>Trạng thái:</b> <span class="font-black ${props.trangThai === 'Đang mượn' ? 'text-emerald-700' : 'text-sky-700'}">${props.trangThai || 'Chờ nhận'}</span></p>
+            </div>
+          </div>
+        `,
+        confirmButtonText: "Đóng",
+        confirmButtonColor: "#0284c7"
+      });
+    }
+
+    // ==============================================================
+    // 2. PHÂN QUYỀN VÀ MENU
     // ==============================================================
     function apDungPhanQuyenKhoa() {
       if (!currentUser) return;
-
       const loai = String(currentUser.loaiDonVi || "").trim().toUpperCase();
       const ten = String(currentUser.tenDonVi || currentUser.hoTen || "").toLowerCase();
       const user = String(currentUser.username || "").toLowerCase();
 
-      // Kiểm tra xem có phải là KHOA (qua Cột F, hoặc qua tên gọi)
       const isKhoa = (
-        loai === "KHOA" ||
-        ten.includes("khoa") ||
-        ten.includes("trường") ||
-        ten.includes("liên chi hội") ||
-        user.includes("khoa") ||
-        user.includes("lch")
+        loai === "KHOA" || ten.includes("khoa") || ten.includes("trường") ||
+        ten.includes("liên chi hội") || user.includes("khoa") || user.includes("lch")
       );
 
       if (isKhoa) {
         const c5 = document.getElementById("card-menu-5");
         const c6 = document.getElementById("card-menu-6");
-        if (c5) {
-          c5.style.setProperty("display", "none", "important");
-          c5.classList.add("hidden");
-        }
-        if (c6) {
-          c6.style.setProperty("display", "none", "important");
-          c6.classList.add("hidden");
-        }
+        if (c5) { c5.style.setProperty("display", "none", "important"); c5.classList.add("hidden"); }
+        if (c6) { c6.style.setProperty("display", "none", "important"); c6.classList.add("hidden"); }
       }
     }
 
-    // Thực thi ngay lập tức
     apDungPhanQuyenKhoa();
-    window.addEventListener("DOMContentLoaded", apDungPhanQuyenKhoa);
-
-    // Cập nhật tên hiển thị ở Header
     window.addEventListener("DOMContentLoaded", () => {
+      apDungPhanQuyenKhoa();
       const nameEl = document.getElementById("user-display-name");
       if (nameEl && currentUser) {
         nameEl.innerText = currentUser.tenDonVi || currentUser.hoTen || currentUser.username;
@@ -1087,9 +1174,6 @@
       });
     }
 
-    let calendarVp = null;
-
-    // ĐIỀU HƯỚNG MODULE CHÍNH
     function openModule(moduleKey) {
       document.getElementById("section-menu-cards").classList.add("hidden");
       document.getElementById("section-detail").classList.remove("hidden");
@@ -1100,10 +1184,10 @@
 
       if (moduleKey === 'vat-pham') {
         document.getElementById("detail-vat-pham").classList.remove("hidden");
-        initCalendar('calendar-vat-pham', 'VAT_PHAM');
+        loadVpWeeklySchedule();
       } else if (moduleKey === 'csvc') {
         document.getElementById("detail-csvc").classList.remove("hidden");
-        loadCsvcWeeklySchedule(); // Nạp lịch tuần song song cùng Form bên cạnh
+        loadCsvcWeeklySchedule();
       } else if (moduleKey === 'bao-cao') {
         document.getElementById("detail-bao-cao").classList.remove("hidden");
         loadActiveReportingMonths();
@@ -1116,8 +1200,17 @@
     }
 
     // ==============================================================
-    // 1. FORM CSVC: CHỌN NGÀY TỰ ĐỘNG HIỆN THỨ + TỰ CHỌN TIẾT THEO QĐ 1853
+    // 3. TIỆN ÍCH NGÀY GIỜ VÀ FORM CSVC
     // ==============================================================
+    function getMondayOfWeek(d) {
+      const date = new Date(d);
+      const day = date.getDay();
+      const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+      const mon = new Date(date.setDate(diff));
+      mon.setHours(0, 0, 0, 0);
+      return mon;
+    }
+
     function handleSelectGdDate(dateStr) {
       const badge = document.getElementById("gd_day_of_week_badge");
       if (!dateStr) {
@@ -1128,11 +1221,8 @@
       }
 
       const d = new Date(dateStr + "T00:00:00");
-      const dayIndex = d.getDay(); // 0: CN, 1: T2, ... 6: T7
       const dayNames = ["Chủ nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
-      
-      const dayLabel = dayNames[dayIndex];
-      badge.innerText = `📅 ${dayLabel}`;
+      badge.innerText = `📅 ${dayNames[d.getDay()]}`;
       badge.className = "px-3 py-2 bg-emerald-100 text-emerald-900 font-extrabold rounded-xl text-xs border border-emerald-300 whitespace-nowrap shadow-2xs";
 
       kiemTraThoiHanDangKyGiangDuong(dateStr);
@@ -1161,8 +1251,8 @@
       hiddenStart.value = `${dateVal}T${startTime}`;
       hiddenEnd.value = `${dateVal}T${endTime}`;
 
-      if (tietStartName === "TOI" || tietEndName === "TOI") {
-        hiddenTiet.value = "Buổi tối (18g00 - 21g00)";
+      if (tietStartName === "12" || tietEndName === "14") {
+        hiddenTiet.value = "Buổi tối (17g25 - 20g00)";
       } else if (tietStartName === tietEndName) {
         hiddenTiet.value = `Tiết ${tietStartName}`;
       } else {
@@ -1170,20 +1260,8 @@
       }
     }
 
-    // ==============================================================
-    // 2. LỊCH TUẦN CSVC CỦA TẤT CẢ USER ĐÃ DUYỆT (ĐỒNG BỘ 100%)
-    // ==============================================================
     let currentWeekStartDate = getMondayOfWeek(new Date());
     let rawCsvcEvents = [];
-
-    function getMondayOfWeek(d) {
-      const date = new Date(d);
-      const day = date.getDay();
-      const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-      const mon = new Date(date.setDate(diff));
-      mon.setHours(0, 0, 0, 0);
-      return mon;
-    }
 
     function changeCsvcWeek(offsetWeeks) {
       currentWeekStartDate.setDate(currentWeekStartDate.getDate() + offsetWeeks * 7);
@@ -1205,7 +1283,6 @@
         rawCsvcEvents = (data && data.success) ? (data.events || data.list || []) : [];
         renderCsvcWeekGrid();
       } catch (err) {
-        console.error("Lỗi nạp lịch CSVC:", err);
         if (label) label.innerText = "Lỗi nạp lịch!";
       }
     }
@@ -1239,7 +1316,6 @@
         `;
       }
 
-      // Xóa nội dung các ô cũ
       for (let i = 0; i < 7; i++) {
         const s = document.getElementById(`cell-csvc-sang-${i}`);
         const c = document.getElementById(`cell-csvc-chieu-${i}`);
@@ -1249,7 +1325,6 @@
         if (t) t.innerHTML = "";
       }
 
-      // Đổ dữ liệu sự kiện vào đúng ô
       rawCsvcEvents.forEach(item => {
         const props = item.extendedProps || item;
         const timeStartStr = props.thoiGianBatDau || item.start;
@@ -1259,7 +1334,6 @@
         if (timeStartStr.includes("T")) {
           eventDate = new Date(timeStartStr);
         } else {
-          // Bóc tách format VN: "HH:mm ngày dd/MM/yyyy"
           const match = timeStartStr.match(/(\d{1,2}):(\d{2}).*?(\d{1,2})\/(\d{1,2})\/(\d{4})/);
           if (match) {
             eventDate = new Date(Number(match[5]), Number(match[4]) - 1, Number(match[3]), Number(match[1]), Number(match[2]));
@@ -1289,8 +1363,6 @@
         const diaDiemGoc = props.diaDiemDangKy || props.tenDiaDiem || "Giảng đường";
         const diaDiemDuyet = props.diaDiemDuyet || props.tenDiaDiem || diaDiemGoc;
         const traoDoiVP = props.ghiChuTraoDoi || props.phanHoi || props.ghiChu || "";
-
-        // ƯU TIÊN LẤY CỜ daDieuPhoi TỪ BACKEND HOẶC SO SÁNH PHÒNG / GHI CHÚ
         const coDieuPhoi = Boolean(props.daDieuPhoi) || Boolean(traoDoiVP) || (diaDiemDuyet !== diaDiemGoc);
 
         const startTimeFormat = `${pad(eventDate.getHours())}:${pad(eventDate.getMinutes())}`;
@@ -1363,7 +1435,6 @@
               </div>
             `}
 
-            <!-- THÔNG TIN ĐƠN VỊ VÀ NỘI DUNG -->
             <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5">
               <div class="grid grid-cols-2 gap-2">
                 <div>
@@ -1376,7 +1447,6 @@
                 </div>
               </div>
 
-              <!-- THỜI GIAN BẮT ĐẦU MƯỢN VÀ KẾT THÚC TRẢ -->
               <div class="p-2.5 bg-white rounded-xl border border-slate-200/80 space-y-1">
                 <div class="flex items-center justify-between text-xs">
                   <span class="text-slate-500 font-semibold"><i class="fa-regular fa-clock text-sky-600 mr-1"></i> Bắt đầu mượn:</span>
@@ -1401,23 +1471,8 @@
     }
 
     // ==========================================
-    // 1. QUẢN LÝ VẬT PHẨM: CHẶN T7 & CHỦ NHẬT
+    // 4. MƯỢN VẬT PHẨM & TỒN KHO
     // ==========================================
-    function validateVatPhamTime(inputEl) {
-      if (!inputEl.value) return;
-      const d = new Date(inputEl.value);
-      const day = d.getDay();
-      if (day === 0 || day === 6) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'Ngày không hợp lệ',
-          text: 'Văn phòng Đoàn - Hội không bàn giao và thu hồi vật phẩm vào Thứ Bảy và Chủ Nhật. Vui lòng chọn từ Thứ Hai đến Thứ Sáu!',
-          confirmButtonColor: '#0284c7'
-        });
-        inputEl.value = "";
-      }
-    }
-
     async function checkLiveInventory() {
       const start = document.getElementById("vp_time_muon").value;
       const end = document.getElementById("vp_time_tra").value;
@@ -1480,12 +1535,12 @@
       const payload = {
         action: "DANG_KY_VAT_PHAM",
         data: {
-          tenChuongTrinh: document.getElementById("vp_chuongtrinh").value.trim(), // Đã sửa đúng ID
+          tenChuongTrinh: document.getElementById("vp_chuongtrinh").value.trim(),
           nguoiDaiDien: document.getElementById("vp_nguoi_dai_dien").value.trim(),
           lop: document.getElementById("vp_lop").value.trim(),
           sdt: document.getElementById("vp_sdt").value.trim(),
-          thoiGianMuon: document.getElementById("vp_time_muon").value,          // Đã sửa đúng ID
-          thoiGianTra: document.getElementById("vp_time_tra").value,            // Đã sửa đúng ID
+          thoiGianMuon: document.getElementById("vp_time_muon").value,
+          thoiGianTra: document.getElementById("vp_time_tra").value,
           danhSachVatPham: selectedItems
         }
       };
@@ -1493,7 +1548,7 @@
       await sendRequest(payload, () => {
         e.target.reset();
         document.getElementById("vp-item-list").innerHTML = `<p class="text-slate-400 text-center py-4 text-[11px]">Vui lòng chọn thời gian mượn và trả để xem danh sách đồ khả dụng.</p>`;
-        if (calendarVp) calendarVp.refetchEvents();
+        loadVpWeeklySchedule();
       });
 
       btn.disabled = false;
@@ -1501,7 +1556,7 @@
     }
 
     // ==========================================
-    // 2. CƠ SỞ VẬT CHẤT: SỔ FORM & QUY ĐỔI TIẾT 2 CHIỀU
+    // 5. ACCORDION & QUẢN LÝ NGÀY MƯỢN SÂN/SẢNH
     // ==========================================
     function toggleAccordion(contentId, isChecked) {
       const el = document.getElementById(contentId);
@@ -1528,102 +1583,10 @@
       const countBadge = document.getElementById("badge_gd_count");
       if (countBadge) {
         countBadge.innerText = `Đã chọn: ${checkboxes.length} phòng`;
-        if (checkboxes.length > 0) {
-          countBadge.className = "text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
-        } else {
-          countBadge.className = "text-[10px] font-black px-2 py-0.5 rounded-full bg-sky-100 text-sky-800";
-        }
+        countBadge.className = checkboxes.length > 0
+          ? "text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800"
+          : "text-[10px] font-black px-2 py-0.5 rounded-full bg-sky-100 text-sky-800";
       }
-    }
-
-    // THUẬT TOÁN QUY ĐỔI NGƯỢC: NHẬP GIỜ -> TỰ ĐIỀN TỪ TIẾT MẤY ĐẾN TIẾT MẤY
-    const BANG_TIET_1853 = [
-      { tiet: 1,  start: 7 * 60,       end: 7 * 60 + 50 },
-      { tiet: 2,  start: 7 * 60 + 50,  end: 8 * 60 + 40 },
-      { tiet: 3,  start: 8 * 60 + 40,  end: 9 * 60 + 30 },
-      { tiet: 4,  start: 9 * 60 + 45,  end: 10 * 60 + 35 },
-      { tiet: 5,  start: 10 * 60 + 35, end: 11 * 60 + 25 },
-      { tiet: 7,  start: 13 * 60,      end: 13 * 60 + 50 },
-      { tiet: 8,  start: 13 * 60 + 50, end: 14 * 60 + 40 },
-      { tiet: 9,  start: 14 * 60 + 40, end: 15 * 60 + 30 },
-      { tiet: 10, start: 15 * 60 + 45, end: 16 * 60 + 35 },
-      { tiet: 11, start: 16 * 60 + 35, end: 17 * 60 + 25 }
-    ];
-
-    function tinhTietTuGioThucTe() {
-      const startVal = document.getElementById("gd_start").value;
-      const endVal = document.getElementById("gd_end").value;
-      const lblQuyDoi = document.getElementById("label-tiet-quy-doi");
-      const hiddenInp = document.getElementById("gd_tiet_quy_doi_val");
-
-      if (!startVal || !endVal) {
-        lblQuyDoi.innerText = "Chưa xác định (Hãy chọn đủ giờ bắt đầu & kết thúc)";
-        lblQuyDoi.className = "text-xs font-bold text-slate-400";
-        hiddenInp.value = "";
-        return;
-      }
-
-      const dStart = new Date(startVal);
-      const dEnd = new Date(endVal);
-
-      if (dStart >= dEnd) {
-        lblQuyDoi.innerText = "Thời gian kết thúc phải sau bắt đầu!";
-        lblQuyDoi.className = "text-xs font-bold text-rose-600";
-        hiddenInp.value = "";
-        return;
-      }
-
-      const startMinutes = dStart.getHours() * 60 + dStart.getMinutes();
-      const endMinutes = dEnd.getHours() * 60 + dEnd.getMinutes();
-
-      let tietBatDau = null;
-      for (let i = 0; i < BANG_TIET_1853.length; i++) {
-        if (BANG_TIET_1853[i].end > startMinutes) {
-          tietBatDau = BANG_TIET_1853[i].tiet;
-          break;
-        }
-      }
-
-      let tietKetThuc = null;
-      for (let j = BANG_TIET_1853.length - 1; j >= 0; j--) {
-        if (BANG_TIET_1853[j].start < endMinutes) {
-          tietKetThuc = BANG_TIET_1853[j].tiet;
-          break;
-        }
-      }
-
-      let ketQuaStr = "";
-      if (tietBatDau !== null && tietKetThuc !== null) {
-        if (tietBatDau === tietKetThuc) {
-          ketQuaStr = `Tiết ${tietBatDau}`;
-        } else {
-          ketQuaStr = `Từ Tiết ${tietBatDau} đến Tiết ${tietKetThuc}`;
-        }
-      } else if (startMinutes >= 18 * 60) {
-        ketQuaStr = "Buổi tối (Sau giờ lên lớp chính khóa)";
-      } else {
-        ketQuaStr = "Ngoài khung giờ lên lớp quy định";
-      }
-
-      lblQuyDoi.innerText = `👉 ${ketQuaStr}`;
-      lblQuyDoi.className = "text-xs font-black text-amber-900";
-      hiddenInp.value = ketQuaStr;
-    }
-
-    function applySingleTietHoc(val) {
-      if (!val) return;
-      const [startTime, endTime] = val.split("|");
-      const startEl = document.getElementById("gd_start");
-      const endEl = document.getElementById("gd_end");
-
-      const today = new Date().toISOString().split("T")[0];
-      const curStartDate = startEl.value ? startEl.value.split("T")[0] : today;
-      const curEndDate = endEl.value ? endEl.value.split("T")[0] : curStartDate;
-
-      startEl.value = `${curStartDate}T${startTime}`;
-      endEl.value = `${curEndDate}T${endTime}`;
-
-      tinhTietTuGioThucTe();
     }
 
     function readFileAsBase64(file) {
@@ -1635,27 +1598,19 @@
       });
     }
 
-    // ==============================================================
-    // QUẢN LÝ DANH SÁCH NHIỀU NGÀY MƯỢN SÂN/SẢNH
-    // ==============================================================
-    let danhSachNgayMuonSan = []; // Chứa mảng ['2026-11-02', '2026-11-04', '2026-11-06']
+    let danhSachNgayMuonSan = [];
 
     function themNgayMuonSan(dateStr) {
       if (!dateStr) return;
-      
-      // Kiểm tra trùng
       if (danhSachNgayMuonSan.includes(dateStr)) {
         Swal.fire("Ngày đã có", "Ngày này đã có trong danh sách chọn!", "info");
         return;
       }
 
       danhSachNgayMuonSan.push(dateStr);
-      // Sắp xếp tăng dần theo ngày
       danhSachNgayMuonSan.sort();
-      
       capNhatGiaoDienTheNgaySan();
       
-      // Reset input picker tạm
       document.getElementById("kv_temp_date_pk").value = "";
       document.getElementById("kv_temp_date_disp").value = "";
     }
@@ -1668,8 +1623,6 @@
     function capNhatGiaoDienTheNgaySan() {
       const container = document.getElementById("kv_selected_days_container");
       const badgeCount = document.getElementById("kv_count_days_badge");
-      const hint = document.getElementById("kv_empty_days_hint");
-
       if (!container) return;
 
       if (danhSachNgayMuonSan.length === 0) {
@@ -1682,21 +1635,17 @@
       }
 
       const dayNames = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
-      const htmlTags = danhSachNgayMuonSan.map(dStr => {
+      container.innerHTML = danhSachNgayMuonSan.map(dStr => {
         const [y, m, d] = dStr.split("-");
         const dateObj = new Date(dStr + "T00:00:00");
-        const thu = dayNames[dateObj.getDay()];
-
         return `
           <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold shadow-2xs">
-            <span class="text-emerald-700 text-[10px] font-black">${thu}</span>
+            <span class="text-emerald-700 text-[10px] font-black">${dayNames[dateObj.getDay()]}</span>
             <span>${d}/${m}/${y}</span>
             <button type="button" onclick="xoaNgayMuonSan('${dStr}')" class="text-slate-400 hover:text-rose-600 ml-0.5 text-[11px]">&times;</button>
           </span>
         `;
       }).join('');
-
-      container.innerHTML = htmlTags;
 
       if (badgeCount) {
         badgeCount.innerText = `Đã chọn: ${danhSachNgayMuonSan.length} ngày`;
@@ -1704,40 +1653,30 @@
       }
     }
 
-    
-    // KIỂM TRA THỜI HẠN ĐĂNG KÝ GIẢNG ĐƯỜNG DƯỚI 14 NGÀY KỂ TỪ THỨ 6 XÉT DUYỆT
     async function kiemTraThoiHanDangKyGiangDuong(ngaySuDungInput) {
       if (!ngaySuDungInput) return true;
       const ngaySuDung = new Date(ngaySuDungInput);
       const homNay = new Date();
-
-      // 1. Xác định mốc Thứ Sáu của đợt xét duyệt gần nhất sắp tới
-      // 0: CN, 1: T2, 2: T3, 3: T4, 4: T5, 5: T6, 6: T7
       const dayOfWeek = homNay.getDay();
       const thuSauXetDuyet = new Date(homNay);
 
       if (dayOfWeek > 0 && dayOfWeek <= 5) {
-        // Nộp từ Thứ 2 đến Thứ 6 -> Đợt duyệt là Thứ 6 tuần này
         thuSauXetDuyet.setDate(homNay.getDate() + (5 - dayOfWeek));
       } else if (dayOfWeek === 6) {
-        // Nộp Thứ 7 -> Đợt duyệt chuyển sang Thứ 6 tuần sau (+6 ngày)
         thuSauXetDuyet.setDate(homNay.getDate() + 6);
       } else {
-        // Nộp Chủ Nhật -> Đợt duyệt chuyển sang Thứ 6 tuần sau (+5 ngày)
         thuSauXetDuyet.setDate(homNay.getDate() + 5);
       }
 
       thuSauXetDuyet.setHours(0, 0, 0, 0);
       const dSuDungClean = new Date(ngaySuDung.getFullYear(), ngaySuDung.getMonth(), ngaySuDung.getDate(), 0, 0, 0);
 
-      // 2. Tính số ngày từ mốc Thứ Sáu duyệt đến ngày diễn ra hoạt động
       const diffTime = dSuDungClean.getTime() - thuSauXetDuyet.getTime();
       const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
       
       const pad = n => String(n).padStart(2, '0');
       const strThuSau = `${pad(thuSauXetDuyet.getDate())}/${pad(thuSauXetDuyet.getMonth() + 1)}/${thuSauXetDuyet.getFullYear()}`;
 
-      // 3. Nếu dưới 14 ngày: Bật cảnh báo nhắc nhở nhẹ nhưng VẪN CHO ĐĂNG KÝ
       if (diffDays < 14) {
         const result = await Swal.fire({
           icon: 'warning',
@@ -1757,7 +1696,6 @@
           cancelButtonColor: '#94a3b8'
         });
 
-        // Trả về false nếu người dùng chọn "Kiểm tra lại" để hủy gửi đơn
         if (!result.isConfirmed) return false;
       }
 
@@ -1777,8 +1715,6 @@
 
       const selectedItems = [];
 
-      // Mượn Giảng đường (Hỗ trợ nhiều phòng cùng lúc)
-      // Mượn Giảng đường (Hỗ trợ nhiều phòng cùng lúc)
       if (isGD) {
         const tenHD = document.getElementById("gd_ten_hd").value.trim();
         const start = document.getElementById("gd_start").value;
@@ -1803,7 +1739,7 @@
           selectedItems.push({
             loai: "GiangDuong",
             tenHoatDong: tenHD,
-            tietQuyDoi: tietStr || "", // Gửi kèm quy đổi tiết học (Ví dụ: Từ Tiết 1 đến Tiết 5)
+            tietQuyDoi: tietStr || "",
             diaDiem: chk.value,
             start: start,
             end: end,
@@ -1813,7 +1749,6 @@
         });
       }
 
-      // 2. Mượn Sân sảnh (Hỗ trợ tách từng ngày độc lập)
       if (isKV) {
         const tenHD = document.getElementById("kv_ten_hd").value.trim();
         const place = document.getElementById("kv_select_place").value;
@@ -1837,7 +1772,6 @@
         let fileData = null;
         if (fileInput.files.length) fileData = await readFileAsBase64(fileInput.files[0]);
 
-        // Tự động tạo từng bản ghi mượn sân cho từng ngày
         danhSachNgayMuonSan.forEach(dStr => {
           selectedItems.push({
             loai: "KhuonVien",
@@ -1851,7 +1785,6 @@
         });
       }
 
-      // Xin xe ra vào
       if (isXe) {
         const tenHD = document.getElementById("xe_ten_hd").value.trim();
         const xeInfo = document.getElementById("xe_info_type").value.trim();
@@ -1901,9 +1834,8 @@
         document.getElementById("badge_gd").innerText = "Chưa chọn";
         document.getElementById("badge_kv").innerText = "Chưa chọn";
         document.getElementById("badge_xe").innerText = "Chưa chọn";
-        document.getElementById("label-tiet-quy-doi").innerText = "Chưa xác định (Hãy chọn giờ)";
         capNhatDanhSachPhongChon();
-        if (calendarCsvc) calendarCsvc.refetchEvents();
+        loadCsvcWeeklySchedule();
       });
 
       btn.disabled = false;
@@ -1913,15 +1845,11 @@
     function capNhatNgayChuanVN(dateStr) {
       if (!dateStr) return;
       document.getElementById("gd_date_val").value = dateStr;
-
       const [year, month, day] = dateStr.split("-");
-      // Cố định hiển thị theo đúng thứ tự ngày / tháng / năm
       document.getElementById("gd_date_display").value = `${day}/${month}/${year}`;
-
       handleSelectGdDate(dateStr);
     }
 
-    // HÀM ĐỒNG BỘ NGÀY GIỜ CHUẨN VIỆT NAM (DD/MM/YYYY) CHO SÂN SẢNH, XE VÀ VẬT PHẨM
     function syncDateTimeVN(prefix) {
       const picker = document.getElementById(`${prefix}_date_pk`);
       const disp = document.getElementById(`${prefix}_date_disp`);
@@ -1931,20 +1859,16 @@
 
       if (!picker || !picker.value) return;
 
-      const dateStr = picker.value; // yyyy-mm-dd
+      const dateStr = picker.value;
       const [year, month, day] = dateStr.split("-");
       if (disp) disp.value = `${day}/${month}/${year}`;
 
-      // Tự động nhận diện thứ mấy
       const d = new Date(dateStr + "T00:00:00");
       const dayNames = ["Chủ nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
       const dayOfWeek = d.getDay();
 
-      if (badge) {
-        badge.innerText = `📅 ${dayNames[dayOfWeek]}`;
-      }
+      if (badge) badge.innerText = `📅 ${dayNames[dayOfWeek]}`;
 
-      // Kiểm tra chặn T7/CN đối với vật phẩm
       if (prefix.startsWith("vp_") && (dayOfWeek === 0 || dayOfWeek === 6)) {
         Swal.fire({
           icon: 'warning',
@@ -1960,18 +1884,15 @@
       }
 
       const timeVal = (timeInp && timeInp.value) ? timeInp.value : "08:00";
-      if (hiddenInp) {
-        hiddenInp.value = `${dateStr}T${timeVal}`;
-      }
+      if (hiddenInp) hiddenInp.value = `${dateStr}T${timeVal}`;
 
-      // Tự động kiểm tra tồn kho nếu là mượn vật phẩm
-      if (prefix.startsWith("vp_") && typeof checkLiveInventory === "function") {
+      if (prefix.startsWith("vp_")) {
         checkLiveInventory();
       }
     }
 
     // ==========================================
-    // 3. BÁO CÁO HOẠT ĐỘNG: HẠN NGÀY 20 & CÂU HỎI VĂN BẢN
+    // 6. BÁO CÁO HOẠT ĐỘNG THÁNG
     // ==========================================
     let isCurrentReportLate = false;
 
@@ -2049,7 +1970,6 @@
         rMonth = d.getMonth() + 1;
       }
       
-      // LOGIC CHUẨN: Hạn chót là 17:00 ngày 20 của CHÍNH THÁNG ĐÓ
       const deadlineDate = new Date(rYear, rMonth - 1, 20, 17, 0, 0);
       const now = new Date();
       const pad = n => String(n).padStart(2, '0');
@@ -2127,7 +2047,6 @@
           }
         };
 
-        // Gửi trực tiếp lên server
         await sendRequest(payload, () => {
           e.target.reset();
           checkReportDeadline();
@@ -2141,7 +2060,6 @@
         });
 
       } catch (err) {
-        console.error("Lỗi submit báo cáo:", err);
         Swal.fire("Lỗi", "Không thể gửi báo cáo: " + err.message, "error");
       } finally {
         btn.disabled = false;
@@ -2171,14 +2089,10 @@
       }
     }
 
-    // HÀM HIỂN THỊ MODAL VÀ HỖ TRỢ LỌC CHỌN KỲ THÁNG
     function openReportsHistoryModal(selectedMonth) {
       if (!userReportsCache || userReportsCache.length === 0) return;
 
-      // Danh sách các tháng có dữ liệu báo cáo (không trùng lặp)
       const allMonths = [...new Set(userReportsCache.map(r => r.thang))].filter(Boolean);
-
-      // Nếu lần đầu mở mà chưa chọn tháng cụ thể, mặc định chọn kỳ mới nhất
       const curFilter = (selectedMonth === "ALL") ? (allMonths[0] || "ALL") : selectedMonth;
 
       const filteredReports = (curFilter === "ALL") 
@@ -2187,7 +2101,6 @@
 
       const html = `
         <div class="text-left text-xs space-y-3 p-1">
-          <!-- BỘ LỌC CHỌN KỲ THÁNG -->
           <div class="p-3 bg-purple-50/80 rounded-2xl border border-purple-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-filter text-purple-700"></i>
@@ -2201,7 +2114,6 @@
             </select>
           </div>
 
-          <!-- DANH SÁCH BÁO CÁO -->
           <div class="max-h-[65vh] overflow-y-auto space-y-3.5 pr-1">
             ${filteredReports.map(r => {
               const isDungHan = (r.tienDo === 'Đúng hạn');
@@ -2209,7 +2121,6 @@
 
               return `
               <div class="p-4 bg-white border border-purple-200/90 rounded-2xl shadow-sm space-y-3">
-                <!-- HEADER BÁO CÁO -->
                 <div class="flex justify-between items-start bg-gradient-to-r from-purple-50 to-indigo-50/40 p-3 rounded-xl border border-purple-100">
                   <div>
                     <span class="text-[10px] text-purple-600 font-extrabold uppercase tracking-wider block">
@@ -2225,7 +2136,6 @@
                   </div>
                 </div>
 
-                <!-- 14 CHỈ TIÊU -->
                 <div>
                   <b class="text-purple-900 font-extrabold uppercase text-[11px] block mb-1.5 flex items-center gap-1.5">
                     <i class="fa-solid fa-chart-simple text-purple-600"></i> I. Thống kê 14 chỉ tiêu:
@@ -2248,7 +2158,6 @@
                   </div>
                 </div>
 
-                <!-- NỘI DUNG CHI TIẾT -->
                 <div class="space-y-1.5 pt-1 border-t border-slate-100 text-slate-700">
                   <b class="text-purple-900 font-extrabold uppercase text-[11px] block flex items-center gap-1.5">
                     <i class="fa-solid fa-list-check text-purple-600"></i> II. Nội dung hoạt động chi tiết:
@@ -2306,74 +2215,6 @@
       });
     }
 
-    // ==========================================
-    // LỊCH DÙNG CHUNG (CSVC CHỈ HIỆN ĐÃ DUYỆT)
-    // ==========================================
-    function initCalendar(elId, type) {
-      const el = document.getElementById(elId);
-      if (!el) return;
-
-      const calendar = new FullCalendar.Calendar(el, {
-        initialView: 'dayGridMonth',
-        eventDisplay: 'block',
-        locale: 'vi',
-        height: 500,
-        headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
-        events: async function(info, successCallback, failureCallback) {
-          try {
-            const res = await fetch(`${API_URL}?action=GET_USER_SCHEDULE&type=${type}`);
-            const data = await res.json();
-            successCallback(data.success ? (data.events || []) : []);
-          } catch (e) {
-            failureCallback(e);
-          }
-        },
-        eventClick: function(info) {
-          showEventDetails(info.event.extendedProps);
-        }
-      });
-
-      calendar.render();
-      if (type === 'VAT_PHAM') calendarVp = calendar;
-      if (type === 'CSVC') calendarCsvc = calendar;
-    }
-
-    function showEventDetails(props) {
-      if (!props) return;
-      if (props.loaiLich === "VAT_PHAM") {
-        Swal.fire({
-          title: `<span class="text-sm font-black text-slate-800 uppercase">📋 CHI TIẾT MƯỢN VẬT PHẨM</span>`,
-          html: `
-            <div class="text-left text-xs space-y-2 p-2 text-slate-700">
-              <p><b>Hoạt động:</b> ${props.tenChuongTrinh}</p>
-              <p><b>Người mượn:</b> ${props.nguoiMuon} - ${props.sdt}</p>
-              <p><b>Thời gian:</b> Từ ${props.thoiGianMuon} đến ${props.thoiGianTra}</p>
-              <p><b>Danh mục đồ:</b> ${props.danhSachVatPham}</p>
-              <p><b>Trạng thái:</b> <span class="text-sky-600 font-bold">${props.trangThai}</span></p>
-            </div>
-          `,
-          confirmButtonText: "Đóng",
-          confirmButtonColor: "#0284c7"
-        });
-      } else {
-        Swal.fire({
-          title: `<span class="text-sm font-black text-slate-800 uppercase">🏢 CHI TIẾT CƠ SỞ VẬT CHẤT</span>`,
-          html: `
-            <div class="text-left text-xs space-y-2 p-2 text-slate-700">
-              <p><b>Đơn vị sử dụng:</b> <span class="text-sky-700 font-bold">${props.tenDonVi || 'Đội Cộng tác viên Văn phòng'}</span></p>
-              <p><b>Địa điểm:</b> ${props.tenDiaDiem}</p>
-              <p><b>Người phụ trách:</b> ${props.nguoiPhuTrach}</p>
-              <p><b>Thời gian:</b> Từ ${props.thoiGianBatDau} đến ${props.thoiGianKetThuc}</p>
-              <p><b>Nội dung:</b> ${props.noiDung}</p>
-              <p><b>Trạng thái:</b> <span class="text-emerald-600 font-bold">${props.trangThai || 'Đã duyệt chính thức'}</span></p>
-            </div>
-          `,
-          confirmButtonText: "Đóng",
-          confirmButtonColor: "#059669"
-        });
-      }
-    }
-
     async function sendRequest(bodyData, onSuccess) {
       try {
         const res = await fetch(API_URL, {
@@ -2399,17 +2240,18 @@
         Swal.fire("Lỗi kết nối", "Không thể gửi dữ liệu đến máy chủ", "error");
       }
     }
-  // =========================================================================
-    // XỬ LÝ CHUÔNG THÔNG BÁO HỆ THỐNG ĐỒNG BỘ 3 BÊN (QTV - CTV - USER)
+
+    // =========================================================================
+    // 7. THÔNG BÁO HỆ THỐNG
     // =========================================================================
     let cachedSysNotis = [];
+    let currentNotiFilter = "ALL";
 
     function toggleSystemNotificationDropdown() {
       const drop = document.getElementById("sys-noti-dropdown");
       if (drop) drop.classList.toggle("hidden");
     }
 
-    // Đóng dropdown khi nhấp chuột ra ngoài
     document.addEventListener("click", (e) => {
       const bell = document.getElementById("btn-noti-bell-shared");
       const drop = document.getElementById("sys-noti-dropdown");
@@ -2418,14 +2260,10 @@
       }
     });
 
-    let currentNotiFilter = "ALL"; // Mặc định là ALL
-
-    // Gọi API với role chuẩn xác của từng trang
     async function fetchSystemNotifications() {
       const user = (typeof currentUser !== 'undefined') ? currentUser : {};
       const username = user.username || user.tenDonVi || "";
       
-      // Nhận diện chuẩn vai trò: Ưu tiên thuộc tính role, nếu không dựa theo đường dẫn URL
       let role = "USER";
       if (window.location.href.includes("admin")) {
         role = "ADMIN";
@@ -2441,28 +2279,7 @@
           cachedSysNotis = data.list;
           renderSystemNotificationUI();
         }
-      } catch (err) {
-        console.warn("Chưa tải được thông báo:", err);
-      }
-    }
-
-    // Hàm chuyển đổi bộ lọc khi bấm vào nút
-    function filterNotiByType(type) {
-      currentNotiFilter = type;
-      
-      // Đổi màu tab đang chọn
-      ['ALL', 'UNREAD', 'CSVC'].forEach(t => {
-        const btn = document.getElementById(`btn-noti-filter-${t}`);
-        if (btn) {
-          if (t === type) {
-            btn.className = "flex-1 py-1 rounded-lg bg-white text-sky-700 shadow-xs font-black";
-          } else {
-            btn.className = "flex-1 py-1 rounded-lg text-slate-500 hover:text-slate-800 font-bold";
-          }
-        }
-      });
-
-      renderSystemNotificationUI();
+      } catch (err) {}
     }
 
     function cleanUpTextFormat(text) {
@@ -2484,17 +2301,15 @@
       return str;
     }
 
-    // Hiển thị danh sách thông báo đã qua bộ lọc
     function renderSystemNotificationUI() {
-      const badge = document.getElementById("sys-noti-badge") || document.getElementById("noti-badge");
-      const listEl = document.getElementById("sys-noti-list") || document.getElementById("noti-list");
+      const badge = document.getElementById("sys-noti-badge");
+      const listEl = document.getElementById("sys-noti-list");
       if (!listEl) return;
 
       const userKey = (typeof currentUser !== 'undefined' && (currentUser.username || currentUser.tenDonVi)) ? (currentUser.username || currentUser.tenDonVi) : "guest";
       const readIds = JSON.parse(localStorage.getItem(`read_sys_notis_${userKey}`) || "[]");
       const unreadCount = cachedSysNotis.filter(n => !readIds.includes(n.id)).length;
 
-      // Cập nhật chấm đỏ
       if (badge) {
         if (unreadCount > 0) {
           badge.innerText = unreadCount > 9 ? "9+" : unreadCount;
@@ -2504,7 +2319,6 @@
         }
       }
 
-      // Thực hiện lọc dữ liệu
       let displayList = cachedSysNotis;
       if (currentNotiFilter === "UNREAD") {
         displayList = displayList.filter(n => !readIds.includes(n.id));
@@ -2534,7 +2348,6 @@
       }).join('');
     }
 
-    // Xử lý khi bấm vào 1 thông báo: Chuyển ngay đến đúng Tab cần xử lý
     function handleClickSysNoti(notiId, dichDen, maRef) {
       const userKey = (typeof currentUser !== 'undefined' && currentUser.username) ? currentUser.username : "admin";
       const readIds = JSON.parse(localStorage.getItem(`read_sys_notis_${userKey}`) || "[]");
@@ -2546,15 +2359,9 @@
 
       document.getElementById("sys-noti-dropdown").classList.add("hidden");
 
-      // Điều hướng thông minh theo vai trò
-      if (typeof switchAdminTab === "function" && dichDen) {
-        switchAdminTab(dichDen); // QTV tự động chuyển sang tab CSVC / Import / Báo Cáo
-      } else if (typeof switchCtvTab === "function" && dichDen) {
-        switchCtvTab(dichDen.replace("view-ctv-", "")); // CTV tự động chuyển sang tab Ca trực / Quản lý file
-      } else if (dichDen === "modal-chat" && typeof openChatModalUser === "function") {
-        openChatModalUser(maRef); // User mở modal chat CSVC
+      if (dichDen === "modal-chat" && typeof openChatModalUser === "function") {
+        openChatModalUser(maRef);
       } else {
-        // Mở popup tóm tắt nội dung
         const n = cachedSysNotis.find(x => x.id === notiId);
         if (n) Swal.fire({ title: n.tieuDe, text: n.noiDung, icon: "info", confirmButtonColor: "#0284c7" });
       }
@@ -2567,7 +2374,6 @@
       renderSystemNotificationUI();
     }
 
-    // Tự động kiểm tra thông báo định kỳ (mỗi 30 giây)
     window.addEventListener("DOMContentLoaded", () => {
       fetchSystemNotifications();
       setInterval(fetchSystemNotifications, 30000);
