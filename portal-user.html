@@ -1288,8 +1288,10 @@
 
         const diaDiemGoc = props.diaDiemDangKy || props.tenDiaDiem || "Giảng đường";
         const diaDiemDuyet = props.diaDiemDuyet || props.tenDiaDiem || diaDiemGoc;
-        const coDieuPhoi = (diaDiemDuyet && diaDiemGoc && diaDiemDuyet !== diaDiemGoc);
         const traoDoiVP = props.ghiChuTraoDoi || props.phanHoi || props.ghiChu || "";
+
+        // ƯU TIÊN LẤY CỜ daDieuPhoi TỪ BACKEND HOẶC SO SÁNH PHÒNG / GHI CHÚ
+        const coDieuPhoi = Boolean(props.daDieuPhoi) || Boolean(traoDoiVP) || (diaDiemDuyet !== diaDiemGoc);
 
         const startTimeFormat = `${pad(eventDate.getHours())}:${pad(eventDate.getMinutes())}`;
         let endTimeFormat = "";
