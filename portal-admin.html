@@ -1129,6 +1129,44 @@
       }
     }
 
+    // HÀM GOM THỜI GIAN NHIỀU NGÀY THÀNH 1 DÒNG CHUẨN HÀNH CHÍNH
+    function formatThoiGianGomCSVC(khungGioList) {
+      if (!khungGioList || khungGioList.length === 0) return "---";
+      if (khungGioList.length === 1) {
+        return `Từ ${khungGioList[0].start} đến ${khungGioList[0].end}`;
+      }
+
+      // Sắp xếp ngày tăng dần
+      khungGioList.sort((a, b) => parseDateTimeText(a.start) - parseDateTimeText(b.start));
+
+      const getHourMin = (str) => {
+        const m = String(str).match(/(\d{1,2}:\d{2})/);
+        return m ? m[1] : "";
+      };
+
+      const getDateVN = (str) => {
+        const m = String(str).match(/(\d{1,2}\/\d{1,2}\/\d{4})/);
+        if (m) return m[1];
+        if (String(str).includes("T")) {
+          const parts = str.split("T")[0].split("-");
+          return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+        return str;
+      };
+
+      const startH = getHourMin(khungGioList[0].start);
+      const endH = getHourMin(khungGioList[0].end);
+      const allSameHours = khungGioList.every(k => getHourMin(k.start) === startH && getHourMin(k.end) === endH);
+
+      if (allSameHours && startH && endH) {
+        const dates = khungGioList.map(k => getDateVN(k.start));
+        const uniqueDates = [...new Set(dates)];
+        return `Từ ${startH} đến ${endH} các ngày: ${uniqueDates.join(', ')}`;
+      } else {
+        return khungGioList.map(k => `• ${getDateVN(k.start)} (${getHourMin(k.start)} - ${getHourMin(k.end)})`).join('\n');
+      }
+    }
+
     function applyCsvcFiltersAndSort() {
       if (!loadedCsvcList || loadedCsvcList.length === 0) {
         renderCsvcTableData([]);
@@ -1139,34 +1177,44 @@
       const mapGroup = new Map();
 
       loadedCsvcList.forEach(it => {
+        const cleanNoiDung = String(it.noiDung || it.tenHoatDong || "").trim().toLowerCase();
+        const cleanDonVi = String(it.emailDonVi || it.tenDonVi || "").trim().toLowerCase();
+        const cleanDiaDiem = String(it.diaDiem || "").trim().toLowerCase();
         const baseCode = (it.maDon || "").replace(/_\d+$/, "");
-        const groupKey = baseCode || `${it.emailDonVi}_${it.ngayDangKy}_${it.batDau}_${it.noiDung}`;
+
+        // TỰ ĐỘNG GOM: Nếu là Sân/Sảnh (KhuonVien) -> Gom các ngày cùng Đơn vị + cùng Hoạt động + cùng Sân
+        // Nếu là Giảng đường -> Gom theo mã nhóm baseCode
+        let groupKey = "";
+        if (it.loai === "KhuonVien") {
+          groupKey = `KV_${cleanDonVi}_${cleanNoiDung}_${cleanDiaDiem}`;
+        } else {
+          groupKey = baseCode || `GD_${cleanDonVi}_${cleanNoiDung}_${it.batDau}`;
+        }
 
         if (!mapGroup.has(groupKey)) {
           const groupItem = { 
             ...it, 
             danhSachDiaDiem: [it.diaDiem],
             danhSachMaDon: [it.maDon],
-            diaDiemDuyet: it.diaDiemDuyet || it.diaDiem || "", // THÊM DÒNG NÀY
+            danhSachKhungGio: [{ start: it.batDau, end: it.ketThuc }],
+            diaDiemDuyet: it.diaDiemDuyet || it.diaDiem || "",
             ghiChu: String(it.ghiChu || "").trim()
           };
           mapGroup.set(groupKey, groupItem);
           groupedList.push(groupItem);
         } else {
           const existing = mapGroup.get(groupKey);
-          if (!existing.ghiChu && it.ghiChu) {
-            existing.ghiChu = String(it.ghiChu).trim();
-          }
-          if (!existing.diaDiemDuyet && it.diaDiemDuyet) {      // THÊM DÒNG NÀY
-            existing.diaDiemDuyet = it.diaDiemDuyet;
-          }
-          if (!existing.danhSachDiaDiem.includes(it.diaDiem)) {
-            existing.danhSachDiaDiem.push(it.diaDiem);
-          }
-          if (!existing.danhSachMaDon.includes(it.maDon)) {
-            existing.danhSachMaDon.push(it.maDon);
-          }
+          if (!existing.ghiChu && it.ghiChu) existing.ghiChu = String(it.ghiChu).trim();
+          if (!existing.diaDiemDuyet && it.diaDiemDuyet) existing.diaDiemDuyet = it.diaDiemDuyet;
+          if (!existing.danhSachDiaDiem.includes(it.diaDiem)) existing.danhSachDiaDiem.push(it.diaDiem);
+          if (!existing.danhSachMaDon.includes(it.maDon)) existing.danhSachMaDon.push(it.maDon);
+          existing.danhSachKhungGio.push({ start: it.batDau, end: it.ketThuc });
         }
+      });
+
+      // Tạo chuỗi thời gian hiển thị sau khi đã gom
+      groupedList.forEach(item => {
+        item.thoiGianHienThi = formatThoiGianGomCSVC(item.danhSachKhungGio);
       });
 
       const kw = (document.getElementById("filter-csvc-search")?.value || "").toLowerCase().trim();
@@ -1180,34 +1228,16 @@
           const strSearch = `${it.danhSachDiaDiem.join(' ')} ${it.tenDonVi} ${it.nguoiPhuTrach} ${it.noiDung} ${it.tenHoatDong}`.toLowerCase();
           if (!strSearch.includes(kw)) return false;
         }
-
-        if (statusFilter !== "ALL") {
-          const st = (it.trangThai || "Chờ duyệt").trim();
-          if (st !== statusFilter) return false;
-        }
-
-        if (typeFilter !== "ALL") {
-          const loai = String(it.loai || "").trim();
-          if (loai !== typeFilter) return false;
-        }
-
-        if (urgentFilter === "URGENT") {
-          const isCanNgay = it.canhBao && !it.canhBao.hopLe;
-          if (!isCanNgay) return false;
-        }
-
+        if (statusFilter !== "ALL" && (it.trangThai || "Chờ duyệt").trim() !== statusFilter) return false;
+        if (typeFilter !== "ALL" && String(it.loai || "").trim() !== typeFilter) return false;
+        if (urgentFilter === "URGENT" && (!it.canhBao || it.canhBao.hopLe)) return false;
         return true;
       });
 
       filtered.sort((a, b) => {
         const timeA = parseDateTimeText(a.ngayDangKy);
         const timeB = parseDateTimeText(b.ngayDangKy);
-        const startA = parseDateTimeText(a.batDau);
-        const startB = parseDateTimeText(b.batDau);
-
-        if (sortType === "SUBMIT_ASC") return timeA - timeB;
-        if (sortType === "USE_ASC") return startA - startB;
-        return timeB - timeA;
+        return sortType === "SUBMIT_ASC" ? timeA - timeB : timeB - timeA;
       });
 
       renderCsvcTableData(filtered);
@@ -1255,15 +1285,20 @@
                 <i class="fa-regular fa-clock mr-1"></i>Nộp: <b>${it.ngayDangKy || '---'}</b>
               </span>
             </td>
-            <td class="p-3 text-[11px] min-w-[170px] whitespace-nowrap">
-              <div>Từ: <b>${it.batDau}</b></div>
-              <div>Đến: <b>${it.ketThuc}</b></div>
+            <td class="p-3 text-[11px] min-w-[190px]">
+              <div class="font-bold text-slate-800 leading-relaxed whitespace-pre-line">${it.thoiGianHienThi || `Từ: ${it.batDau}<br>Đến: ${it.ketThuc}`}</div>
+              
               <div class="mt-1.5 flex items-center gap-1.5 flex-wrap">
-                ${tietText ? `
+                ${(it.danhSachKhungGio && it.danhSachKhungGio.length > 1) ? `
+                  <span class="inline-block px-2 py-0.5 bg-sky-100 text-sky-800 rounded font-black text-[10px]">
+                    Đã gộp ${it.danhSachKhungGio.length} buổi
+                  </span>
+                ` : (tietText ? `
                   <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-sky-50 text-sky-700 border border-sky-200 rounded-md font-bold text-[10px]">
                     <i class="fa-solid fa-graduation-cap"></i> ${tietText}
                   </span>
-                ` : ''}
+                ` : '')}
+
                 ${isSsatNgay ? `
                   <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md font-bold text-[10px]">
                     <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Cận ngày
@@ -1743,11 +1778,16 @@
 
       let selectedItems = [];
       checkedBoxes.forEach(chk => {
-        const item = loadedCsvcList.find(x => x.maDon === chk.value);
+        const item = loadedCsvcList.find(x => x.maDon === chk.value || (x.danhSachMaDon && x.danhSachMaDon.includes(chk.value)));
         if (item) {
           const exportItem = { ...item };
-          if (item.danhSachDiaDiem && Array.isArray(item.danhSachDiaDiem) && item.danhSachDiaDiem.length > 0) {
+          if (item.danhSachDiaDiem && item.danhSachDiaDiem.length > 0) {
             exportItem.diaDiem = item.danhSachDiaDiem.join(', ');
+          }
+          // Lấy thời gian đã gộp cho Công văn Word
+          if (item.thoiGianHienThi) {
+            exportItem.batDau = item.thoiGianHienThi;
+            exportItem.ketThuc = "";
           }
           selectedItems.push(exportItem);
         }

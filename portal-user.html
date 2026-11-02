@@ -1828,6 +1828,11 @@
 
       await sendRequest(payload, () => {
         e.target.reset();
+
+        // 👉 THÊM 2 DÒNG NÀY VÀO ĐÂY:
+        danhSachNgayMuonSan = []; // Xóa sạch mảng các ngày đã chọn
+        capNhatGiaoDienTheNgaySan(); // Cập nhật lại giao diện, đưa bộ đếm về 0 ngày
+
         document.getElementById("sec_gd").classList.add("hidden");
         document.getElementById("sec_kv").classList.add("hidden");
         document.getElementById("sec_xe").classList.add("hidden");
