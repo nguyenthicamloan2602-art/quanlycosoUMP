@@ -1457,7 +1457,7 @@
     }
 
     // ==============================================================
-    // MODAL ĐIỀU PHỐI CSVC: DÙNG DROPDOWN / CHỌN PHÒNG CHUẨN XÁC
+    // MODAL ĐIỀU PHỐI CSVC: HỖ TRỢ CHỌN NHIỀU GIẢNG ĐƯỜNG CÙNG LÚC
     // ==============================================================
     async function moModalSuaThongTinCSVC(dataObj) {
       if (!dataObj) return;
@@ -1474,36 +1474,56 @@
         const infoBD = tachNgayGio(dataObj.batDau);
         const infoKT = tachNgayGio(dataObj.ketThuc);
 
-        // Danh sách phòng chuẩn trong toàn trường
+        // Tách các phòng đã được duyệt hiện tại thành mảng để check sẵn
+        const currentSelectedRooms = diaDiemDuyetHienTai.split(',').map(s => s.trim()).filter(Boolean);
+
+        // Danh mục các phòng chuẩn theo từng cụm
         const danhSachPhongChuan = [
-          { nhom: "⭐ Phê duyệt cấp Trường (BGH)", ds: ["Đại giảng đường", "Giảng đường 3D"] },
-          { nhom: "🏢 Tòa nhà A", ds: ["Giảng đường 1 (Tòa A)", "Giảng đường 2 (Tòa A)"] },
-          { nhom: "🏢 Tòa nhà 15 Tầng", ds: [
-            "Giảng đường 4A1", "Giảng đường 4A2", "Giảng đường 4B1", "Giảng đường 4B2", "Giảng đường 4C", "Giảng đường 4D",
-            "Giảng đường 5A1", "Giảng đường 5A2", "Giảng đường 5B1", "Giảng đường 5B2", "Giảng đường 5C", "Giảng đường 5D"
-          ]},
-          { nhom: "📍 Khuôn viên / Sân sảnh", ds: ["Sảnh tòa nhà 15 Tầng", "Sảnh tòa nhà A - C", "Sân đa năng"] }
+          { 
+            nhom: "⭐ Phê duyệt cấp Trường (BGH)", 
+            color: "text-amber-800",
+            ds: ["Đại giảng đường", "Giảng đường 3D"] 
+          },
+          { 
+            nhom: "🏢 Tòa nhà A", 
+            color: "text-sky-800",
+            ds: ["Giảng đường 1 (Tòa A)", "Giảng đường 2 (Tòa A)"] 
+          },
+          { 
+            nhom: "🏢 Tòa nhà 15 Tầng", 
+            color: "text-emerald-800",
+            ds: [
+              "Giảng đường 4A1", "Giảng đường 4A2", "Giảng đường 4B1", "Giảng đường 4B2", "Giảng đường 4C", "Giảng đường 4D",
+              "Giảng đường 5A1", "Giảng đường 5A2", "Giảng đường 5B1", "Giảng đường 5B2", "Giảng đường 5C", "Giảng đường 5D"
+            ] 
+          },
+          { 
+            nhom: "📍 Khuôn viên / Sân sảnh", 
+            color: "text-indigo-800",
+            ds: ["Sảnh tòa nhà 15 Tầng", "Sảnh tòa nhà A - C", "Sân đa năng"] 
+          }
         ];
 
-        let optionsHtml = `<option value="">-- Chọn phòng điều phối thực tế --</option>`;
-        let matchFound = false;
-
+        // Tạo giao diện checkbox
+        let checkboxesHtml = "";
         danhSachPhongChuan.forEach(grp => {
-          optionsHtml += `<optgroup label="${grp.nhom}">`;
-          grp.ds.forEach(p => {
-            const isSel = (diaDiemDuyetHienTai.includes(p) || p === diaDiemDuyetHienTai);
-            if (isSel) matchFound = true;
-            optionsHtml += `<option value="${p}" ${isSel ? 'selected' : ''}>${p}</option>`;
-          });
-          optionsHtml += `</optgroup>`;
+          checkboxesHtml += `
+            <div class="mb-2">
+              <span class="block text-[10.5px] font-black uppercase ${grp.color} mb-1">${grp.nhom}</span>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                ${grp.ds.map(p => {
+                  const isChecked = currentSelectedRooms.includes(p);
+                  return `
+                    <label class="flex items-center gap-1.5 p-1.5 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition text-[11px]">
+                      <input type="checkbox" name="swal_room_chk" value="${p}" ${isChecked ? 'checked' : ''} class="w-3.5 h-3.5 text-amber-600 rounded">
+                      <span class="font-medium text-slate-800 truncate">${p}</span>
+                    </label>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
         });
-
-        // Nếu phòng hiện tại là phòng ghép hoặc nhập tùy biến
-        if (!matchFound && diaDiemDuyetHienTai) {
-          optionsHtml += `<optgroup label="Tùy chọn hiện tại">
-            <option value="${diaDiemDuyetHienTai}" selected>${diaDiemDuyetHienTai}</option>
-          </optgroup>`;
-        }
 
         const { value: formValues } = await Swal.fire({
           title: `<span class="text-sm font-black uppercase text-slate-800">Điều Phối &amp; Phản Hồi CSVC</span>`,
@@ -1512,21 +1532,22 @@
               <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-slate-700 space-y-1">
                 <p><b>Đơn vị:</b> <span class="text-sky-700 font-bold">${tenDonVi}</span></p>
                 <p><b>Hoạt động:</b> ${noiDung}</p>
-                <p><b>Địa điểm đăng ký ban đầu:</b> <span class="font-bold text-slate-900">${diaDiemGoc}</span></p>
+                <p><b>Địa điểm ban đầu:</b> <span class="font-bold text-slate-900">${diaDiemGoc}</span></p>
               </div>
 
-              <!-- 1. CHỌN GIẢNG ĐƯỜNG ĐIỀU PHỐI TỪ MENU LỰA CHỌN -->
+              <!-- KHU VỰC TICK CHỌN NHIỀU PHÒNG -->
               <div>
-                <label class="block font-bold text-slate-700 mb-1">1. Chọn Giảng đường / Phòng duyệt thực tế *</label>
-                <select id="swal_dia_diem_duyet" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold outline-none focus:border-amber-500 bg-white cursor-pointer">
-                  ${optionsHtml}
-                </select>
-                <span class="text-[10px] text-amber-700 font-medium block mt-0.5">
-                  * Chọn phòng khác với đơn vị đăng ký sẽ làm lịch phía User chuyển màu vàng cảnh báo.
-                </span>
+                <div class="flex justify-between items-center mb-1">
+                  <label class="block font-bold text-slate-700">1. Chọn các Giảng đường / Phòng duyệt thực tế *</label>
+                  <span class="text-[10px] text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">Có thể tick chọn nhiều phòng</span>
+                </div>
+                
+                <div class="border border-slate-200 rounded-xl p-2.5 bg-slate-50/70 max-h-48 overflow-y-auto space-y-2">
+                  ${checkboxesHtml}
+                </div>
               </div>
 
-              <!-- 2. THỜI GIAN THỰC TẾ (DD/MM/YYYY) -->
+              <!-- 2. THỜI GIAN THỰC TẾ -->
               <div class="p-2.5 bg-amber-50/60 rounded-xl border border-amber-200 space-y-2">
                 <span class="block font-bold text-amber-950 text-[11px]">2. Thời gian duyệt sử dụng thực tế:</span>
                 <div>
@@ -1562,10 +1583,10 @@
               <div>
                 <label class="block font-bold text-slate-700 mb-1">3. Nội dung trao đổi / Ghi chú phản hồi gửi cơ sở</label>
                 <textarea id="swal_ghi_chu" rows="2" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs outline-none focus:border-amber-500 bg-white font-medium" 
-                  placeholder="VD: Không có lịch giảng đường, chỉ có lịch buổi sáng, đã chuyển sang Hội trường A...">${ghiChuHienTai}</textarea>
+                  placeholder="VD: Không có lịch giảng đường 1, đã đổi sang GĐ 4A1 và 4A2...">${ghiChuHienTai}</textarea>
               </div>
 
-              <!-- 4. TRẠNG THÁI (BAO GỒM CẢ 'ĐÃ HOÀN THÀNH') -->
+              <!-- 4. TRẠNG THÁI PHÊ DUYỆT -->
               <div>
                 <label class="block font-bold text-slate-700 mb-1">4. Trạng thái phê duyệt</label>
                 <select id="swal_trang_thai" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-bold outline-none bg-white">
@@ -1577,13 +1598,23 @@
               </div>
             </div>
           `,
+          width: '600px',
           focusConfirm: false,
           showCancelButton: true,
           confirmButtonText: '<i class="fa-solid fa-floppy-disk mr-1"></i> Lưu thay đổi',
           cancelButtonText: 'Đóng',
           confirmButtonColor: '#d97706',
           preConfirm: () => {
-            const ddDuyet = document.getElementById("swal_dia_diem_duyet").value.trim();
+            // Gom tất cả các phòng được tick chọn thành chuỗi cách nhau bằng dấu phẩy
+            const checkedBoxes = document.querySelectorAll('input[name="swal_room_chk"]:checked');
+            const selectedRooms = Array.from(checkedBoxes).map(cb => cb.value.trim());
+
+            if (selectedRooms.length === 0) {
+              Swal.showValidationMessage("Vui lòng tick chọn ít nhất 1 Giảng đường/Phòng!");
+              return false;
+            }
+
+            const ddDuyet = selectedRooms.join(', ');
             const gc = document.getElementById("swal_ghi_chu").value.trim();
             const st = document.getElementById("swal_trang_thai").value;
 
@@ -1595,10 +1626,6 @@
             const batDauIso = (dateBD && timeBD) ? `${dateBD}T${timeBD}` : "";
             const ketThucIso = (dateKT && timeKT) ? `${dateKT}T${timeKT}` : "";
 
-            if (!ddDuyet) {
-              Swal.showValidationMessage("Vui lòng chọn địa điểm/phòng được duyệt!");
-              return false;
-            }
             if (batDauIso && ketThucIso && new Date(batDauIso) >= new Date(ketThucIso)) {
               Swal.showValidationMessage("Thời gian kết thúc phải sau thời gian bắt đầu!");
               return false;
