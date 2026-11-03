@@ -1412,7 +1412,7 @@
       }
     }
 
-    // 1. CLICK XEM CHI TIẾT ĐƠN (HIỂN THỊ ĐIỀU PHỐI ĐỔI PHÒNG NẾU CÓ)
+    // 1. CLICK XEM CHI TIẾT ĐƠN (HIỂN THỊ ĐIỀU PHỐI ĐỔI PHÒNG CHUẨN XÁC)
     function handleCsvcRowClick(e, maDonGroup) {
       if (!loadedCsvcList || loadedCsvcList.length === 0) return;
 
@@ -1421,13 +1421,22 @@
       if (matchingItems.length === 0) return;
 
       const it = matchingItems[0];
-      const allDiaDiem = [...new Set(matchingItems.map(x => x.diaDiem))].join(', ');
-      const diaDiemGoc = allDiaDiem || it.diaDiem || "Giảng đường";
-      const diaDiemDuyet = it.diaDiemDuyet || diaDiemGoc;
+      
+      // 1. Xác định địa điểm gốc và địa điểm duyệt thực tế
+      const allDiaDiem = (it.danhSachDiaDiem && it.danhSachDiaDiem.length > 0)
+        ? it.danhSachDiaDiem.join(', ')
+        : (matchingItems.map(x => x.diaDiemGoc || x.diaDiem).filter(Boolean).join(', ') || it.diaDiem || "---");
+
+      const diaDiemGoc = String(it.diaDiemGoc || allDiaDiem || it.diaDiem || "").trim();
+      const diaDiemDuyet = String(it.diaDiemDuyet || diaDiemGoc).trim();
       const ghiChuTraoDoi = String(it.ghiChu || "").trim();
 
-      // Kiểm tra đơn có được điều phối đổi phòng hay không
-      const coDoiPhong = (diaDiemDuyet !== diaDiemGoc && diaDiemDuyet !== "");
+      // 2. Chuẩn hóa chuỗi so sánh (loại bỏ khoảng trắng dư, không phân biệt hoa/thường)
+      const cleanGoc = diaDiemGoc.replace(/\s+/g, ' ').toLowerCase();
+      const cleanDuyet = diaDiemDuyet.replace(/\s+/g, ' ').toLowerCase();
+
+      // Đơn được xem là có đổi phòng nếu tên duyệt khác tên gốc HOẶC có ghi chú điều phối
+      const coDoiPhong = (cleanDuyet !== cleanGoc && diaDiemDuyet !== "") || Boolean(ghiChuTraoDoi);
 
       const tietText = quyDoiGioSangTietUMP(it.batDau, it.ketThuc);
 
@@ -1437,7 +1446,7 @@
         sdtHienThi = ` - <b>SĐT:</b> ${it.sdt}`;
       }
 
-      const isDaDuyet = it.trangThai === 'Đã duyệt';
+      const isDaDuyet = (it.trangThai === 'Đã duyệt' || it.trangThai === 'Đã hoàn thành');
       const thoiGianHienThi = `Từ <b>${themThuVaoThoiGian(it.batDau)}</b> đến <b>${themThuVaoThoiGian(it.ketThuc)}</b>`;
 
       currentCsvcModalData = {
@@ -1452,61 +1461,48 @@
         trangThai: it.trangThai || "Chờ duyệt"
       };
 
-      // Header tiêu đề thông minh
-      const headerTitleHtml = coDoiPhong ? `
-        <div class="text-left space-y-0.5">
-          <span class="text-sm font-black uppercase text-slate-800 block">CHI TIẾT ĐƠN YÊU CẦU</span>
-          <div class="flex items-center gap-1.5 flex-wrap text-xs">
-            <span class="text-slate-400 line-through font-semibold">${diaDiemGoc}</span>
-            <i class="fa-solid fa-arrow-right text-amber-600 text-[10px]"></i>
-            <span class="text-sky-700 font-black">${diaDiemDuyet}</span>
-          </div>
-        </div>
-      ` : `
-        <div class="text-left">
-          <span class="text-sm font-black uppercase text-slate-800 block">CHI TIẾT ĐƠN YÊU CẦU</span>
-          <span class="text-xs text-sky-700 font-bold">${diaDiemGoc}</span>
-        </div>
-      `;
-
-      // Khối hiển thị địa điểm trong nội dung
-      const diaDiemContentHtml = coDoiPhong ? `
-        <div class="p-3 bg-amber-50/90 border border-amber-300 rounded-xl space-y-1.5 shadow-2xs">
+      // 3. Khối HTML hiển thị điều phối tương tự bên User
+      const diaDiemBoxHtml = coDoiPhong ? `
+        <div class="p-3.5 bg-amber-50/90 border-2 border-amber-300 rounded-2xl space-y-2 shadow-xs">
           <div class="flex items-center justify-between">
-            <span class="text-[10.5px] font-black uppercase text-amber-950 tracking-wider flex items-center gap-1">
-              <i class="fa-solid fa-arrows-rotate text-amber-600"></i> Đã điều phối đổi phòng
+            <span class="text-[11px] font-black uppercase text-amber-900 tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-arrows-rotate text-amber-600"></i> ĐIỀU PHỐI / ĐỔI GIẢNG ĐƯỜNG
             </span>
-            <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-200 text-amber-900 border border-amber-300">Thay đổi</span>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-200 text-amber-950 border border-amber-300">Lưu ý</span>
           </div>
-          <div class="flex items-center gap-2 text-xs pt-0.5">
-            <span class="line-through text-slate-400 font-medium">${diaDiemGoc}</span>
-            <i class="fa-solid fa-arrow-right text-amber-600 text-[11px]"></i>
+          <div class="flex items-center gap-2 text-xs flex-wrap pt-0.5">
+            <span class="line-through text-slate-400 font-bold">${diaDiemGoc}</span>
+            <i class="fa-solid fa-arrow-right text-amber-600 font-black"></i>
             <span class="font-black text-sky-900 text-sm">${diaDiemDuyet}</span>
-            <span class="text-slate-400 text-[11px]">(${it.loai || 'CSVC'})</span>
           </div>
           ${ghiChuTraoDoi ? `
-            <div class="text-[11px] text-amber-950 mt-1 pt-1.5 border-t border-amber-200/80 leading-relaxed">
+            <div class="text-[11px] text-amber-950 pt-1.5 border-t border-amber-200/80 leading-relaxed">
               <b>💬 Ghi chú Admin:</b> <i class="text-slate-700">${ghiChuTraoDoi}</i>
             </div>
           ` : ''}
         </div>
       ` : `
-        <p><b>Địa điểm:</b> <span class="font-bold text-slate-900">${diaDiemGoc}</span> (${it.loai || 'CSVC'})</p>
+        <div class="p-2.5 bg-white border border-slate-200 rounded-xl">
+          <b>Địa điểm:</b> <span class="font-black text-slate-900">${diaDiemGoc}</span> 
+          <span class="text-slate-400 text-[11px]">(${it.loai || 'CSVC'})</span>
+        </div>
       `;
 
       Swal.fire({
-        title: headerTitleHtml,
+        title: `<div class="text-left"><span class="text-sm font-black uppercase text-slate-800 block">CHI TIẾT ĐƠN YÊU CẦU</span></div>`,
         html: `
-          <div class="select-text text-left text-xs leading-relaxed space-y-2.5 p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
-            ${diaDiemContentHtml}
-            <p><b>Người phụ trách:</b> ${nguoiPhuTrachText}${sdtHienThi}</p>
-            <p><b>Đơn vị:</b> <span class="text-sky-700 font-bold">${it.tenDonVi || '---'}</span></p>
-            <p><b>Thời gian:</b> ${thoiGianHienThi}</p>
-            <p><b>Quy đổi số tiết:</b> <span class="text-sky-700 font-bold bg-sky-100/70 px-2 py-0.5 rounded-md">${tietText || 'Không xác định'}</span></p>
-            <p><b>Nội dung:</b> ${it.noiDung || it.tenHoatDong || '---'}</p>
-            <p><b>Trạng thái hiện tại:</b> <span class="font-bold ${isDaDuyet ? 'text-emerald-700' : 'text-amber-700'}">${it.trangThai || 'Chờ duyệt'}</span></p>
-            ${(!coDoiPhong && ghiChuTraoDoi) ? `<p><b>Ghi chú trao đổi:</b> <span class="text-amber-800 font-medium">${ghiChuTraoDoi}</span></p>` : ''}
-            ${it.linkVanBan ? `<p><b>File kế hoạch:</b> <a href="${it.linkVanBan}" target="_blank" class="text-sky-600 underline font-bold">Xem file Drive</a></p>` : ''}
+          <div class="select-text text-left text-xs leading-relaxed space-y-2.5 p-1">
+            ${diaDiemBoxHtml}
+            
+            <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-slate-700">
+              <p><b>Người phụ trách:</b> ${nguoiPhuTrachText}${sdtHienThi}</p>
+              <p><b>Đơn vị:</b> <span class="text-sky-700 font-bold">${it.tenDonVi || '---'}</span></p>
+              <p><b>Thời gian:</b> ${thoiGianHienThi}</p>
+              <p><b>Quy đổi số tiết:</b> <span class="text-sky-700 font-bold bg-sky-100/70 px-2 py-0.5 rounded-md">${tietText || 'Không xác định'}</span></p>
+              <p><b>Nội dung:</b> ${it.noiDung || it.tenHoatDong || '---'}</p>
+              <p><b>Trạng thái hiện tại:</b> <span class="font-bold ${isDaDuyet ? 'text-emerald-700' : 'text-amber-700'}">${it.trangThai || 'Chờ duyệt'}</span></p>
+              ${it.linkVanBan ? `<p><b>File kế hoạch:</b> <a href="${it.linkVanBan}" target="_blank" class="text-sky-600 underline font-bold">Xem file Drive</a></p>` : ''}
+            </div>
           </div>
 
           <div class="flex items-center justify-between gap-2 pt-3 border-t border-slate-100 mt-3 flex-wrap">
@@ -1534,7 +1530,7 @@
             </button>
           </div>
         `,
-        width: '560px',
+        width: '580px',
         showConfirmButton: false,
         showCloseButton: true
       });
