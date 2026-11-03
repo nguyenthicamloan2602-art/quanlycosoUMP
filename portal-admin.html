@@ -975,6 +975,7 @@
   <script src="./config.js"></script>
   <script>
     let loadedCsvcList = [];
+    let groupedCsvcAdminList = [];
     let loadedBaoCaoList = [];
     let loadedHoatDongList = [];
     let loadedCTVList = [];
@@ -1240,6 +1241,7 @@
         return sortType === "SUBMIT_ASC" ? timeA - timeB : timeB - timeA;
       });
 
+      groupedCsvcAdminList = groupedList;
       renderCsvcTableData(filtered);
     }
 
@@ -1412,30 +1414,35 @@
       }
     }
 
-    // 1. CLICK XEM CHI TIẾT ĐƠN (HIỂN THỊ ĐIỀU PHỐI ĐỔI PHÒNG CHUẨN XÁC)
+    // 1. CLICK XEM CHI TIẾT ĐƠN (ĐỒNG BỘ ĐẦY ĐỦ ĐIỀU PHỐI ĐỔI PHÒNG)
     function handleCsvcRowClick(e, maDonGroup) {
-      if (!loadedCsvcList || loadedCsvcList.length === 0) return;
+      const sourceList = (groupedCsvcAdminList && groupedCsvcAdminList.length > 0) 
+        ? groupedCsvcAdminList 
+        : loadedCsvcList;
+
+      if (!sourceList || sourceList.length === 0) return;
 
       const listMa = String(maDonGroup || "").split(',').map(m => m.trim());
-      const matchingItems = loadedCsvcList.filter(x => listMa.includes(x.maDon));
-      if (matchingItems.length === 0) return;
-
-      const it = matchingItems[0];
       
-      // 1. Xác định địa điểm gốc và địa điểm duyệt thực tế
-      const allDiaDiem = (it.danhSachDiaDiem && it.danhSachDiaDiem.length > 0)
-        ? it.danhSachDiaDiem.join(', ')
-        : (matchingItems.map(x => x.diaDiemGoc || x.diaDiem).filter(Boolean).join(', ') || it.diaDiem || "---");
+      // Tìm đơn trong danh sách đã gom nhóm
+      const it = sourceList.find(x => 
+        listMa.includes(x.maDon) || 
+        (x.danhSachMaDon && x.danhSachMaDon.some(m => listMa.includes(m)))
+      );
+      
+      if (!it) return;
 
-      const diaDiemGoc = String(it.diaDiemGoc || allDiaDiem || it.diaDiem || "").trim();
+      // Lấy địa điểm ban đầu và địa điểm duyệt thực tế
+      const diaDiemGoc = (it.danhSachDiaDiem && it.danhSachDiaDiem.length > 0)
+        ? it.danhSachDiaDiem.join(', ')
+        : (it.diaDiemGoc || it.diaDiem || "---");
+
       const diaDiemDuyet = String(it.diaDiemDuyet || diaDiemGoc).trim();
       const ghiChuTraoDoi = String(it.ghiChu || "").trim();
 
-      // 2. Chuẩn hóa chuỗi so sánh (loại bỏ khoảng trắng dư, không phân biệt hoa/thường)
+      // Kiểm tra có sự điều phối thay đổi phòng
       const cleanGoc = diaDiemGoc.replace(/\s+/g, ' ').toLowerCase();
       const cleanDuyet = diaDiemDuyet.replace(/\s+/g, ' ').toLowerCase();
-
-      // Đơn được xem là có đổi phòng nếu tên duyệt khác tên gốc HOẶC có ghi chú điều phối
       const coDoiPhong = (cleanDuyet !== cleanGoc && diaDiemDuyet !== "") || Boolean(ghiChuTraoDoi);
 
       const tietText = quyDoiGioSangTietUMP(it.batDau, it.ketThuc);
@@ -1447,7 +1454,7 @@
       }
 
       const isDaDuyet = (it.trangThai === 'Đã duyệt' || it.trangThai === 'Đã hoàn thành');
-      const thoiGianHienThi = `Từ <b>${themThuVaoThoiGian(it.batDau)}</b> đến <b>${themThuVaoThoiGian(it.ketThuc)}</b>`;
+      const thoiGianHienThi = it.thoiGianHienThi || `Từ <b>${themThuVaoThoiGian(it.batDau)}</b> đến <b>${themThuVaoThoiGian(it.ketThuc)}</b>`;
 
       currentCsvcModalData = {
         maDonGroup: maDonGroup,
@@ -1461,7 +1468,7 @@
         trangThai: it.trangThai || "Chờ duyệt"
       };
 
-      // 3. Khối HTML hiển thị điều phối tương tự bên User
+      // Khung điều phối nổi bật giống User
       const diaDiemBoxHtml = coDoiPhong ? `
         <div class="p-3.5 bg-amber-50/90 border-2 border-amber-300 rounded-2xl space-y-2 shadow-xs">
           <div class="flex items-center justify-between">
@@ -1484,7 +1491,7 @@
       ` : `
         <div class="p-2.5 bg-white border border-slate-200 rounded-xl">
           <b>Địa điểm:</b> <span class="font-black text-slate-900">${diaDiemGoc}</span> 
-          <span class="text-slate-400 text-[11px]">(${it.loai || 'CSVC'})</span>
+          <span class="text-slate-400 text-[11px]">(${it.loai || 'GiangDuong'})</span>
         </div>
       `;
 
