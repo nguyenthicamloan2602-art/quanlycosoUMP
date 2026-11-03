@@ -741,14 +741,11 @@
 
     let scannerQrObj = null;
     function getDeviceFingerprint() {
-      const todayStr = new Date().toISOString().split("T")[0];
-      const u = (typeof currentUser !== "undefined" && currentUser && currentUser.username) 
-                ? currentUser.username 
-                : "user";
-      
-      const storageKey = `ump_device_token_${u}_${todayStr}`;
+      // Dùng 1 key chung cho toàn bộ trình duyệt trên thiết bị này
+      const storageKey = "ump_unique_hardware_device_id";
       let devId = localStorage.getItem(storageKey);
-      
+
+      // Nếu chưa có mã hoặc dính mã test cũ thì sinh mã máy cố định mới
       if (!devId || devId === "DEV_1292923429") {
         const randomHex = Math.random().toString(36).substring(2, 8) + Date.now().toString(36).substring(4);
         devId = "DEV_" + randomHex.toUpperCase();

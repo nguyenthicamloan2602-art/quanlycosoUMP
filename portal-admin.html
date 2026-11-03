@@ -1529,7 +1529,9 @@
             color: "text-emerald-800",
             ds: [
               "Giảng đường 4A1", "Giảng đường 4A2", "Giảng đường 4B1", "Giảng đường 4B2", "Giảng đường 4C", "Giảng đường 4D",
-              "Giảng đường 5A1", "Giảng đường 5A2", "Giảng đường 5B1", "Giảng đường 5B2", "Giảng đường 5C", "Giảng đường 5D"
+              "Giảng đường 5A1", "Giảng đường 5A2", "Giảng đường 5B1", "Giảng đường 5B2", "Giảng đường 5C", "Giảng đường 5D",
+              "Giảng đường 6A", "Giảng đường 6B", "Giảng đường 6C", "Giảng đường 6D", "Giảng đường 7A", "Giảng đường 7B", "Giảng đường 7C", "Giảng đường 7D",
+              "Giảng đường 9A1", "Giảng đường 9A2"
             ] 
           },
           { 
@@ -1539,7 +1541,11 @@
           }
         ];
 
-        // Tạo giao diện checkbox
+        // Gom tất cả tên phòng chuẩn lại để kiểm tra
+        const tatCaPhongChuan = [];
+        danhSachPhongChuan.forEach(grp => tatCaPhongChuan.push(...grp.ds));
+
+        // Tạo giao diện checkbox các cụm chuẩn
         let checkboxesHtml = "";
         danhSachPhongChuan.forEach(grp => {
           checkboxesHtml += `
@@ -1559,6 +1565,24 @@
             </div>
           `;
         });
+
+        // Nếu đơn hiện tại có phòng đặc thù khác chưa có trong danh mục chuẩn
+        const phongKhac = currentSelectedRooms.filter(p => !tatCaPhongChuan.includes(p));
+        if (phongKhac.length > 0) {
+          checkboxesHtml += `
+            <div class="mb-2 pt-1 border-t border-slate-200">
+              <span class="block text-[10.5px] font-black uppercase text-rose-800 mb-1">📌 Phòng hiện tại / Khác</span>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                ${phongKhac.map(p => `
+                  <label class="flex items-center gap-1.5 p-1.5 bg-rose-50 border border-rose-200 rounded-lg cursor-pointer text-[11px]">
+                    <input type="checkbox" name="swal_room_chk" value="${p}" checked class="w-3.5 h-3.5 text-rose-600 rounded">
+                    <span class="font-bold text-rose-900 truncate">${p}</span>
+                  </label>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
 
         const { value: formValues } = await Swal.fire({
           title: `<span class="text-sm font-black uppercase text-slate-800">Điều Phối &amp; Phản Hồi CSVC</span>`,
@@ -2108,8 +2132,8 @@
                   </span>
                   ${s.uuDai ? `
                     <div class="mt-1">
-                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
-                        <i class="fa-solid fa-gift mr-1 text-[8.5px]"></i>${s.uuDai}
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] font-black ${s.uuDai === 'Chuẩn giờ' ? 'bg-slate-100 text-slate-700 border border-slate-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'}">
+                        <i class="fa-solid fa-clock-rotate-left mr-1 text-[8.5px]"></i>${s.uuDai}
                       </span>
                     </div>
                   ` : ''}
