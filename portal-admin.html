@@ -1180,17 +1180,12 @@
       loadedCsvcList.forEach(it => {
         const cleanNoiDung = String(it.noiDung || it.tenHoatDong || "").trim().toLowerCase();
         const cleanDonVi = String(it.emailDonVi || it.tenDonVi || "").trim().toLowerCase();
-        const cleanDiaDiem = String(it.diaDiem || "").trim().toLowerCase();
         const baseCode = (it.maDon || "").replace(/_\d+$/, "");
 
-        // TỰ ĐỘNG GOM: Nếu là Sân/Sảnh (KhuonVien) -> Gom các ngày cùng Đơn vị + cùng Hoạt động + cùng Sân
-        // Nếu là Giảng đường -> Gom theo mã nhóm baseCode
-        let groupKey = "";
-        if (it.loai === "KhuonVien") {
-          groupKey = `KV_${cleanDonVi}_${cleanNoiDung}_${cleanDiaDiem}`;
-        } else {
-          groupKey = baseCode || `GD_${cleanDonVi}_${cleanNoiDung}_${it.batDau}`;
-        }
+        // TỰ ĐỘNG GOM THÔNG MINH:
+        // 1. Ưu tiên gom theo mã đơn gốc (baseCode, ví dụ: CSVC_1730000000000)
+        // 2. Nếu không có baseCode, gom theo: Đơn vị + Tên hoạt động + Thời gian bắt đầu
+        const groupKey = baseCode || `${cleanDonVi}_${cleanNoiDung}_${it.batDau}`;
 
         if (!mapGroup.has(groupKey)) {
           const groupItem = { 
@@ -1198,6 +1193,7 @@
             danhSachDiaDiem: [it.diaDiem],
             danhSachMaDon: [it.maDon],
             danhSachKhungGio: [{ start: it.batDau, end: it.ketThuc }],
+            diaDiemGoc: it.diaDiemGoc || it.diaDiem || "",
             diaDiemDuyet: it.diaDiemDuyet || it.diaDiem || "",
             ghiChu: String(it.ghiChu || "").trim()
           };
@@ -1206,9 +1202,14 @@
         } else {
           const existing = mapGroup.get(groupKey);
           if (!existing.ghiChu && it.ghiChu) existing.ghiChu = String(it.ghiChu).trim();
-          if (!existing.diaDiemDuyet && it.diaDiemDuyet) existing.diaDiemDuyet = it.diaDiemDuyet;
-          if (!existing.danhSachDiaDiem.includes(it.diaDiem)) existing.danhSachDiaDiem.push(it.diaDiem);
-          if (!existing.danhSachMaDon.includes(it.maDon)) existing.danhSachMaDon.push(it.maDon);
+          if (it.diaDiemDuyet && it.diaDiemDuyet !== it.diaDiem) existing.diaDiemDuyet = it.diaDiemDuyet;
+          
+          if (!existing.danhSachDiaDiem.includes(it.diaDiem)) {
+            existing.danhSachDiaDiem.push(it.diaDiem);
+          }
+          if (!existing.danhSachMaDon.includes(it.maDon)) {
+            existing.danhSachMaDon.push(it.maDon);
+          }
           existing.danhSachKhungGio.push({ start: it.batDau, end: it.ketThuc });
         }
       });
