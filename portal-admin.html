@@ -1412,7 +1412,7 @@
       }
     }
 
-    // 1. CLICK XEM CHI TIẾT ĐƠN
+    // 1. CLICK XEM CHI TIẾT ĐƠN (HIỂN THỊ ĐIỀU PHỐI ĐỔI PHÒNG NẾU CÓ)
     function handleCsvcRowClick(e, maDonGroup) {
       if (!loadedCsvcList || loadedCsvcList.length === 0) return;
 
@@ -1422,6 +1422,13 @@
 
       const it = matchingItems[0];
       const allDiaDiem = [...new Set(matchingItems.map(x => x.diaDiem))].join(', ');
+      const diaDiemGoc = allDiaDiem || it.diaDiem || "Giảng đường";
+      const diaDiemDuyet = it.diaDiemDuyet || diaDiemGoc;
+      const ghiChuTraoDoi = String(it.ghiChu || "").trim();
+
+      // Kiểm tra đơn có được điều phối đổi phòng hay không
+      const coDoiPhong = (diaDiemDuyet !== diaDiemGoc && diaDiemDuyet !== "");
+
       const tietText = quyDoiGioSangTietUMP(it.batDau, it.ketThuc);
 
       let nguoiPhuTrachText = it.nguoiPhuTrach || '---';
@@ -1439,24 +1446,66 @@
         noiDung: it.noiDung || it.tenHoatDong || "",
         batDau: it.batDau || "",
         ketThuc: it.ketThuc || "",
-        diaDiemGoc: allDiaDiem || it.diaDiem || "Giảng đường",
-        diaDiemDuyet: it.diaDiemDuyet || allDiaDiem || it.diaDiem || "Giảng đường",
-        ghiChu: it.ghiChu || "",
+        diaDiemGoc: diaDiemGoc,
+        diaDiemDuyet: diaDiemDuyet,
+        ghiChu: ghiChuTraoDoi,
         trangThai: it.trangThai || "Chờ duyệt"
       };
 
+      // Header tiêu đề thông minh
+      const headerTitleHtml = coDoiPhong ? `
+        <div class="text-left space-y-0.5">
+          <span class="text-sm font-black uppercase text-slate-800 block">CHI TIẾT ĐƠN YÊU CẦU</span>
+          <div class="flex items-center gap-1.5 flex-wrap text-xs">
+            <span class="text-slate-400 line-through font-semibold">${diaDiemGoc}</span>
+            <i class="fa-solid fa-arrow-right text-amber-600 text-[10px]"></i>
+            <span class="text-sky-700 font-black">${diaDiemDuyet}</span>
+          </div>
+        </div>
+      ` : `
+        <div class="text-left">
+          <span class="text-sm font-black uppercase text-slate-800 block">CHI TIẾT ĐƠN YÊU CẦU</span>
+          <span class="text-xs text-sky-700 font-bold">${diaDiemGoc}</span>
+        </div>
+      `;
+
+      // Khối hiển thị địa điểm trong nội dung
+      const diaDiemContentHtml = coDoiPhong ? `
+        <div class="p-3 bg-amber-50/90 border border-amber-300 rounded-xl space-y-1.5 shadow-2xs">
+          <div class="flex items-center justify-between">
+            <span class="text-[10.5px] font-black uppercase text-amber-950 tracking-wider flex items-center gap-1">
+              <i class="fa-solid fa-arrows-rotate text-amber-600"></i> Đã điều phối đổi phòng
+            </span>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-200 text-amber-900 border border-amber-300">Thay đổi</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs pt-0.5">
+            <span class="line-through text-slate-400 font-medium">${diaDiemGoc}</span>
+            <i class="fa-solid fa-arrow-right text-amber-600 text-[11px]"></i>
+            <span class="font-black text-sky-900 text-sm">${diaDiemDuyet}</span>
+            <span class="text-slate-400 text-[11px]">(${it.loai || 'CSVC'})</span>
+          </div>
+          ${ghiChuTraoDoi ? `
+            <div class="text-[11px] text-amber-950 mt-1 pt-1.5 border-t border-amber-200/80 leading-relaxed">
+              <b>💬 Ghi chú Admin:</b> <i class="text-slate-700">${ghiChuTraoDoi}</i>
+            </div>
+          ` : ''}
+        </div>
+      ` : `
+        <p><b>Địa điểm:</b> <span class="font-bold text-slate-900">${diaDiemGoc}</span> (${it.loai || 'CSVC'})</p>
+      `;
+
       Swal.fire({
-        title: `<div class="text-left"><span class="text-sm font-black uppercase text-slate-800 block">CHI TIẾT ĐƠN YÊU CẦU</span><span class="text-xs text-sky-700 font-bold">${allDiaDiem}</span></div>`,
+        title: headerTitleHtml,
         html: `
           <div class="select-text text-left text-xs leading-relaxed space-y-2.5 p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
-            <p><b>Địa điểm:</b> <span class="font-bold text-slate-900">${allDiaDiem}</span> (${it.loai || 'CSVC'})</p>
+            ${diaDiemContentHtml}
             <p><b>Người phụ trách:</b> ${nguoiPhuTrachText}${sdtHienThi}</p>
             <p><b>Đơn vị:</b> <span class="text-sky-700 font-bold">${it.tenDonVi || '---'}</span></p>
             <p><b>Thời gian:</b> ${thoiGianHienThi}</p>
             <p><b>Quy đổi số tiết:</b> <span class="text-sky-700 font-bold bg-sky-100/70 px-2 py-0.5 rounded-md">${tietText || 'Không xác định'}</span></p>
             <p><b>Nội dung:</b> ${it.noiDung || it.tenHoatDong || '---'}</p>
             <p><b>Trạng thái hiện tại:</b> <span class="font-bold ${isDaDuyet ? 'text-emerald-700' : 'text-amber-700'}">${it.trangThai || 'Chờ duyệt'}</span></p>
-            ${it.ghiChu ? `<p><b>Ghi chú trao đổi:</b> <span class="text-amber-800 font-medium">${it.ghiChu}</span></p>` : ''}
+            ${(!coDoiPhong && ghiChuTraoDoi) ? `<p><b>Ghi chú trao đổi:</b> <span class="text-amber-800 font-medium">${ghiChuTraoDoi}</span></p>` : ''}
             ${it.linkVanBan ? `<p><b>File kế hoạch:</b> <a href="${it.linkVanBan}" target="_blank" class="text-sky-600 underline font-bold">Xem file Drive</a></p>` : ''}
           </div>
 
