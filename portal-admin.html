@@ -1428,32 +1428,60 @@
       }
     }
 
-    // 1. CLICK XEM CHI TIẾT ĐƠN (HIỂN THỊ ĐIỀU PHỐI ĐỔI PHÒNG CHUẨN XÁC)
+    // 1. CLICK XEM CHI TIẾT ĐƠN (HỖ TRỢ ĐƠN NHIỀU NGÀY / ĐÃ GỘP)
     function handleCsvcRowClick(e, maDonGroup) {
-      if (!loadedCsvcList || loadedCsvcList.length === 0) return;
+      const sourceList = (groupedCsvcAdminList && groupedCsvcAdminList.length > 0) 
+        ? groupedCsvcAdminList 
+        : loadedCsvcList;
+
+      if (!sourceList || sourceList.length === 0) return;
 
       const listMa = String(maDonGroup || "").split(',').map(m => m.trim());
-      const matchingItems = loadedCsvcList.filter(x => listMa.includes(x.maDon));
-      if (matchingItems.length === 0) return;
-
-      const it = matchingItems[0];
-
-      // Debug: Bật F12 Console để xem dữ liệu thực tế đang có gì
-      console.log("Dữ liệu đơn CSVC đang click:", it);
-
-      // Gom tất cả địa điểm gốc
-      const allDiaDiemGoc = [...new Set(matchingItems.map(x => x.diaDiemGoc || x.diaDiem))].filter(Boolean).join(', ');
-      const diaDiemGoc = allDiaDiemGoc || it.diaDiem || "Giảng đường";
       
-      // Lấy địa điểm duyệt thực tế
-      const diaDiemDuyet = String(it.diaDiemDuyet || "").trim();
+      const it = sourceList.find(x => 
+        listMa.includes(x.maDon) || 
+        (x.danhSachMaDon && x.danhSachMaDon.some(m => listMa.includes(m)))
+      );
+      
+      if (!it) return;
+
+      // 1. Địa điểm gốc & địa điểm duyệt
+      const diaDiemGoc = (it.danhSachDiaDiem && it.danhSachDiaDiem.length > 0)
+        ? it.danhSachDiaDiem.join(', ')
+        : (it.diaDiemGoc || it.diaDiem || "---");
+
+      const diaDiemDuyet = String(it.diaDiemDuyet || diaDiemGoc).trim();
       const ghiChuTraoDoi = String(it.ghiChu || "").trim();
 
-      // Kiểm tra có thay đổi phòng: khi có diaDiemDuyet và khác với diaDiemGoc
       const cleanGoc = diaDiemGoc.replace(/\s+/g, ' ').toLowerCase();
       const cleanDuyet = diaDiemDuyet.replace(/\s+/g, ' ').toLowerCase();
+      const coDoiPhong = (cleanDuyet !== cleanGoc && diaDiemDuyet !== "") || Boolean(ghiChuTraoDoi);
+
+      // 2. Xử lý hiển thị thời gian chính xác cho đơn 1 ngày hoặc đơn nhiều ngày (đã gộp)
+      let thoiGianHienThiHtml = "";
       
-      const coDoiPhong = (diaDiemDuyet !== "" && cleanDuyet !== cleanGoc);
+      if (it.danhSachKhungGio && it.danhSachKhungGio.length > 1) {
+        // Trường hợp đơn GỘP NHIỀU NGÀY: Hiển thị danh sách tất cả các ngày
+        const dsNgayText = it.danhSachKhungGio.map(k => {
+          const bd = themThuVaoThoiGian(k.start);
+          const kt = themThuVaoThoiGian(k.end);
+          return `<li class="py-0.5">• Từ <b>${bd}</b> đến <b>${kt}</b></li>`;
+        }).join('');
+        
+        thoiGianHienThiHtml = `
+          <div class="mt-1">
+            <span class="font-bold text-slate-800 block mb-1">Thời gian sử dụng (${it.danhSachKhungGio.length} buổi):</span>
+            <ul class="pl-2 space-y-0.5 text-[11.5px] bg-sky-50/70 p-2.5 rounded-xl border border-sky-100 max-h-40 overflow-y-auto custom-scroll">
+              ${dsNgayText}
+            </ul>
+          </div>
+        `;
+      } else {
+        // Trường hợp đơn 1 NGÀY thông thường
+        const startText = themThuVaoThoiGian(it.batDau);
+        const endText = themThuVaoThoiGian(it.ketThuc);
+        thoiGianHienThiHtml = `<p><b>Thời gian:</b> Từ <b>${startText}</b> đến <b>${endText}</b></p>`;
+      }
 
       const tietText = quyDoiGioSangTietUMP(it.batDau, it.ketThuc);
 
@@ -1464,17 +1492,6 @@
       }
 
       const isDaDuyet = (it.trangThai === 'Đã duyệt' || it.trangThai === 'Đã hoàn thành');
-      // Luôn gắn Thứ vào thời gian chi tiết
-      let thoiGianHienThi = "";
-      if (it.danhSachKhungGio && it.danhSachKhungGio.length > 1) {
-        // Nếu là đơn gộp nhiều buổi
-        thoiGianHienThi = it.danhSachKhungGio.map(k => `• ${themThuVaoThoiGian(k.start)} (đến ${themThuVaoThoiGian(k.end)})`).join('<br>');
-      } else {
-        // Đơn 1 buổi thông thường: luôn chèn Thứ vào
-        const startText = themThuVaoThoiGian(it.batDau);
-        const endText = themThuVaoThoiGian(it.ketThuc);
-        thoiGianHienThi = `Từ <b>${startText}</b> đến <b>${endText}</b>`;
-      }
 
       currentCsvcModalData = {
         maDonGroup: maDonGroup,
@@ -1483,12 +1500,11 @@
         batDau: it.batDau || "",
         ketThuc: it.ketThuc || "",
         diaDiemGoc: diaDiemGoc,
-        diaDiemDuyet: diaDiemDuyet || diaDiemGoc,
+        diaDiemDuyet: diaDiemDuyet,
         ghiChu: ghiChuTraoDoi,
         trangThai: it.trangThai || "Chờ duyệt"
       };
 
-      // Khung hiển thị Đổi phòng nổi bật y như bên User
       const diaDiemBoxHtml = coDoiPhong ? `
         <div class="p-3.5 bg-amber-50/90 border-2 border-amber-300 rounded-2xl space-y-2 shadow-xs">
           <div class="flex items-center justify-between">
@@ -1511,8 +1527,7 @@
       ` : `
         <div class="p-2.5 bg-white border border-slate-200 rounded-xl">
           <b>Địa điểm:</b> <span class="font-black text-slate-900">${diaDiemGoc}</span> 
-          <span class="text-slate-400 text-[11px]">(${it.loai || 'GiangDuong'})</span>
-          ${ghiChuTraoDoi ? `<div class="text-[11px] text-amber-800 mt-1"><b>Ghi chú:</b> ${ghiChuTraoDoi}</div>` : ''}
+          <span class="text-slate-400 text-[11px]">(${it.loai || 'CSVC'})</span>
         </div>
       `;
 
@@ -1525,7 +1540,9 @@
             <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-slate-700">
               <p><b>Người phụ trách:</b> ${nguoiPhuTrachText}${sdtHienThi}</p>
               <p><b>Đơn vị:</b> <span class="text-sky-700 font-bold">${it.tenDonVi || '---'}</span></p>
-              <p><b>Thời gian:</b> ${thoiGianHienThi}</p>
+              
+              ${thoiGianHienThiHtml}
+              
               <p><b>Quy đổi số tiết:</b> <span class="text-sky-700 font-bold bg-sky-100/70 px-2 py-0.5 rounded-md">${tietText || 'Không xác định'}</span></p>
               <p><b>Nội dung:</b> ${it.noiDung || it.tenHoatDong || '---'}</p>
               <p><b>Trạng thái hiện tại:</b> <span class="font-bold ${isDaDuyet ? 'text-emerald-700' : 'text-amber-700'}">${it.trangThai || 'Chờ duyệt'}</span></p>
