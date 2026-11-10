@@ -1182,19 +1182,16 @@
         const cleanDonVi = String(it.emailDonVi || it.tenDonVi || "").trim().toLowerCase();
         const baseCode = (it.maDon || "").replace(/_\d+$/, "");
 
-        // TỰ ĐỘNG GOM THÔNG MINH:
-        // 1. Ưu tiên gom theo mã đơn gốc (baseCode, ví dụ: CSVC_1730000000000)
-        // 2. Nếu không có baseCode, gom theo: Đơn vị + Tên hoạt động + Thời gian bắt đầu
         const groupKey = baseCode || `${cleanDonVi}_${cleanNoiDung}_${it.batDau}`;
 
         if (!mapGroup.has(groupKey)) {
           const groupItem = { 
             ...it, 
             danhSachDiaDiem: [it.diaDiem],
+            danhSachDiaDiemDuyet: [it.diaDiemDuyet || it.diaDiem],
             danhSachMaDon: [it.maDon],
             danhSachKhungGio: [{ start: it.batDau, end: it.ketThuc }],
             diaDiemGoc: it.diaDiemGoc || it.diaDiem || "",
-            diaDiemDuyet: it.diaDiemDuyet || it.diaDiem || "",
             ghiChu: String(it.ghiChu || "").trim()
           };
           mapGroup.set(groupKey, groupItem);
@@ -1202,16 +1199,27 @@
         } else {
           const existing = mapGroup.get(groupKey);
           if (!existing.ghiChu && it.ghiChu) existing.ghiChu = String(it.ghiChu).trim();
-          if (it.diaDiemDuyet && it.diaDiemDuyet !== it.diaDiem) existing.diaDiemDuyet = it.diaDiemDuyet;
           
-          if (!existing.danhSachDiaDiem.includes(it.diaDiem)) {
+          if (it.diaDiem && !existing.danhSachDiaDiem.includes(it.diaDiem)) {
             existing.danhSachDiaDiem.push(it.diaDiem);
           }
+          
+          const phieuDuyetCur = it.diaDiemDuyet || it.diaDiem;
+          if (phieuDuyetCur && !existing.danhSachDiaDiemDuyet.includes(phieuDuyetCur)) {
+            existing.danhSachDiaDiemDuyet.push(phieuDuyetCur);
+          }
+
           if (!existing.danhSachMaDon.includes(it.maDon)) {
             existing.danhSachMaDon.push(it.maDon);
           }
           existing.danhSachKhungGio.push({ start: it.batDau, end: it.ketThuc });
         }
+      });
+
+      // Gán địa điểm gộp chuẩn xác cho từng group
+      groupedList.forEach(g => {
+        g.diaDiemGoc = g.danhSachDiaDiem.join(', ');
+        g.diaDiemDuyet = g.danhSachDiaDiemDuyet.join(', ');
       });
 
       // Tạo chuỗi thời gian hiển thị sau khi đã gom
@@ -1444,17 +1452,17 @@
       );
       
       if (!it) return;
-
-      // 1. Địa điểm gốc & địa điểm duyệt
-      const diaDiemGoc = (it.danhSachDiaDiem && it.danhSachDiaDiem.length > 0)
-        ? it.danhSachDiaDiem.join(', ')
-        : (it.diaDiemGoc || it.diaDiem || "---");
-
-      const diaDiemDuyet = String(it.diaDiemDuyet || diaDiemGoc).trim();
+      
+      // 1. Xác định chính xác địa điểm gốc và địa điểm duyệt đã gộp
+      const diaDiemGoc = String(it.diaDiemGoc || (it.danhSachDiaDiem ? it.danhSachDiaDiem.join(', ') : it.diaDiem) || "").trim();
+      const diaDiemDuyet = String(it.diaDiemDuyet || (it.danhSachDiaDiemDuyet ? it.danhSachDiaDiemDuyet.join(', ') : diaDiemGoc) || "").trim();
       const ghiChuTraoDoi = String(it.ghiChu || "").trim();
 
+      // 2. Chuẩn hóa chuỗi so sánh
       const cleanGoc = diaDiemGoc.replace(/\s+/g, ' ').toLowerCase();
       const cleanDuyet = diaDiemDuyet.replace(/\s+/g, ' ').toLowerCase();
+
+      // Chỉ hiển thị khung đổi phòng khi địa điểm duyệt KHÁC địa điểm gốc HOẶC có ghi chú phản hồi
       const coDoiPhong = (cleanDuyet !== cleanGoc && diaDiemDuyet !== "") || Boolean(ghiChuTraoDoi);
 
       // 2. Xử lý hiển thị thời gian chính xác cho đơn 1 ngày hoặc đơn nhiều ngày (đã gộp)
