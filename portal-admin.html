@@ -1491,32 +1491,45 @@
       // Chỉ hiển thị khung đổi phòng khi địa điểm duyệt KHÁC địa điểm gốc HOẶC có ghi chú phản hồi
       const coDoiPhong = (cleanDuyet !== cleanGoc && diaDiemDuyet !== "") || Boolean(ghiChuTraoDoi);
 
-      // 2. Xử lý hiển thị thời gian chính xác cho đơn 1 ngày hoặc đơn nhiều ngày (đã gộp)
+      // 2. Xử lý hiển thị thời gian: lọc bỏ khung giờ trùng
       let thoiGianHienThiHtml = "";
-      
-      if (it.danhSachKhungGio && it.danhSachKhungGio.length > 1) {
-        // Trường hợp đơn GỘP NHIỀU NGÀY: Hiển thị danh sách tất cả các ngày
-        const dsNgayText = it.danhSachKhungGio.map(k => {
+
+      // Lọc các khung giờ duy nhất (nếu trùng giờ bắt đầu và kết thúc thì chỉ tính là 1 buổi)
+      const uniqueKhungGioMap = new Map();
+      if (it.danhSachKhungGio && it.danhSachKhungGio.length > 0) {
+        it.danhSachKhungGio.forEach(k => {
+          const key = `${String(k.start).trim()}_${String(k.end).trim()}`;
+          if (!uniqueKhungGioMap.has(key)) {
+            uniqueKhungGioMap.set(key, k);
+          }
+        });
+      }
+      const uniqueKhungGio = Array.from(uniqueKhungGioMap.values());
+
+      if (uniqueKhungGio.length > 1) {
+        // Thực sự mượn nhiều buổi/ngày khác nhau
+        const dsNgayText = uniqueKhungGio.map(k => {
           const bd = themThuVaoThoiGian(k.start);
           const kt = themThuVaoThoiGian(k.end);
           return `<li class="py-0.5">• Từ <b>${bd}</b> đến <b>${kt}</b></li>`;
         }).join('');
-        
+
         thoiGianHienThiHtml = `
           <div class="mt-1">
-            <span class="font-bold text-slate-800 block mb-1">Thời gian sử dụng (${it.danhSachKhungGio.length} buổi):</span>
+            <span class="font-bold text-slate-800 block mb-1">Thời gian sử dụng (${uniqueKhungGio.length} buổi):</span>
             <ul class="pl-2 space-y-0.5 text-[11.5px] bg-sky-50/70 p-2.5 rounded-xl border border-sky-100 max-h-40 overflow-y-auto custom-scroll">
               ${dsNgayText}
             </ul>
           </div>
         `;
       } else {
-        // Trường hợp đơn 1 NGÀY thông thường
-        const startText = themThuVaoThoiGian(it.batDau);
-        const endText = themThuVaoThoiGian(it.ketThuc);
+        // Chỉ mượn 1 buổi (dù mượn 1 hay nhiều phòng cùng lúc)
+        const singleKhung = uniqueKhungGio[0] || { start: it.batDau, end: it.ketThuc };
+        const startText = themThuVaoThoiGian(singleKhung.start || it.batDau);
+        const endText = themThuVaoThoiGian(singleKhung.end || it.ketThuc);
         thoiGianHienThiHtml = `<p><b>Thời gian:</b> Từ <b>${startText}</b> đến <b>${endText}</b></p>`;
       }
-
+      
       const tietText = quyDoiGioSangTietUMP(it.batDau, it.ketThuc);
 
       let nguoiPhuTrachText = it.nguoiPhuTrach || '---';
