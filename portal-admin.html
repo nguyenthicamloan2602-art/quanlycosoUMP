@@ -1300,15 +1300,27 @@
               <div class="font-bold text-slate-800 leading-relaxed whitespace-pre-line">${it.thoiGianHienThi || `Từ: ${it.batDau}<br>Đến: ${it.ketThuc}`}</div>
               
               <div class="mt-1.5 flex items-center gap-1.5 flex-wrap">
-                ${(it.danhSachKhungGio && it.danhSachKhungGio.length > 1) ? `
-                  <span class="inline-block px-2 py-0.5 bg-sky-100 text-sky-800 rounded font-black text-[10px]">
-                    Đã gộp ${it.danhSachKhungGio.length} buổi
-                  </span>
-                ` : (tietText ? `
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-sky-50 text-sky-700 border border-sky-200 rounded-md font-bold text-[10px]">
-                    <i class="fa-solid fa-graduation-cap"></i> ${tietText}
-                  </span>
-                ` : '')}
+                ${(() => {
+                  // Lọc các khung giờ trùng nhau (cùng giờ chỉ là mượn nhiều phòng cùng lúc)
+                  const uniqueKhungGio = it.danhSachKhungGio 
+                    ? [...new Set(it.danhSachKhungGio.map(k => `${k.start}_${k.end}`))] 
+                    : [];
+
+                  if (uniqueKhungGio.length > 1) {
+                    return `
+                      <span class="inline-block px-2 py-0.5 bg-sky-100 text-sky-800 rounded font-black text-[10px]">
+                        Đã gộp ${uniqueKhungGio.length} buổi
+                      </span>
+                    `;
+                  } else if (tietText) {
+                    return `
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-sky-50 text-sky-700 border border-sky-200 rounded-md font-bold text-[10px]">
+                        <i class="fa-solid fa-graduation-cap"></i> ${tietText}
+                      </span>
+                    `;
+                  }
+                  return '';
+                })()}
 
                 ${isSsatNgay ? `
                   <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md font-bold text-[10px]">
@@ -1326,13 +1338,27 @@
               ` : ''}
 
               <!-- HIỂN THỊ PHÒNG ĐÃ ĐIỀU PHỐI (NẾU CÓ) -->
-              ${(it.diaDiemDuyet && it.diaDiemDuyet !== it.diaDiem) ? `
-                <div class="mt-1.5 text-[10.5px] font-black text-amber-900 bg-amber-100/90 border border-amber-300 px-2 py-0.5 rounded-lg inline-flex items-center gap-1">
-                  <i class="fa-solid fa-arrows-rotate text-amber-700"></i>
-                  <span class="line-through text-slate-400 font-normal">${it.diaDiem}</span>
-                  <span>➜ ${it.diaDiemDuyet}</span>
-                </div>
-              ` : ''}
+              ${(() => {
+                const gocFull = (it.danhSachDiaDiem && it.danhSachDiaDiem.length > 0)
+                  ? it.danhSachDiaDiem.join(', ')
+                  : (it.diaDiemGoc || it.diaDiem || "");
+
+                const duyetFull = String(it.diaDiemDuyet || gocFull).trim();
+
+                const cleanGoc = gocFull.replace(/\s+/g, ' ').trim().toLowerCase();
+                const cleanDuyet = duyetFull.replace(/\s+/g, ' ').trim().toLowerCase();
+
+                if (duyetFull && cleanDuyet !== cleanGoc) {
+                  return `
+                    <div class="mt-1.5 text-[10.5px] font-black text-amber-900 bg-amber-100/90 border border-amber-300 px-2 py-0.5 rounded-lg inline-flex items-center gap-1">
+                      <i class="fa-solid fa-arrows-rotate text-amber-700"></i>
+                      <span class="line-through text-slate-400 font-normal">${gocFull}</span>
+                      <span>➜ ${duyetFull}</span>
+                    </div>
+                  `;
+                }
+                return '';
+              })()}
 
               <!-- HỘP TRAO ĐỔI GỌN GÀNG -->
               ${it.ghiChu ? `
@@ -1452,7 +1478,7 @@
       );
       
       if (!it) return;
-      
+
       // 1. Xác định chính xác địa điểm gốc và địa điểm duyệt đã gộp
       const diaDiemGoc = String(it.diaDiemGoc || (it.danhSachDiaDiem ? it.danhSachDiaDiem.join(', ') : it.diaDiem) || "").trim();
       const diaDiemDuyet = String(it.diaDiemDuyet || (it.danhSachDiaDiemDuyet ? it.danhSachDiaDiemDuyet.join(', ') : diaDiemGoc) || "").trim();
