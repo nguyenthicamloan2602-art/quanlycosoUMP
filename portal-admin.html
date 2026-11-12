@@ -1019,40 +1019,53 @@
         const matchEnd = String(ketThucStr).match(/(\d{1,2}):(\d{2})/);
         if (!matchStart || !matchEnd) return "";
 
-        const hStart = parseInt(matchStart[1], 10);
-        const mStart = parseInt(matchStart[2], 10);
-        const hEnd = parseInt(matchEnd[1], 10);
-        const mEnd = parseInt(matchEnd[2], 10);
+        const startMin = parseInt(matchStart[1], 10) * 60 + parseInt(matchStart[2], 10);
+        const endMin = parseInt(matchEnd[1], 10) * 60 + parseInt(matchEnd[2], 10);
 
-        const startMin = hStart * 60 + mStart;
-        const endMin = hEnd * 60 + mEnd;
+        // Khung giờ chuẩn 14 tiết theo QĐ 1853/QĐ-ĐHYD (tính bằng phút từ 00:00)
+        const lichTiet = [
+          { tiet: 1,  start: 7 * 60,       end: 7 * 60 + 50 },  // 07:00 - 07:50
+          { tiet: 2,  start: 7 * 60 + 50,  end: 8 * 60 + 40 },  // 07:50 - 08:40
+          { tiet: 3,  start: 8 * 60 + 40,  end: 9 * 60 + 30 },  // 08:40 - 09:30
+          { tiet: 4,  start: 9 * 60 + 45,  end: 10 * 60 + 35 }, // 09:45 - 10:35
+          { tiet: 5,  start: 10 * 60 + 35, end: 11 * 60 + 25 }, // 10:35 - 11:25
+          // Tiết 6 (11:25 - 13:00): Nghỉ trưa
+          { tiet: 7,  start: 13 * 60,      end: 13 * 60 + 50 }, // 13:00 - 13:50
+          { tiet: 8,  start: 13 * 60 + 50, end: 14 * 60 + 40 }, // 13:50 - 14:40
+          { tiet: 9,  start: 14 * 60 + 40, end: 15 * 60 + 30 }, // 14:40 - 15:30
+          { tiet: 10, start: 15 * 60 + 45, end: 16 * 60 + 35 }, // 15:45 - 16:35
+          { tiet: 11, start: 16 * 60 + 35, end: 17 * 60 + 25 }, // 16:35 - 17:25
+          { tiet: 12, start: 17 * 60 + 25, end: 18 * 60 + 15 }, // 17:25 - 18:15
+          { tiet: 13, start: 18 * 60 + 15, end: 19 * 60 + 5 },  // 18:15 - 19:05
+          { tiet: 14, start: 19 * 60 + 5,  end: 20 * 60 }       // 19:05 - 20:00
+        ];
 
+        // 1. Xác định tiết bắt đầu
         let tietBD = 1;
-        if (startMin < 450) tietBD = 1;
-        else if (startMin < 510) tietBD = 2;
-        else if (startMin < 570) tietBD = 3;
-        else if (startMin < 630) tietBD = 4;
-        else if (startMin < 750) tietBD = 5;
-        else if (startMin < 810) tietBD = 6;
-        else if (startMin < 870) tietBD = 7;
-        else if (startMin < 930) tietBD = 8;
-        else if (startMin < 990) tietBD = 9;
-        else tietBD = 10;
+        for (let i = 0; i < lichTiet.length; i++) {
+          if (startMin < lichTiet[i].end) {
+            tietBD = lichTiet[i].tiet;
+            break;
+          }
+          if (i === lichTiet.length - 1) tietBD = 14;
+        }
 
-        let tietKT = 5;
-        if (endMin <= 480) tietKT = 1;
-        else if (endMin <= 540) tietKT = 2;
-        else if (endMin <= 600) tietKT = 3;
-        else if (endMin <= 660) tietKT = 4;
-        else if (endMin <= 750) tietKT = 5;
-        else if (endMin <= 810) tietKT = 6;
-        else if (endMin <= 870) tietKT = 7;
-        else if (endMin <= 930) tietKT = 8;
-        else if (endMin <= 1000) tietKT = 9;
-        else tietKT = 10;
+        // 2. Xác định tiết kết thúc
+        let tietKT = 14;
+        for (let i = lichTiet.length - 1; i >= 0; i--) {
+          if (endMin > lichTiet[i].start) {
+            tietKT = lichTiet[i].tiet;
+            break;
+          }
+          if (i === 0) tietKT = 1;
+        }
 
-        const soTiet = Math.max(1, tietKT - tietBD + 1);
-        return `Tiết ${tietBD} - ${tietKT} (${soTiet} tiết)`;
+        if (tietKT < tietBD) tietKT = tietBD;
+
+        // 3. Đếm tổng số tiết thực học (tự động trừ Tiết 6 nghỉ trưa nếu mượn xuyên trưa)
+        const soTiet = lichTiet.filter(t => t.tiet >= tietBD && t.tiet <= tietKT).length;
+
+        return `Tiết ${tietBD} - ${tietKT} (${Math.max(1, soTiet)} tiết)`;
       } catch (e) {
         return "";
       }
