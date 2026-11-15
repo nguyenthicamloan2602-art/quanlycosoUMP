@@ -252,108 +252,6 @@
                 <i class="fa-solid fa-arrow-right text-xs"></i>
               </button>
             </form>
-
-            <!-- Nút chuyển sang Đăng ký -->
-            <div id="register-trigger-container" class="text-center pt-2 border-t border-slate-100">
-              <p class="text-xs text-slate-500">
-                Chưa có tài khoản? 
-                <button onclick="switchView('register')" class="font-bold text-sky-600 hover:underline">
-                  Đăng ký ngay &rarr;
-                </button>
-              </p>
-            </div>
-          </div>
-
-          <!-- 2. HỘP THOẠI ĐĂNG KÝ -->
-          <div class="hidden space-y-4" id="box-register">
-            <div class="text-center space-y-1">
-              <div class="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-600 text-white shadow-md text-base mb-0.5">
-                <i class="fa-solid fa-user-plus"></i>
-              </div>
-              <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Tạo tài khoản mới</h2>
-              <p class="text-xs text-slate-500">Nhập thông tin theo phân quyền để kích hoạt</p>
-            </div>
-
-            <form class="space-y-3 pt-1 text-xs" onsubmit="handleRegister(event)">
-              <div>
-                <label class="block font-bold text-slate-700 mb-1">Tên tài khoản (Đơn vị / Họ tên) <span class="text-rose-500">*</span></label>
-                <input class="input-field w-full px-3.5 py-2.5 rounded-xl font-semibold text-slate-800" id="reg_name" placeholder="VD: Đoàn Khoa Y hoặc Nguyễn Văn A" required type="text">
-              </div>
-
-              <!-- KHÔI PHỤC LẠI Ô TÊN ĐĂNG NHẬP VÀ MẬT KHẨU -->
-              <div class="grid grid-cols-2 gap-2.5">
-                <div>
-                  <label class="block font-bold text-slate-700 mb-1">Tên đăng nhập (MSSV) <span class="text-rose-500">*</span></label>
-                  <input class="input-field w-full px-3.5 py-2.5 rounded-xl font-semibold text-slate-800" id="reg_user" placeholder="VD: 511246372" required type="text">
-                </div>
-                <div>
-                  <label class="block font-bold text-slate-700 mb-1">Mật khẩu <span class="text-rose-500">*</span></label>
-                  <input class="input-field w-full px-3.5 py-2.5 rounded-xl text-slate-800" id="reg_pass" placeholder="••••••••" required type="password">
-                </div>
-              </div>
-
-              <div>
-                <label class="block font-bold text-slate-700 mb-1">Vai trò sử dụng <span class="text-rose-500">*</span></label>
-                <select class="input-field w-full px-3.5 py-2.5 rounded-xl font-bold text-slate-800 cursor-pointer" id="reg_role" onchange="toggleRoleFields()">
-                  <option value="USER">🏢 Đơn vị / Chi hội / CLB - Đội - Nhóm</option>
-                  <option value="CTV">👤 Cá nhân / Cộng tác viên (CTV)</option>
-                </select>
-              </div>
-
-              <!-- PHẦN ĐƠN VỊ: EMAIL LIÊN HỆ -->
-              <div class="space-y-1" id="unit-fields">
-                <label class="block font-bold text-slate-700 mb-1">Email liên hệ đơn vị <span class="text-rose-500">*</span></label>
-                <input class="input-field w-full px-3.5 py-2.5 rounded-xl text-slate-800" id="reg_unit_email" placeholder="VD: doankhoa.y@ump.edu.vn" type="email">
-              </div>
-
-              <!-- PHẦN CÁ NHÂN: TRƯỜNG KHOA, LỚP, EMAIL, SĐT, NGÀY SINH -->
-              <div class="hidden space-y-2.5 pt-1.5 border-t border-dashed border-slate-200" id="personal-fields">
-                <div>
-                  <label class="block font-bold text-slate-700 mb-1">Trường / Khoa trực thuộc <span class="text-rose-500">*</span></label>
-                  <select class="input-field w-full px-3.5 py-2.5 rounded-xl font-semibold text-slate-800 cursor-pointer" id="reg_khoa">
-                    <option value="">-- Chọn Trường / Khoa trực thuộc --</option>
-                    <option value="Trường Y">1. Trường Y</option>
-                    <option value="Trường Dược">2. Trường Dược</option>
-                    <option value="Trường Điều dưỡng - Kỹ thuật Y học">3. Trường Điều dưỡng - Kỹ thuật Y học</option>
-                    <option value="Khoa Răng - Hàm - Mặt">4. Khoa Răng - Hàm - Mặt</option>
-                    <option value="Khoa Y tế Công cộng">5. Khoa Y tế Công cộng</option>
-                    <option value="Khoa Y học Cổ truyền">6. Khoa Y học Cổ truyền</option>
-                  </select>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2.5">
-                  <div>
-                    <label class="block font-bold text-slate-700 mb-1">Lớp <span class="text-rose-500">*</span></label>
-                    <input class="input-field w-full px-3 py-2 rounded-xl" id="reg_lop" placeholder="VD: Y2023..." type="text">
-                  </div>
-                  <div>
-                    <label class="block font-bold text-slate-700 mb-1">Email cá nhân <span class="text-rose-500">*</span></label>
-                    <input class="input-field w-full px-3 py-2 rounded-xl" id="reg_email" placeholder="VD: sv@ump.edu.vn" type="email">
-                  </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2.5">
-                  <div>
-                    <label class="block font-bold text-slate-700 mb-1">Số điện thoại <span class="text-rose-500">*</span></label>
-                    <input class="input-field w-full px-3 py-2 rounded-xl font-medium" id="reg_sdt" placeholder="VD: 0912345678" type="tel">
-                  </div>
-                  <div>
-                    <label class="block font-bold text-slate-700 mb-1">Ngày sinh <span class="text-rose-500">*</span></label>
-                    <input class="input-field w-full px-3 py-2 rounded-xl font-medium" id="reg_dob" type="date">
-                  </div>
-                </div>
-              </div>
-
-              <button class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md text-xs sm:text-sm mt-2 transition" id="btn-reg" type="submit">
-                XÁC NHẬN ĐĂNG KÝ
-              </button>
-            </form>
-
-            <div class="text-center pt-2 border-t border-slate-100">
-              <button class="text-xs font-bold text-sky-600 hover:underline" onclick="switchView('login')">
-                <i class="fa-solid fa-arrow-left mr-1"></i> Quay lại màn hình đăng nhập
-              </button>
-            </div>
           </div>
 
           <!-- 3. HỘP THOẠI QUÊN MẬT KHẨU -->
@@ -471,17 +369,14 @@
     });
 
     function switchView(view) {
-
       document.getElementById('box-login').classList.add('hidden');
-      document.getElementById('box-register').classList.add('hidden');
       document.getElementById('box-forgot').classList.add('hidden');
 
-      if (view === 'login') document.getElementById('box-login').classList.remove('hidden');
-      else if (view === 'register') {
-        document.getElementById('box-register').classList.remove('hidden');
-        toggleRoleFields();
+      if (view === 'login') {
+        document.getElementById('box-login').classList.remove('hidden');
+      } else if (view === 'forgot') {
+        document.getElementById('box-forgot').classList.remove('hidden');
       }
-      else if (view === 'forgot') document.getElementById('box-forgot').classList.remove('hidden');
     }
 
     function toggleRoleFields() {
@@ -576,54 +471,6 @@
           btn.disabled = false;
           btn.innerHTML = `<span>Đăng nhập hệ thống</span> <i class="fa-solid fa-arrow-right text-xs"></i>`;
         }
-      }
-    }
-
-    // ĐĂNG KÝ
-    async function handleRegister(e) {
-      e.preventDefault();
-      const role = document.getElementById("reg_role").value;
-      const btn = document.getElementById("btn-reg");
-      btn.disabled = true;
-      btn.innerText = "Đang gửi dữ liệu...";
-
-      const email = role === "CTV" 
-        ? document.getElementById("reg_email").value.trim() 
-        : document.getElementById("reg_unit_email").value.trim();
-
-      const payload = {
-        action: "REGISTER_ACCOUNT",
-        data: {
-          hoTen: document.getElementById("reg_name").value.trim(),
-          username: document.getElementById("reg_user").value.trim(),
-          password: document.getElementById("reg_pass").value.trim(),
-          role: role,
-          email: email,
-          nganh: role === "CTV" ? document.getElementById("reg_khoa").value : "",
-          lop: role === "CTV" ? document.getElementById("reg_lop").value.trim() : "",
-          ngaySinh: role === "CTV" ? document.getElementById("reg_dob").value : "",
-          sdt: role === "CTV" ? document.getElementById("reg_sdt").value.trim() : ""
-        }
-      };
-
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (data.success) {
-          Swal.fire("Đăng ký thành công", data.message || "Tài khoản đã được tạo thành công!", "success");
-          switchView('login');
-        } else {
-          Swal.fire("Lỗi", data.message, "error");
-        }
-      } catch (e) {
-        Swal.fire("Lỗi", "Không thể gửi dữ liệu đăng ký!", "error");
-      } finally {
-        btn.disabled = false;
-        btn.innerText = "XÁC NHẬN ĐĂNG KÝ";
       }
     }
   </script>
