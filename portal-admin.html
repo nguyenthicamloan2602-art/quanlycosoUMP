@@ -1212,6 +1212,13 @@
       });
 
       filtered.sort((a, b) => {
+        if (sortType === "USE_ASC") {
+          // Sắp xếp theo Ngày sử dụng tăng dần (gần nhất lên trước)
+          const useA = parseDateTimeText(a.batDau || a.thoiGianHienThi);
+          const useB = parseDateTimeText(b.batDau || b.thoiGianHienThi);
+          return useA - useB;
+        }
+        // Sắp xếp theo Ngày nộp đơn
         const timeA = parseDateTimeText(a.ngayDangKy);
         const timeB = parseDateTimeText(b.ngayDangKy);
         return sortType === "SUBMIT_ASC" ? timeA - timeB : timeB - timeA;
@@ -1223,11 +1230,22 @@
 
     function parseDateTimeText(str) {
       if (!str) return 0;
-      const match = String(str).match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
-      if (match) {
-        return new Date(match[3], match[2] - 1, match[1]).getTime();
+      const s = String(str).trim();
+      const dateMatch = s.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+      const timeMatch = s.match(/(\d{1,2}):(\d{2})/);
+
+      if (dateMatch) {
+        const h = timeMatch ? parseInt(timeMatch[1], 10) : 0;
+        const m = timeMatch ? parseInt(timeMatch[2], 10) : 0;
+        return new Date(
+          parseInt(dateMatch[3], 10),
+          parseInt(dateMatch[2], 10) - 1,
+          parseInt(dateMatch[1], 10),
+          h,
+          m
+        ).getTime();
       }
-      const d = new Date(str);
+      const d = new Date(s);
       return isNaN(d.getTime()) ? 0 : d.getTime();
     }
 
